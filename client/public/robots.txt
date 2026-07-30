@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /menu
+Disallow: /admin/
+
+Sitemap: https://bombaychowpati.com/sitemap.xml

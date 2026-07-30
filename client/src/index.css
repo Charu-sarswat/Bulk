@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  
+  /* Brand Maroon Palette (#691F1A) */
+  --color-maroon-50: #fdf4f3;
+  --color-maroon-100: #fae5e3;
+  --color-maroon-200: #f6cfcb;
+  --color-maroon-300: #efa8a1;
+  --color-maroon-400: #e4776e;
+  --color-maroon-500: #d44d42;
+  --color-maroon-600: #af3228;
+  --color-maroon-700: #691f1a; /* Core Brand Primary Maroon */
+  --color-maroon-800: #551915;
+  --color-maroon-900: #3c110d;
+  --color-maroon-950: #260907;
+
+  /* Brand Saffron Amber Palette (#F8A324) */
+  --color-saffron-50: #fff9ee;
+  --color-saffron-100: #ffeed5;
+  --color-saffron-200: #ffd9aa;
+  --color-saffron-300: #ffbd73;
+  --color-saffron-400: #fb9c3b;
+  --color-saffron-500: #f8a324; /* Core Brand Secondary Saffron */
+  --color-saffron-600: #d97a10;
+  --color-saffron-700: #b4580e;
+  --color-saffron-800: #904313;
+  --color-saffron-900: #763813;
+  --color-saffron-950: #441b06;
+
+  /* Legacy aliases mapped to new brand colors */
+  --color-gold-50: #fff9ee;
+  --color-gold-100: #ffeed5;
+  --color-gold-200: #ffd9aa;
+  --color-gold-300: #ffbd73;
+  --color-gold-400: #fb9c3b;
+  --color-gold-500: #f8a324;
+  --color-gold-600: #d97a10;
+  --color-gold-700: #b4580e;
+  --color-gold-800: #904313;
+  --color-gold-900: #763813;
+
+  --color-charcoal-50: #fbf9f7;
+  --color-charcoal-100: #f3efe9;
+  --color-charcoal-500: #57463f;
+  --color-charcoal-800: #261614;
+  --color-charcoal-900: #1a0a09;
+}
+
+/* Custom Base Styles */
+html, body {
+  font-family: var(--font-sans);
+  background-color: #3c110d;
+  color: #ffffff;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: #f8a324;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d97a10;
+}
+
+/* Global Root Reset */
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  border: none;
+  min-height: 100vh;
+  display: block;
+}
+
+/* Brand Glassmorphism Classes */
+.glass-maroon {
+  background: rgba(105, 31, 26, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(248, 163, 36, 0.2);
+}
+
+.glass-maroon-dark {
+  background: rgba(38, 9, 7, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(248, 163, 36, 0.15);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(248, 163, 36, 0.2);
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse-saffron {
+  animation: pulseSaffron 2s infinite ease-in-out;
+}
+
+@keyframes pulseSaffron {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(248, 163, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(248, 163, 36, 0.7);
+  }
+}
+
+/* Category Slider Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Infinite Marquee Animation for Testimonials */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
