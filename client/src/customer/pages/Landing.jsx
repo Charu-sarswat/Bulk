@@ -147,7 +147,7 @@ export default function Landing() {
             </a>
           </div>
 
-          <div className="bg-white border border-[#F8A324]/30 rounded-3xl p-6">
+          <div className="p-0 sm:p-6 bg-transparent sm:bg-white border-0 sm:border border-transparent sm:border-[#F8A324]/30 rounded-none sm:rounded-3xl">
             <behold-widget feed-id="mxdvTa0NfYXzl03y9WQi"></behold-widget>
           </div>
 
