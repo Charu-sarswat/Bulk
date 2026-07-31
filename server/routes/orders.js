@@ -39,53 +39,133 @@ router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen
     
     // Define date boundary matching period
     let startDate = new Date();
+    let prevStartDate = new Date();
+    let prevEndDate = new Date();
+
+    const now = new Date();
+
     if (period === 'today') {
       startDate.setHours(0, 0, 0, 0);
+      prevStartDate.setDate(prevStartDate.getDate() - 1);
+      prevStartDate.setHours(0, 0, 0, 0);
+      prevEndDate.setDate(prevEndDate.getDate() - 1);
+      prevEndDate.setHours(23, 59, 59, 999);
     } else if (period === 'yesterday') {
       startDate.setDate(startDate.getDate() - 1);
       startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(startDate);
+      endDate.setHours(23, 59, 59, 999);
+
+      prevStartDate.setDate(prevStartDate.getDate() - 2);
+      prevStartDate.setHours(0, 0, 0, 0);
+      prevEndDate.setDate(prevEndDate.getDate() - 2);
+      prevEndDate.setHours(23, 59, 59, 999);
     } else if (period === '7days') {
       startDate.setDate(startDate.getDate() - 7);
+      prevStartDate.setDate(prevStartDate.getDate() - 14);
+      prevEndDate.setDate(prevEndDate.getDate() - 7);
     } else if (period === '30days') {
       startDate.setDate(startDate.getDate() - 30);
+      prevStartDate.setDate(prevStartDate.getDate() - 60);
+      prevEndDate.setDate(prevEndDate.getDate() - 30);
     } else {
       // all time
       startDate = new Date(0);
+      prevStartDate = new Date(0);
+      prevEndDate = new Date(0);
     }
 
+    // Fetch current period orders
     const filter = { created_at: { $gte: startDate } };
+    if (period === 'yesterday') {
+      const yesterdayEnd = new Date();
+      yesterdayEnd.setDate(yesterdayEnd.getDate() - 1);
+      yesterdayEnd.setHours(23, 59, 59, 999);
+      filter.created_at.$lte = yesterdayEnd;
+    }
     const orders = await Order.find(filter);
+
+    // Fetch previous period orders for sales growth comparison
+    let prevOrders = [];
+    if (period !== 'all') {
+      prevOrders = await Order.find({
+        created_at: { $gte: prevStartDate, $lte: prevEndDate }
+      });
+    }
 
     // Calculate aggregated stats
     const totalSales = orders.reduce((sum, o) => o.payment_status === 'paid' ? sum + o.total_amount : sum, 0);
+    const prevSales = prevOrders.reduce((sum, o) => o.payment_status === 'paid' ? sum + o.total_amount : sum, 0);
+
+    let salesGrowth = 0;
+    if (period !== 'all') {
+      if (prevSales === 0) {
+        salesGrowth = totalSales > 0 ? 100 : 0;
+      } else {
+        salesGrowth = Math.round(((totalSales - prevSales) / prevSales) * 100);
+      }
+    }
+
     const totalOrders = orders.length;
-    const completedOrders = orders.filter(o => o.status === 'served').length;
+    const paidOrders = orders.filter(o => o.payment_status === 'paid');
+    const avgTicket = paidOrders.length > 0 ? Math.round(totalSales / paidOrders.length) : 0;
+
+    // Unique customers by phone number
+    const uniquePhones = new Set(orders.map(o => o.customer_phone).filter(Boolean));
+    const totalCustomers = uniquePhones.size;
 
     // Daily Sales analytics array
     const salesMap = {};
     orders.forEach(o => {
-      const day = new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
-      salesMap[day] = (salesMap[day] || 0) + o.total_amount;
+      if (o.payment_status === 'paid') {
+        const day = new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+        salesMap[day] = (salesMap[day] || 0) + o.total_amount;
+      }
     });
 
     const salesOverTime = Object.keys(salesMap).map(day => ({
       name: day,
       sales: salesMap[day]
+    })).sort((a, b) => new Date(a.name) - new Date(b.name));
+
+    // Category distribution from actual items ordered
+    const categoryRevenue = {};
+    orders.forEach(o => {
+      if (o.payment_status === 'paid') {
+        o.items.forEach(item => {
+          const cat = item.category || 'General';
+          categoryRevenue[cat] = (categoryRevenue[cat] || 0) + (item.price * item.quantity);
+        });
+      }
+    });
+
+    const categoryStats = Object.keys(categoryRevenue).map(cat => ({
+      name: cat,
+      value: categoryRevenue[cat]
     }));
 
-    // Category distribution mock/aggregated stats
-    const categoryStats = [
-      { name: 'Chaat', value: Math.round(totalSales * 0.45) },
-      { name: 'Snacks', value: Math.round(totalSales * 0.25) },
-      { name: 'Drinks & Desserts', value: Math.round(totalSales * 0.20) },
-      { name: 'Combos', value: Math.round(totalSales * 0.10) }
-    ];
+    // If category stats is empty, provide default mock format
+    if (categoryStats.length === 0) {
+      categoryStats.push({ name: 'Chaat', value: 0 });
+    }
 
-    // Payment methods aggregation
-    const paymentMethods = {
-      UPI: orders.filter(o => o.payment_method === 'upi').length,
-      COUNTER: orders.filter(o => o.payment_method === 'counter').length
-    };
+    // Payment methods aggregation (actual revenue weights)
+    const paymentMethods = {};
+    orders.forEach(o => {
+      if (o.payment_status === 'paid') {
+        const method = (o.payment_method || 'COUNTER').toUpperCase();
+        paymentMethods[method] = (paymentMethods[method] || 0) + o.total_amount;
+      }
+    });
+
+    const paymentSplit = Object.keys(paymentMethods).map(method => ({
+      method,
+      amount: paymentMethods[method]
+    }));
+
+    if (paymentSplit.length === 0) {
+      paymentSplit.push({ method: 'COUNTER', amount: 0 });
+    }
 
     // Fetch best selling dishes
     const popularDishes = [];
@@ -106,24 +186,31 @@ router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen
     });
     popularDishes.sort((a, b) => b.total_sold - a.total_sold);
 
+    // Calculate hourly peak trends
+    const hourlyMap = {};
+    orders.forEach(o => {
+      const hour = new Date(o.created_at).getHours();
+      let label = `${hour % 12 || 12} ${hour >= 12 ? 'PM' : 'AM'}`;
+      hourlyMap[label] = (hourlyMap[label] || 0) + 1;
+    });
+
+    const peakHours = Object.keys(hourlyMap).map(hour => ({
+      hour,
+      orders: hourlyMap[hour]
+    })).slice(0, 8);
+
     res.json({
       metrics: {
         totalSales,
+        salesGrowth,
         totalOrders,
-        completedOrders,
-        activeTables: 4
+        avgTicket,
+        totalCustomers
       },
       salesTrend: salesOverTime.length > 0 ? salesOverTime : [{ name: 'Today', sales: 0 }],
-      peakHours: [
-        { hour: '12 PM', orders: 3 },
-        { hour: '4 PM', orders: 5 },
-        { hour: '8 PM', orders: 8 }
-      ],
+      peakHours: peakHours.length > 0 ? peakHours : [{ hour: '12 PM', orders: 0 }],
       categoryShare: categoryStats,
-      paymentSplit: [
-        { method: 'UPI', amount: paymentMethods.UPI * 100 }, // weight order ratio as sales amount representation
-        { method: 'COUNTER', amount: paymentMethods.COUNTER * 100 }
-      ],
+      paymentSplit,
       popularDishes: popularDishes.slice(0, 5)
     });
   } catch (err) {

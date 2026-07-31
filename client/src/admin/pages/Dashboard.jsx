@@ -131,77 +131,62 @@ export default function Dashboard() {
       </PageHeader>
 
       {/* KPI Metrics Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         {/* KPI 1: Gross Sales */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
-            <DollarSign className="w-5 h-5" />
+        <div className="bg-white p-2.5 sm:p-4 rounded-xl border border-gray-150 shadow-xs flex items-center gap-2 sm:gap-3 hover:shadow-sm transition-all">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 border border-amber-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Gross Sales</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5 truncate">{restaurantConfig.currency}{parseFloat(metrics.totalSales).toFixed(0)}</div>
-            <div className="mt-0.5 flex items-center gap-0.5 text-[10px] font-semibold">
+            <span className="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Gross Sales</span>
+            <div className="text-sm sm:text-xl font-black text-gray-900 font-serif mt-0.5 truncate">{restaurantConfig.currency}{parseFloat(metrics.totalSales).toFixed(0)}</div>
+            <div className="mt-0.5 flex items-center gap-0.5 text-[9px] font-semibold">
               {metrics.salesGrowth >= 0 ? (
                 <span className="text-emerald-600 flex items-center font-bold">
-                  <ArrowUpRight className="w-3 h-3" /> +{metrics.salesGrowth}%
+                  <ArrowUpRight className="w-2.5 h-2.5" /> +{metrics.salesGrowth}%
                 </span>
               ) : (
                 <span className="text-rose-600 flex items-center font-bold">
-                  <ArrowDownRight className="w-3 h-3" /> {metrics.salesGrowth}%
+                  <ArrowDownRight className="w-2.5 h-2.5" /> {metrics.salesGrowth}%
                 </span>
               )}
-              <span className="text-gray-400 font-normal hidden sm:inline">vs prev</span>
             </div>
           </div>
         </div>
 
         {/* KPI 2: Total Orders */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">
-            <ShoppingBag className="w-5 h-5" />
+        <div className="bg-white p-2.5 sm:p-4 rounded-xl border border-gray-150 shadow-xs flex items-center gap-2 sm:gap-3 hover:shadow-sm transition-all">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">
+            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Total Orders</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{metrics.totalOrders}</div>
-            <span className="text-[10px] text-gray-400 font-medium block">tickets</span>
+            <span className="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Total Orders</span>
+            <div className="text-sm sm:text-xl font-black text-gray-900 font-serif mt-0.5">{metrics.totalOrders}</div>
+            <span className="text-[9px] text-gray-400 font-medium block">tickets</span>
           </div>
         </div>
 
-        {/* KPI 3: Occupancy Rate */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0">
-            <Utensils className="w-5 h-5" />
+        {/* KPI 3: Avg Order Value */}
+        <div className="bg-white p-2.5 sm:p-4 rounded-xl border border-gray-150 shadow-xs flex items-center gap-2 sm:gap-3 hover:shadow-sm transition-all">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Occupancy</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{metrics.occupancyRate}%</div>
-            <span className="text-[10px] text-gray-400 font-medium block">
-              {metrics.occupiedTablesCount}/{metrics.totalTablesCount} tables
-            </span>
+            <span className="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Avg Order</span>
+            <div className="text-sm sm:text-xl font-black text-gray-900 font-serif mt-0.5 truncate">{restaurantConfig.currency}{parseFloat(metrics.avgTicket).toFixed(0)}</div>
+            <span className="text-[9px] text-gray-400 font-medium block">per ticket</span>
           </div>
         </div>
 
-        {/* KPI 4: Avg Order Value */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0">
-            <TrendingUp className="w-5 h-5" />
+        {/* KPI 4: Diners Served */}
+        <div className="bg-white p-2.5 sm:p-4 rounded-xl border border-gray-150 shadow-xs flex items-center gap-2 sm:gap-3 hover:shadow-sm transition-all">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Avg Order</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5 truncate">{restaurantConfig.currency}{parseFloat(metrics.avgTicket).toFixed(0)}</div>
-            <span className="text-[10px] text-gray-400 font-medium block">per ticket</span>
-          </div>
-        </div>
-
-        {/* KPI 5: Diners Served */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all col-span-2 sm:col-span-1">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0">
-            <Users className="w-5 h-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Patrons</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{metrics.totalCustomers || 0}</div>
-            <span className="text-[10px] text-gray-400 font-medium block">customers</span>
+            <span className="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Patrons</span>
+            <div className="text-sm sm:text-xl font-black text-gray-900 font-serif mt-0.5">{metrics.totalCustomers || 0}</div>
+            <span className="text-[9px] text-gray-400 font-medium block">customers</span>
           </div>
         </div>
       </div>
@@ -238,14 +223,14 @@ export default function Dashboard() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} />
                   <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} tickFormatter={(v) => `₹${v}`} />
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#1b1c23', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '11px' }}
                     labelStyle={{ fontWeight: 'bold', color: '#d4af37', fontSize: 11 }}
-                    formatter={(value) => [`${restaurantConfig.currency}${parseFloat(value).toFixed(2)}`, 'Revenue']}
+                    formatter={(value) => [`${restaurantConfig.currency}${parseFloat(value).toFixed(0)}`, 'Revenue']}
                   />
-                  <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#d4af37" strokeWidth={2.5} fillOpacity={1} fill="url(#colorRev)" />
+                  <Area type="monotone" dataKey="sales" name="Revenue" stroke="#d4af37" strokeWidth={2.5} fillOpacity={1} fill="url(#colorRev)" />
                 </AreaChart>
               </ResponsiveContainer>
             )}
@@ -284,7 +269,7 @@ export default function Dashboard() {
                     </Pie>
                     <Tooltip
                       contentStyle={{ backgroundColor: '#1b1c23', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '11px' }}
-                      formatter={(val, name, item) => [`${val} units sold (${restaurantConfig.currency}${parseFloat(item.payload.revenue).toFixed(2)})`, item.payload.name]}
+                      formatter={(val, name, item) => [`${val} units sold`, item.payload.name]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -327,14 +312,14 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={peakHours}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="hour_label" stroke="#94a3b8" fontSize={9} tickLine={false} />
+                  <XAxis dataKey="hour" stroke="#94a3b8" fontSize={9} tickLine={false} />
                   <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} allowDecimals={false} />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1b1c23', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '11px' }}
                     labelStyle={{ fontWeight: 'bold', color: '#d4af37', fontSize: 11 }}
-                    formatter={(val, name, item) => [`${val} orders (${restaurantConfig.currency}${parseFloat(item.payload.revenue).toFixed(2)})`, 'Volume']}
+                    formatter={(val) => [`${val} orders`, 'Volume']}
                   />
-                  <Bar dataKey="order_count" name="Orders" fill="#2c2e3b" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="orders" name="Orders" fill="#2c2e3b" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

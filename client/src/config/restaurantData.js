@@ -67,8 +67,8 @@ export const restaurantData = {
       description: "Honoured with the 'Best Chat Bhandar of the Year' award at the Pride of Southern India Awards 2026. The award was presented by legendary Bollywood Actress and former Member of Rajya Sabha, Jaya Prada, at The Park Hyderabad.",
       icon: "Trophy",
       images: [
-        "/src/assets/awards/img4.jpeg",
-        "/src/assets/awards/img1.jpg"
+        "/awards/img4.jpeg",
+        "/awards/img1.jpg"
       ]
     },
     {
@@ -79,7 +79,7 @@ export const restaurantData = {
       description: "Awarded the Certificate of Excellence as the Indian Iconic Chat Bhandar of the Year 2026, celebrating outstanding quality, hygiene, and authenticity in street food.",
       icon: "Award",
       images: [
-        "/src/assets/awards/img2.jpg"
+        "/awards/img2.jpg"
       ]
     },
     {
@@ -90,8 +90,8 @@ export const restaurantData = {
       description: "Winner of the Indian Iconic Chat Bhandar of the Year 2025 at the Pride India & Business Awards. Certificate of Excellence proudly presented to Bombay Chowpati.",
       icon: "Star",
       images: [
-        "/src/assets/awards/img5.jpeg",
-        "/src/assets/awards/img3.jpg"
+        "/awards/img5.jpeg",
+        "/awards/img3.jpg"
       ]
     }
   ],
