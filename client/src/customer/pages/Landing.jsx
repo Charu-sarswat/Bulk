@@ -14,8 +14,8 @@ import WhatsAppIcon from '../components/WhatsAppIcon';
 
 export default function Landing() {
   useSEO({
-    title: 'Bombay Chowpati - Chaat Bhandar | 100% Pure Veg Mumbai Street Food',
-    description: "Hyderabad's favourite authentic Mumbai chaat — Crispy Pani Puri, Amul Butter Pav Bhaji, Royal Raj Kachori, Bhel Puri & more. Order online or book live catering at MPM Mall, Abids.",
+    title: 'Bombay Chowpati - Chat Bhandar | 100% Pure Veg Mumbai Street Food',
+    description: "Hyderabad's favourite authentic Mumbai chat — Crispy Pani Puri, Amul Butter Pav Bhaji, Royal Raj Kachori, Bhel Puri & more. Order online or book live catering at MPM Mall, Abids.",
     canonical: 'https://bombaychowpati.com/',
   });
   const [isCateringOpen, setIsCateringOpen] = useState(false);
@@ -164,7 +164,7 @@ export default function Landing() {
               Live Street Food Counters & Events
             </div>
             <h2 className="text-3xl sm:text-5xl font-serif font-black text-gray-900">
-              Party & Live Chaat Catering
+              Party & Live Chat Catering
             </h2>
             <p className="text-gray-600 text-xs sm:text-sm max-w-2xl mx-auto font-light">
               Make your weddings, corporate bashes, birthdays, and anniversaries unforgettable with live Pani Puri, Pav Bhaji tawa, and sweet counters served fresh by expert chefs.

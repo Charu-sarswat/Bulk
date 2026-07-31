@@ -294,7 +294,7 @@ export default function MenuManagement() {
     setItemPrice(item.price);
     setItemImg(item.image_url || '');
     setItemImgUrls(item.image_urls || (item.image_url ? [item.image_url] : []));
-    setItemCatId(item.category_id.toString());
+    setItemCatId(item.category_id ? item.category_id.toString() : '');
     setItemAvailable(item.is_available);
     setItemIsVeg(item.is_veg !== undefined ? item.is_veg : true);
     setItemIsFeatured(item.is_featured || false);

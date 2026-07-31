@@ -165,4 +165,81 @@ router.put('/items/:id/availability', auth, authorizeRoles('admin', 'staff'), as
   }
 });
 
+// @route   POST /api/menu/categories
+// @desc    Create new category (Admin/Staff)
+router.post('/categories', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  try {
+    const { name, description, sort_order, image_url } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'Category name is required' });
+    }
+
+    const newCategory = new Category({
+      name: name.trim(),
+      description: description || '',
+      sort_order: sort_order !== undefined ? Number(sort_order) : 0,
+      image_url: image_url || ''
+    });
+
+    await newCategory.save();
+    res.status(201).json({
+      id: newCategory._id,
+      name: newCategory.name,
+      description: newCategory.description,
+      sort_order: newCategory.sort_order,
+      image_url: newCategory.image_url
+    });
+  } catch (err) {
+    console.error('Create category error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   PUT /api/menu/categories/:id
+// @desc    Update category (Admin/Staff)
+router.put('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  try {
+    const { name, description, sort_order, image_url } = req.body;
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+
+    if (name !== undefined) category.name = name.trim();
+    if (description !== undefined) category.description = description;
+    if (sort_order !== undefined) category.sort_order = Number(sort_order);
+    if (image_url !== undefined) category.image_url = image_url;
+
+    await category.save();
+    res.json({
+      id: category._id,
+      name: category.name,
+      description: category.description,
+      sort_order: category.sort_order,
+      image_url: category.image_url
+    });
+  } catch (err) {
+    console.error('Update category error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   DELETE /api/menu/categories/:id
+// @desc    Delete category and all its menu items (Admin/Staff)
+router.delete('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+
+    // Delete associated menu items
+    await MenuItem.deleteMany({ category_id: req.params.id });
+    
+    // Delete the category itself
+    await Category.findByIdAndDelete(req.params.id);
+
+    res.json({ message: 'Category and all associated items deleted successfully' });
+  } catch (err) {
+    console.error('Delete category error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 module.exports = router;

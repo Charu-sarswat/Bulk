@@ -647,6 +647,58 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
   }
 });
 
+// @route   PUT /api/orders/:id/payment
+// @desc    Settle order payment status (Admin/Staff)
+// @access  Private (Admin/Staff)
+router.put('/:id/payment', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  const { payment_status, payment_utr } = req.body;
+  
+  try {
+    let order = null;
+    const mongoose = require('mongoose');
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      order = await Order.findById(req.params.id);
+    }
+    if (!order) {
+      order = await Order.findOne({ order_number: req.params.id });
+    }
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (payment_status) order.payment_status = payment_status;
+    if (payment_utr !== undefined) order.payment_utr = payment_utr;
+
+    await order.save();
+
+    // Broadcast socket update
+    const io = req.app.get('socketio');
+    if (io) {
+      const payload = {
+        id: order.order_number || order._id,
+        _id: order._id,
+        order_number: order.order_number,
+        status: order.status,
+        payment_status: order.payment_status,
+        updated_at: order.updated_at
+      };
+      io.emit('order_status_updated', payload);
+      io.to(`order_${order._id}`).emit('order_status_change', payload);
+      if (order.order_number) {
+        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+      }
+    }
+
+    res.json({
+      id: order._id,
+      status: order.status,
+      payment_status: order.payment_status,
+      message: 'Payment settled successfully'
+    });
+  } catch (err) {
+    console.error('Settle payment error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 // @route   POST /api/orders/delivery/webhook
 // @desc    Receive live delivery status updates from Shadowfax (Public)
 // @access  Public

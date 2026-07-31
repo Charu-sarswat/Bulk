@@ -103,17 +103,17 @@ export const restaurantData = {
       id: 1,
       title: "Live Pani Puri & Chat Counter",
       subtitle: "Interactive Live Setup",
-      description: "Hygienic Mineral Water Pani Puri (3 Flavors), Sev Puri, Dahi Puri, and Bhel Puri prepared fresh live for your guests.",
+      description: "Hygienic Mineral Water Pani Puri, Ragda Chat, Dahi Puri, and Bhel Puri prepared fresh live for your guests.",
       badge: "Most Popular",
-      items: ["Mineral Water Pani Puri", "Special Sev Puri", "Dahi Puri", "Bhel Puri", "Samosa Chaat"]
+      items: ["Mineral Water Pani Puri", "Special Sev Puri", "Dahi Puri", "Bhel Puri", "Special Ragda Chat"]
     },
     {
       id: 2,
-      title: "Sizzling Tawa Pav Bhaji",
+      title: "Sizzling Tawa Pav Bhaji & Choley Kulchey",
       subtitle: "Hot Butter Feast",
-      description: "Live hot Tawa Pav Bhaji cooked with pure Amul butter, served with soft toasted Pav, fresh lemon, and chopped onions.",
+      description: "Live hot Tawa Pav Bhaji & Choley Kulchey cooked in butter & ghee with special spices, served with soft roasted Pav & Kulchey, fresh lemon, and chopped onions.",
       badge: "Chef Special",
-      items: ["Special Butter Pav Bhaji", "Cheese Pav Bhaji", "Masala Pav", "Garlic Chutney", "Chole Kulche"]
+      items: ["Special Butter Pav Bhaji", "Cheese Pav Bhaji", "Masala Pav Bhaji", "Choley Kulchey with Tomato Achar"]
     },
     {
       id: 3,
@@ -212,7 +212,7 @@ export const restaurantData = {
       role: "Regular Guest",
       avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
       rating: 5,
-      comment: "Authentic Mumbai flavors right in Abids! Their Dahi Bhalla and Chole Bhature are unmatchable. The staff is polite and hygiene standards are top-notch."
+      comment: "Authentic Mumbai flavors right in Abids! Their Dahi Bhalla and Choley Kulchey are unmatchable. The staff is polite and hygiene standards are top-notch."
     },
     {
       id: 4,
@@ -252,7 +252,7 @@ export const restaurantData = {
       { name: "Bombay Pani Puri (5 Pcs)", path: "/menu?search=Pani+Puri" },
       { name: "Special Butter Pav Bhaji", path: "/menu?search=Pav+Bhaji" },
       { name: "Special Ragda Chat", path: "/menu?search=Ragda+Chat" },
-      { name: "Special Chole Kulche", path: "/menu?search=Chole+Kulche" },
+      { name: "Special Choley Kulchey", path: "/menu?search=Choley+Kulchey" },
       { name: "Special Dahi Puri", path: "/menu?search=Dahi+Puri" }
     ]
   }
