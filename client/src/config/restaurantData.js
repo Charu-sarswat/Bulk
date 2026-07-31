@@ -67,8 +67,8 @@ export const restaurantData = {
       description: "Honoured with the 'Best Chat Bhandar of the Year' award at the Pride of Southern India Awards 2026. The award was presented by legendary Bollywood Actress and former Member of Rajya Sabha, Jaya Prada, at The Park Hyderabad.",
       icon: "Trophy",
       images: [
-        "/awards/img6.jpeg",
         "/awards/img4.jpeg",
+        "/awards/img6.jpeg",
         "/awards/img1.jpg"
       ]
     },
