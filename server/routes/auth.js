@@ -192,6 +192,57 @@ router.put('/users/:id/password', auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/auth/users/:id
+// @desc    Update system user's username & role (Private - Admin only)
+// @access  Private (Admin only)
+router.put('/users/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied: Admin only' });
+    }
+
+    const { username, role } = req.body;
+    if (!username || !username.trim()) {
+      return res.status(400).json({ message: 'Username is required' });
+    }
+
+    const userObj = await User.findById(req.params.id);
+    if (!userObj) return res.status(404).json({ message: 'User not found' });
+
+    // Prevent role changes of self if it is the current logged in user (safety check)
+    if (req.params.id === req.user.id && role !== userObj.role) {
+      return res.status(400).json({ message: 'Self role modification is not allowed' });
+    }
+
+    // Check if new username is already taken by another user
+    const duplicate = await User.findOne({ 
+      username: username.trim(), 
+      _id: { $ne: req.params.id } 
+    });
+    if (duplicate) {
+      return res.status(400).json({ message: 'Username already taken' });
+    }
+
+    userObj.username = username.trim();
+    if (role) {
+      userObj.role = role;
+    }
+    await userObj.save();
+
+    res.json({ 
+      message: 'User details updated successfully',
+      user: {
+        id: userObj._id,
+        username: userObj.username,
+        role: userObj.role
+      }
+    });
+  } catch (err) {
+    console.error('Update user error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 // @route   POST api/auth/push/subscribe
 // @desc    Register push notification subscription for admin
 // @access  Private (Admin/Staff/Kitchen)

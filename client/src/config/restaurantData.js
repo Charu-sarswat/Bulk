@@ -37,7 +37,7 @@ export const restaurantData = {
   beholdFeedUrl: "", // Add your behold.so JSON Feed URL here to fetch live posts automatically
 
   // Payment Details
-  upiId: "bombaychowpati@upi",
+  upiId: "7207836300@okbizaxis",
   payeeName: "Bombay Chowpati Chat Bhandar",
 
   // Hero Video & Background Media Assets

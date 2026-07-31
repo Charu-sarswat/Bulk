@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { Users, UserPlus, Trash2, Key, ShieldCheck, Mail, Search, RefreshCw, X, Check, Shield, UserCheck } from 'lucide-react';
+import { Users, UserPlus, Trash2, Key, ShieldCheck, Mail, Search, RefreshCw, X, Check, Shield, UserCheck, Edit } from 'lucide-react';
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
 import Pagination from '../components/Pagination';
@@ -26,6 +26,12 @@ export default function UserManagement() {
   const [selectedUserForPassword, setSelectedUserForPassword] = useState(null);
   const [newPassword, setNewPassword] = useState('');
   const [passwordChanging, setPasswordChanging] = useState(false);
+
+  // Edit details states
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
+  const [editUsername, setEditUsername] = useState('');
+  const [editRole, setEditRole] = useState('staff');
+  const [userUpdating, setUserUpdating] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,6 +92,40 @@ export default function UserManagement() {
       addToast('Error creating user account', 'error');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    if (!editUsername || !editUsername.trim()) {
+      addToast('Username is required', 'warning');
+      return;
+    }
+    setUserUpdating(true);
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/users/${selectedUserForEdit.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ username: editUsername, role: editRole })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        addToast('User details updated successfully!', 'success');
+        setSelectedUserForEdit(null);
+        setEditUsername('');
+        setEditRole('staff');
+        fetchUsers();
+      } else {
+        addToast(data.message || 'Failed to update user details', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Error updating user details', 'error');
+    } finally {
+      setUserUpdating(false);
     }
   };
 
@@ -296,6 +336,17 @@ export default function UserManagement() {
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-right space-x-1">
                       <button
+                        onClick={() => {
+                          setSelectedUserForEdit(u);
+                          setEditUsername(u.username);
+                          setEditRole(u.role);
+                        }}
+                        className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer inline-block"
+                        title="Edit user details"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => setSelectedUserForPassword(u)}
                         className="p-2 text-amber-600 hover:bg-amber-50 rounded-xl transition-all cursor-pointer inline-block"
                         title="Change user password"
@@ -478,6 +529,90 @@ export default function UserManagement() {
                 >
                   <Check className="w-4 h-4" />
                   {passwordChanging ? 'Updating...' : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      {/* Edit User Modal */}
+      {selectedUserForEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-[#FFF9EE] text-gray-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-[#F8A324]/20 flex flex-col">
+            <div className="p-5 border-b border-[#F8A324]/20 flex justify-between items-center bg-white shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#691F1A]">
+                  <Edit className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-base text-gray-900">Edit User Details</h3>
+                  <span className="text-[10px] text-[#691F1A] uppercase tracking-wider font-extrabold block">User ID: {selectedUserForEdit.id}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedUserForEdit(null);
+                  setEditUsername('');
+                  setEditRole('staff');
+                }} 
+                className="w-8 h-8 rounded-full bg-gray-150 flex items-center justify-center hover:bg-gray-200 transition-colors text-gray-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditUser} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="block text-[11px] font-black uppercase text-gray-500 tracking-wider">
+                  Username *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter new username"
+                  value={editUsername}
+                  onChange={(e) => setEditUsername(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#F8A324]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-[11px] font-black uppercase text-gray-500 tracking-wider">
+                  Access Role *
+                </label>
+                <select
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value)}
+                  disabled={selectedUserForEdit.id === currentUser.id}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#F8A324] disabled:opacity-55"
+                >
+                  <option value="staff">Staff (Cashier / Counter)</option>
+                  <option value="kitchen">Kitchen Screen Operator</option>
+                  <option value="admin">System Administrator</option>
+                </select>
+                {selectedUserForEdit.id === currentUser.id && (
+                  <span className="text-[10px] text-amber-600 block mt-1">Cannot change your own administrative role.</span>
+                )}
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedUserForEdit(null);
+                    setEditUsername('');
+                    setEditRole('staff');
+                  }}
+                  className="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-3 rounded-xl transition-all cursor-pointer font-bold text-xs uppercase"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={userUpdating}
+                  className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  {userUpdating ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>

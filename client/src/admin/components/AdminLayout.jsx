@@ -5,7 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { 
   BarChart3, CookingPot, Layers, 
   IndianRupee, LogOut, Menu, User, Shield, FileText,
-  ChevronLeft, ChevronRight, Boxes, X
+  ChevronLeft, ChevronRight, Boxes, X, QrCode
 } from 'lucide-react';
 
 // Brand Logos
@@ -130,14 +130,16 @@ export default function AdminLayout() {
       { path: '/admin/menu', name: 'Menu Catalog', icon: Layers },
       { path: '/admin/payments', name: 'Payments & Revenue', icon: IndianRupee },
       { path: '/admin/customers', name: 'Customer Directory', icon: User },
-      { path: '/admin/users', name: 'System Users', icon: Shield }
+      { path: '/admin/users', name: 'System Users', icon: Shield },
+      { path: '/admin/qr', name: 'Table QR Codes', icon: QrCode }
     ];
   } else if (user.role === 'staff') {
     navLinks = [
       { path: '/admin/live-orders', name: 'Kitchen Screen', icon: CookingPot },
       { path: '/admin/orders', name: "Today's Orders", icon: FileText },
       { path: '/admin/inventory', name: 'Inventory & Prep', icon: Boxes },
-      { path: '/admin/menu', name: 'Menu Catalog', icon: Layers }
+      { path: '/admin/menu', name: 'Menu Catalog', icon: Layers },
+      { path: '/admin/qr', name: 'Table QR Codes', icon: QrCode }
     ];
   } else if (user.role === 'kitchen') {
     navLinks = [
