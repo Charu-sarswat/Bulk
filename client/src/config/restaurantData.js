@@ -31,8 +31,8 @@ export const restaurantData = {
   operatingHours: "11:30 AM to 11:30 PM (Open All 7 Days)",
 
   // Social Links & Profiles
-  instagramUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ==",
-  instagramHandle: "@bombay_chowpati_",
+  instagramUrl: "https://www.instagram.com/bombay.chowpati?utm_source=qr&igsh=YmNoemx1Z3poZmFt",
+  instagramHandle: "@bombay.chowpati",
   instagramFollowers: "25K+",
   beholdFeedUrl: "", // Add your behold.so JSON Feed URL here to fetch live posts automatically
 
