@@ -27,8 +27,6 @@ router.get('/categories', async (req, res) => {
           description: i.description,
           price: i.price,
           delivery_price: i.delivery_price || i.price,
-          swiggy_price: i.swiggy_price || i.price,
-          zomato_price: i.zomato_price || i.price,
           image_url: i.image_url,
           image_urls: i.image_urls,
           is_veg: i.is_veg,
@@ -67,8 +65,6 @@ router.get('/items', async (req, res) => {
       description: i.description,
       price: i.price,
       delivery_price: i.delivery_price || i.price,
-      swiggy_price: i.swiggy_price || i.price,
-      zomato_price: i.zomato_price || i.price,
       image_url: i.image_url,
       image_urls: i.image_urls,
       is_veg: i.is_veg,
@@ -96,7 +92,7 @@ router.get('/items', async (req, res) => {
 router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
     const { 
-      category_id, name, description, price, delivery_price, swiggy_price, zomato_price,
+      category_id, name, description, price, delivery_price,
       image_url, is_veg, is_featured, is_available, stock_quantity, variants, addons 
     } = req.body;
 
@@ -110,8 +106,6 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
       description: description || '',
       price: Number(price),
       delivery_price: delivery_price ? Number(delivery_price) : Number(price),
-      swiggy_price: swiggy_price ? Number(swiggy_price) : Number(price),
-      zomato_price: zomato_price ? Number(zomato_price) : Number(price),
       image_url: image_url || '',
       image_urls: image_url ? [image_url] : [],
       is_veg: is_veg !== undefined ? Boolean(is_veg) : true,
@@ -141,8 +135,6 @@ router.put('/items/:id', auth, authorizeRoles('admin', 'staff'), async (req, res
     const updateData = { ...req.body };
     if (updateData.price !== undefined) updateData.price = Number(updateData.price);
     if (updateData.delivery_price !== undefined) updateData.delivery_price = Number(updateData.delivery_price);
-    if (updateData.swiggy_price !== undefined) updateData.swiggy_price = Number(updateData.swiggy_price);
-    if (updateData.zomato_price !== undefined) updateData.zomato_price = Number(updateData.zomato_price);
     if (updateData.is_featured !== undefined) updateData.is_featured = Boolean(updateData.is_featured);
 
     const updated = await MenuItem.findByIdAndUpdate(req.params.id, updateData, { new: true });

@@ -211,7 +211,7 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
 
                       <div className="flex justify-between items-center pt-2.5 border-t border-gray-50">
                         <span className="text-[10px] uppercase font-bold text-gray-400">
-                          {order.table_number ? `Table ${order.table_number}` : 'Takeaway'}
+                          {order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}
                         </span>
                         <div className="flex items-center gap-1 font-black text-xs text-[#691F1A]">
                           <span>{restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(0)}</span>

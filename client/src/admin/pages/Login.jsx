@@ -25,12 +25,16 @@ export default function Login() {
     }
 
     setLoading(true);
-    const success = await login(username, password);
+    const loggedInUser = await login(username, password);
     setLoading(false);
 
-    if (success) {
+    if (loggedInUser) {
       addToast('Welcome to Bombay Chowpati Control Panel!', 'success');
-      navigate('/admin');
+      if (loggedInUser.role === 'staff' || loggedInUser.role === 'kitchen') {
+        navigate('/admin/live-orders');
+      } else {
+        navigate('/admin');
+      }
     } else {
       addToast('Authentication failed. Check credentials.', 'error');
     }

@@ -60,6 +60,10 @@ html, body {
   padding: 0;
 }
 
+input, select, textarea {
+  color: #1f2937; /* Default dark text for input fields to prevent white-on-white text bleed */
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

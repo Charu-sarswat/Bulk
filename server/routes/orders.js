@@ -6,15 +6,34 @@ const InventoryLog = require('../models/InventoryLog');
 const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
 
-// Helper to generate readable order numbers (e.g. 101)
+// Helper to generate readable order numbers (e.g. ORD-20260731-001)
 const generateOrderNumber = async () => {
-  const count = await Order.countDocuments();
-  return `${100 + count + 1}`;
+  const now = new Date();
+  const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-IN', options);
+  const parts = formatter.formatToParts(now);
+  
+  let year = '', month = '', day = '';
+  for (const part of parts) {
+    if (part.type === 'year') year = part.value;
+    if (part.type === 'month') month = part.value;
+    if (part.type === 'day') day = part.value;
+  }
+  
+  const dateStr = `${year}${month}${day}`;
+
+  // Count existing orders placed today matching prefix ORD-YYYYMMDD-
+  const todayCount = await Order.countDocuments({
+    order_number: { $regex: `^ORD-${dateStr}-` }
+  });
+
+  const seqNumber = String(todayCount + 1).padStart(3, '0');
+  return `ORD-${dateStr}-${seqNumber}`;
 };
 
 // @route   GET /api/orders/reports/dashboard
 // @desc    Get dashboard analytics reports (Private - Admin/Staff)
-router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, res) => {
   try {
     const { period } = req.query;
     
@@ -213,7 +232,8 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
     const orders = await Order.find(filter).sort({ created_at: -1 });
 
     const formatted = orders.map(o => ({
-      id: o._id,
+      id: o.order_number || o._id,
+      _id: o._id,
       order_number: o.order_number,
       table_id: o.table_id,
       table_number: o.table_snapshot || 'Takeaway',
@@ -228,6 +248,7 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
       payment_utr: o.payment_utr,
       total_amount: o.total_amount,
       notes: o.notes,
+      delivery_address: o.delivery_address || '',
       items: o.items.map(item => ({
         id: item._id,
         menu_item_id: item.menu_item_id,
@@ -248,14 +269,22 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
 });
 
 // @route   GET /api/orders/:id
-// @desc    Get single order by ID (Public - for tracking)
+// @desc    Get single order by ID or order_number (Public - for tracking)
 router.get('/:id', async (req, res) => {
   try {
-    const o = await Order.findById(req.params.id);
+    let o = null;
+    const mongoose = require('mongoose');
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      o = await Order.findById(req.params.id);
+    }
+    if (!o) {
+      o = await Order.findOne({ order_number: req.params.id });
+    }
     if (!o) return res.status(404).json({ message: 'Order not found' });
 
     res.json({
-      id: o._id,
+      id: o.order_number || o._id,
+      _id: o._id,
       order_number: o.order_number,
       table_id: o.table_id,
       table_number: o.table_snapshot || 'Takeaway',
@@ -269,6 +298,7 @@ router.get('/:id', async (req, res) => {
       payment_utr: o.payment_utr,
       total_amount: o.total_amount,
       notes: o.notes,
+      delivery_address: o.delivery_address || '',
       items: o.items.map(item => ({
         id: item._id,
         menu_item_id: item.menu_item_id,
@@ -291,11 +321,19 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { 
     table_id, table_snapshot, customer_id, customer_name, customer_phone,
-    order_channel, scheduled_time, payment_method, payment_utr, notes, items 
+    order_channel, scheduled_time, payment_method, payment_utr, notes, items, delivery_address 
   } = req.body;
 
+  if (!customer_name || !customer_name.trim()) {
+    return res.status(400).json({ message: 'Customer name is compulsory' });
+  }
+
   if (!customer_phone || customer_phone.trim().length < 10) {
-    return res.status(400).json({ message: 'Customer phone number is compulsory' });
+    return res.status(400).json({ message: 'Customer phone number is compulsory and must be at least 10 digits' });
+  }
+
+  if (order_channel === 'delivery' && (!delivery_address || !delivery_address.trim())) {
+    return res.status(400).json({ message: 'Delivery address is compulsory for delivery orders' });
   }
 
   if (!items || !Array.isArray(items) || items.length === 0) {
@@ -315,11 +353,7 @@ router.post('/', async (req, res) => {
         if (menuItem) {
           itemName = menuItem.name;
           // Apply pricing tier based on channel
-          if (order_channel === 'swiggy' && menuItem.swiggy_price > 0) {
-            itemPrice = menuItem.swiggy_price;
-          } else if (order_channel === 'zomato' && menuItem.zomato_price > 0) {
-            itemPrice = menuItem.zomato_price;
-          } else if (order_channel === 'delivery' && menuItem.delivery_price > 0) {
+          if (order_channel === 'delivery' && menuItem.delivery_price > 0) {
             itemPrice = menuItem.delivery_price;
           } else {
             itemPrice = menuItem.price;
@@ -364,7 +398,7 @@ router.post('/', async (req, res) => {
     const newOrder = new Order({
       order_number,
       table_id: table_id || null,
-      table_snapshot: table_snapshot || 'Takeaway',
+      table_snapshot: table_snapshot || req.body.table_number_override || 'Takeaway',
       customer_id: customer_id || null,
       customer_name: customer_name || 'Guest Customer',
       customer_phone: customer_phone.trim(),
@@ -376,7 +410,8 @@ router.post('/', async (req, res) => {
       payment_utr: payment_utr || '',
       total_amount,
       notes: notes || '',
-      items: orderItems
+      items: orderItems,
+      delivery_address: delivery_address || ''
     });
 
     await newOrder.save();
@@ -385,7 +420,8 @@ router.post('/', async (req, res) => {
     const io = req.app.get('socketio');
     if (io) {
       io.emit('order_created', {
-        id: newOrder._id,
+        id: newOrder.order_number || newOrder._id,
+        _id: newOrder._id,
         order_number: newOrder.order_number,
         table_number: newOrder.table_snapshot,
         customer_name: newOrder.customer_name,
@@ -394,6 +430,9 @@ router.post('/', async (req, res) => {
         scheduled_time: newOrder.scheduled_time,
         total_amount: newOrder.total_amount,
         status: newOrder.status,
+        payment_status: newOrder.payment_status,
+        payment_method: newOrder.payment_method,
+        delivery_address: newOrder.delivery_address,
         items: newOrder.items.map(item => ({
           id: item._id,
           menu_item_id: item.menu_item_id,
@@ -407,7 +446,8 @@ router.post('/', async (req, res) => {
     }
 
     res.status(201).json({
-      id: newOrder._id,
+      id: newOrder.order_number || newOrder._id,
+      _id: newOrder._id,
       order_number: newOrder.order_number,
       total_amount: newOrder.total_amount,
       status: newOrder.status,
@@ -426,7 +466,14 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
   const { status, payment_status, payment_utr } = req.body;
 
   try {
-    const order = await Order.findById(req.params.id);
+    let order = null;
+    const mongoose = require('mongoose');
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      order = await Order.findById(req.params.id);
+    }
+    if (!order) {
+      order = await Order.findOne({ order_number: req.params.id });
+    }
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
     if (status) order.status = status;
@@ -438,17 +485,19 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
     // Broadcast socket update
     const io = req.app.get('socketio');
     if (io) {
-      io.emit('order_status_updated', {
-        id: order._id,
+      const payload = {
+        id: order.order_number || order._id,
+        _id: order._id,
         order_number: order.order_number,
         status: order.status,
         payment_status: order.payment_status,
         updated_at: order.updated_at
-      });
-      io.to(`order_${order._id}`).emit('order_status_change', {
-        status: order.status,
-        payment_status: order.payment_status
-      });
+      };
+      io.emit('order_status_updated', payload);
+      io.to(`order_${order._id}`).emit('order_status_change', payload);
+      if (order.order_number) {
+        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+      }
     }
 
     res.json({

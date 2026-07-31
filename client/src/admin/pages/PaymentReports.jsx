@@ -123,7 +123,7 @@ export default function PaymentReports() {
           className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Download className="w-4 h-4" />
-          <span>Export Sheet (CSV)</span>
+          <span>Export Sheet (Excel)</span>
         </button>
       </PageHeader>
 
@@ -224,8 +224,8 @@ export default function PaymentReports() {
                   .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                   .map((order) => (
                   <tr key={order.id} className="hover:bg-[#FFF9EE]/20 transition-colors">
-                    <td className="py-4 px-4 sm:px-6 text-center font-bold text-gray-900">#{order.id}</td>
-                    <td className="py-4 px-4 sm:px-6 font-semibold text-gray-900">{order.table_number ? `Table ${order.table_number}` : 'Takeaway'}</td>
+                    <td className="py-4 px-4 sm:px-6 text-center font-bold text-gray-900">#{order.order_number || order.id}</td>
+                    <td className="py-4 px-4 sm:px-6 font-semibold text-gray-900">{order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</td>
                     <td className="py-4 px-4 sm:px-6 max-w-[200px] truncate text-xs text-gray-500 font-normal">
                       {order.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}
                     </td>

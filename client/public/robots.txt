@@ -1,6 +1,59 @@
+# ====================================
+# Bombay Chowpati - robots.txt
+# https://bombaychowpati.com
+# ====================================
+
+# All search engine bots
 User-agent: *
 Allow: /
 Allow: /menu
+Allow: /account
 Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /admin/kitchen
+Disallow: /admin/orders
+Disallow: /admin/payments
+Disallow: /admin/menu
+Disallow: /admin/inventory
+Disallow: /admin/customers
+Disallow: /order-status/
+Disallow: /api/
+Disallow: /dist/
+Disallow: /*.json$
+Disallow: /*.env$
+Crawl-delay: 10
 
+# Googlebot specific (faster crawling allowed)
+User-agent: Googlebot
+Allow: /
+Allow: /menu
+Allow: /account
+Disallow: /admin/
+Disallow: /order-status/
+Disallow: /api/
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /order-status/
+Disallow: /api/
+Crawl-delay: 5
+
+# Block harmful bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Sitemap location
 Sitemap: https://bombaychowpati.com/sitemap.xml
+Sitemap: https://bombaychowpati.com/sitemap-images.xml

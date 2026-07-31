@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSEO } from '../../hooks/useSEO';
 import { Link } from 'react-router-dom';
 import { 
   MapPin, Phone, Clock, Instagram, ChevronRight, 
@@ -12,6 +13,11 @@ import Footer from '../components/Footer';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 
 export default function Landing() {
+  useSEO({
+    title: 'Bombay Chowpati - Chaat Bhandar | 100% Pure Veg Mumbai Street Food',
+    description: "Hyderabad's favourite authentic Mumbai chaat — Crispy Pani Puri, Amul Butter Pav Bhaji, Royal Raj Kachori, Bhel Puri & more. Order online or book live catering at MPM Mall, Abids.",
+    canonical: 'https://bombaychowpati.com/',
+  });
   const [isCateringOpen, setIsCateringOpen] = useState(false);
 
   React.useEffect(() => {

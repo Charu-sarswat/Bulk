@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { restaurantConfig } from '../../config/restaurant';
@@ -16,8 +17,15 @@ import {
 } from 'recharts';
 
 export default function Dashboard() {
-  const { token } = useAuth();
+  const navigate = useNavigate();
+  const { token, user } = useAuth();
   const { addToast } = useToast();
+
+  useEffect(() => {
+    if (user && user.role !== 'admin') {
+      navigate('/admin/live-orders', { replace: true });
+    }
+  }, [user, navigate]);
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

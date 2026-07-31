@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSEO } from '../../hooks/useSEO';
 import { useNavigate, Link } from 'react-router-dom';
 import { 
   User, 
@@ -19,6 +20,11 @@ import { restaurantConfig } from '../../config/restaurant';
 import Footer from '../components/Footer';
 
 export default function Account() {
+  useSEO({
+    title: 'My Account - Order History & Profile',
+    description: 'Manage your Bombay Chowpati account. View past orders, update your profile and track your order history.',
+    canonical: 'https://bombaychowpati.com/account',
+  });
   const { customerUser, customerToken, customerLogout, customerLogin, customerRegister, customerLoading } = useCustomerAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -113,6 +119,10 @@ export default function Account() {
     switch (status?.toLowerCase()) {
       case 'pending': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'preparing': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'ready': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      case 'out_for_delivery': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'delivered': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'served': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'completed': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'cancelled': return 'bg-rose-50 text-rose-700 border-rose-200';
       default: return 'bg-gray-50 text-gray-700 border-gray-200';
@@ -133,7 +143,7 @@ export default function Account() {
   // Not Logged In View
   if (!customerUser) {
     return (
-      <div className="min-h-screen bg-[#FFF9EE] py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-[64px] sm:pt-[76px]">
+      <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] bg-[#FFF9EE] py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto bg-white rounded-3xl shadow-xl border border-[#F8A324]/20 overflow-hidden">
           <div className="p-6 bg-[#691F1A] text-white relative">
             <button 
@@ -232,7 +242,7 @@ export default function Account() {
 
   // Logged In View
   return (
-    <div className="min-h-screen bg-[#FFF9EE] font-sans flex flex-col justify-between pt-[64px] sm:pt-[76px]">
+    <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] bg-[#FFF9EE] font-sans flex flex-col justify-between">
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8 flex-1 w-full">
         {/* Profile Card */}
         <section className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#F8A324]/20 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
@@ -312,7 +322,7 @@ export default function Account() {
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
                       <span className="text-xs font-bold text-gray-600 flex items-center gap-1">
                         <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                        {order.table_number ? `Table ${order.table_number}` : 'Takeaway'}
+                        {order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}
                       </span>
                     </div>
 

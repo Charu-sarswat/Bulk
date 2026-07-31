@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { exportToCSV } from '../../utils/csvExporter';
-import { Users, Search, Phone, Mail, Clock, CreditCard, RefreshCw, Eye, X, Download, ShieldCheck, User } from 'lucide-react';
+import { Users, Search, Phone, Mail, Clock, CreditCard, RefreshCw, Eye, X, Download, ShieldCheck, User, MapPin } from 'lucide-react';
 import { restaurantConfig } from '../../config/restaurant';
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
@@ -70,7 +70,8 @@ export default function CustomerDirectory() {
     setSelectedCustomer(customer);
     setLoadingOrders(true);
     try {
-      const response = await fetch(`${apiUrl}/api/customers/${customer.id}/orders`, {
+      const targetId = customer.id || encodeURIComponent(customer.phone);
+      const response = await fetch(`${apiUrl}/api/customers/${targetId}/orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -118,7 +119,7 @@ export default function CustomerDirectory() {
           className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Download className="w-4 h-4" />
-          <span>Export Sheet (CSV)</span>
+          <span>Export Sheet (Excel)</span>
         </button>
       </PageHeader>
 
@@ -269,7 +270,7 @@ export default function CustomerDirectory() {
                     {/* Action */}
                     <td className="py-4 px-4 sm:px-6 text-center">
                       <button
-                        onClick={() => viewCustomerProfile(c)}
+                        onClick={() => handleOpenDetail(c)}
                         className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 text-gray-500 hover:text-[#691F1A] rounded-lg transition-colors cursor-pointer"
                         title="View Complete Profile & History"
                       >
@@ -363,6 +364,17 @@ export default function CustomerDirectory() {
                     {new Date(selectedCustomer.last_visit).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                   </div>
                 </div>
+                {customerOrders.find(o => o.delivery_address) && (
+                  <div className="border border-gray-100 p-3 rounded-lg space-y-0.5 col-span-1 sm:col-span-2">
+                    <span className="text-[9px] uppercase font-bold text-gray-400 tracking-wider flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-rose-500" />
+                      Latest Delivery Address
+                    </span>
+                    <div className="font-semibold text-gray-700 break-words">
+                      {customerOrders.find(o => o.delivery_address).delivery_address}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Purchase History */}
@@ -403,9 +415,14 @@ export default function CustomerDirectory() {
                         </div>
 
                         <div className="flex justify-between items-center text-[10px] font-bold text-gray-500 pt-1 border-t border-gray-50">
-                          <span>{order.table_number ? `Table ${order.table_number}` : 'Takeaway'}</span>
+                          <span>{order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</span>
                           <span className="text-gray-800 text-xs">Total: {restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(2)}</span>
                         </div>
+                        {order.delivery_address && (
+                          <div className="text-[9px] text-rose-800 bg-rose-50 border border-red-200/30 rounded px-1.5 py-0.5 mt-1 font-semibold max-w-full break-words">
+                            📍 Address: {order.delivery_address}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

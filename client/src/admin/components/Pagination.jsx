@@ -44,7 +44,7 @@ export default function Pagination({
     'h-8 min-w-[2rem] px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center cursor-pointer';
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 mt-4 border-t border-gray-100">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
       {/* Left: count info + page-size selector */}
       <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
         <span>

@@ -128,9 +128,9 @@ export default function Header() {
     );
   }
 
-  // Landing page header (or default fallback)
+  const isLanding = pathname === '/' || (pathname.startsWith('/table/') && !pathname.includes('/menu'));
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 px-4 py-3 sm:px-6 sm:py-3.5 bg-[#1D0604]/95 backdrop-blur-xl border-b border-[#F8A324]/30 shadow-2xl font-sans">
+    <header className={`${isLanding ? 'fixed' : 'sticky'} top-0 left-0 right-0 z-40 px-4 py-3 sm:px-6 sm:py-3.5 bg-[#1D0604]/95 backdrop-blur-xl border-b border-[#F8A324]/30 shadow-2xl font-sans`}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         
         {/* Brand Logo Banner */}

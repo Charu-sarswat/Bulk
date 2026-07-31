@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useSEO } from '../../hooks/useSEO';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   ShoppingCart, 
@@ -23,6 +24,11 @@ import OrderHistoryDrawer from '../components/OrderHistoryDrawer';
 import Footer from '../components/Footer';
 
 export default function Menu() {
+  useSEO({
+    title: 'Online Menu - Order Pure Veg Mumbai Chaat',
+    description: 'Browse the complete 100% Pure Veg menu of Bombay Chowpati. Order Pani Puri, Pav Bhaji, Raj Kachori, Bhel Puri, Dahi Puri and more online. Dine-in, Takeaway or Home Delivery available.',
+    canonical: 'https://bombaychowpati.com/menu',
+  });
   const { tableId } = useParams();
   const navigate = useNavigate();
   const { addToast } = useToast();

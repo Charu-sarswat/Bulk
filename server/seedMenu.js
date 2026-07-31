@@ -108,8 +108,6 @@ async function seed() {
           description: item.description,
           price: item.price,
           delivery_price: Math.round(item.price * 1.15),  // ~15% delivery markup
-          swiggy_price:   Math.round(item.price * 1.20),  // ~20% Swiggy markup
-          zomato_price:   Math.round(item.price * 1.20),  // ~20% Zomato markup
           is_veg: true,
           is_available: true,
           stock_quantity: 50,

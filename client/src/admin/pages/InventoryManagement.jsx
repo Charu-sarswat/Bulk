@@ -200,7 +200,7 @@ export default function InventoryManagement() {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (item.category_name && item.category_name.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesCategory = selectedCategory === 'ALL' || item.category_id === parseInt(selectedCategory, 10);
+    const matchesCategory = selectedCategory === 'ALL' || item.category_id === selectedCategory;
     const matchesStatus = statusFilter === 'ALL' || item.stock_status === statusFilter;
 
     return matchesSearch && matchesCategory && matchesStatus;
@@ -223,7 +223,7 @@ export default function InventoryManagement() {
           className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30"
         >
           <Download className="w-4 h-4" />
-          <span>Export Stock Sheet (CSV)</span>
+          <span>Export Stock Sheet (Excel)</span>
         </button>
       </PageHeader>
 

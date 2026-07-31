@@ -18,7 +18,7 @@ const corsOptions = {
                     origin.startsWith('http://192.168.') || 
                     origin.startsWith('http://10.') || 
                     origin.startsWith('http://172.');
-    if (isLocal || origin === clientUrl || origin.includes('bombaychowpati.com')) {
+    if (isLocal || origin === clientUrl || origin.includes('bombaychowpati.com') || origin.includes('onrender.com')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -31,7 +31,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Initialize Database with fresh simple Indian categories, soups, and chaat items
 db.initDB();
@@ -56,6 +57,8 @@ app.use('/api/tables', require('./routes/tables'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/catering', require('./routes/catering'));
+app.use('/api/customers', require('./routes/customers'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

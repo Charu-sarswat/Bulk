@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { exportToCSV } from '../../utils/csvExporter';
 import { restaurantConfig } from '../../config/restaurant';
-import { Plus, Edit2, Trash2, Check, X, Search, Layers, Image, ToggleLeft, ToggleRight, Gift, FolderOpen, Utensils, Download } from 'lucide-react';
+import { Plus, Edit2, Trash2, Check, X, Search, Layers, Image, ToggleLeft, ToggleRight, Gift, FolderOpen, Utensils, Download, UploadCloud, RefreshCw } from 'lucide-react';
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
 import Pagination from '../components/Pagination';
@@ -13,14 +13,12 @@ export default function MenuManagement() {
   const { addToast } = useToast();
 
   const handleExportSheet = () => {
-    const headers = ['Dish Name', 'Category', 'Standard Price (₹)', 'Delivery Price (₹)', 'Swiggy Price (₹)', 'Zomato Price (₹)', 'Type', 'Available'];
+    const headers = ['Dish Name', 'Category', 'Standard Price (₹)', 'Delivery Price (₹)', 'Type', 'Available'];
     const rows = items.map(i => [
       i.name,
       i.category_name || 'Unassigned',
       i.price,
       i.delivery_price || i.price,
-      i.swiggy_price || i.price,
-      i.zomato_price || i.price,
       i.is_veg ? '100% Pure Veg' : 'Non-Veg',
       i.is_available ? 'Available' : 'Sold Out'
     ]);
@@ -80,6 +78,52 @@ export default function MenuManagement() {
   const [varPrice, setVarPrice] = useState('');
   const [addName, setAddName] = useState('');
   const [addPrice, setAddPrice] = useState('');
+
+  // Cloudinary image upload state & handler
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleFileUpload = (e, onSuccess) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      addToast('Please select a valid image file (PNG, JPG, WEBP)', 'warning');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      addToast('File size must be under 8MB', 'warning');
+      return;
+    }
+
+    setUploadingImage(true);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      try {
+        const base64Data = reader.result;
+        const res = await fetch(`${apiUrl}/api/upload`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ image: base64Data, folder: 'bombay_chowpati_catalog' })
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          addToast('Image uploaded to Cloudinary successfully!', 'success');
+          onSuccess(data.url);
+        } else {
+          addToast(data.message || 'Cloudinary upload failed', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        addToast('Image upload failed', 'error');
+      } finally {
+        setUploadingImage(false);
+        e.target.value = '';
+      }
+    };
+  };
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -190,7 +234,7 @@ export default function MenuManagement() {
     setSubmitting(true);
 
     const payload = {
-      category_id: parseInt(itemCatId),
+      category_id: itemCatId,
       name: itemName,
       description: itemDesc,
       price: parseFloat(itemPrice),
@@ -382,8 +426,8 @@ export default function MenuManagement() {
     
     // Check main category or any secondary category
     const matchesCat = selectedCatFilter === 'all' || 
-                       item.category_id === parseInt(selectedCatFilter) ||
-                       (item.category_ids && item.category_ids.includes(parseInt(selectedCatFilter)));
+                       item.category_id === selectedCatFilter ||
+                       (item.category_ids && item.category_ids.includes(selectedCatFilter));
                        
     return matchesSearch && matchesCat;
   });
@@ -404,7 +448,7 @@ export default function MenuManagement() {
           className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-2 border border-white/20 shadow-xs transition-all cursor-pointer shrink-0"
         >
           <Download className="w-4 h-4 text-[#F8A324]" />
-          <span>Export Sheet (CSV)</span>
+          <span>Export Sheet (Excel)</span>
         </button>
         <button
           onClick={() => { resetItemForm(); setShowItemForm(true); }}
@@ -513,14 +557,45 @@ export default function MenuManagement() {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Image URL (Optional)</label>
-                <input
-                  type="text"
-                  value={catImg}
-                  onChange={(e) => setCatImg(e.target.value)}
-                  placeholder="Paste Unsplash image URL or asset"
-                  className="w-full text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gold-500"
-                />
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Category Image (Cloudinary Upload / URL)</label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={catImg}
+                    onChange={(e) => setCatImg(e.target.value)}
+                    placeholder="Paste URL or upload image file..."
+                    className="flex-1 text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gold-500"
+                  />
+                  <label className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-[#F8A324]/30">
+                    {uploadingImage ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F8A324]" />
+                    ) : (
+                      <UploadCloud className="w-3.5 h-3.5 text-[#F8A324]" />
+                    )}
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploadingImage}
+                      onChange={(e) => handleFileUpload(e, (uploadedUrl) => setCatImg(uploadedUrl))}
+                    />
+                  </label>
+                </div>
+                {catImg && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                      <img src={catImg} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCatImg('')}
+                      className="text-[10px] text-rose-600 font-bold hover:underline cursor-pointer"
+                    >
+                      Clear Image
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="flex gap-2">
                 <div className="flex-1">
@@ -699,27 +774,50 @@ export default function MenuManagement() {
                   </div>
 
                   <div className="col-span-2 space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase block">Product Photos (Multiple)</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newImgUrl}
-                        onChange={(e) => setNewImgUrl(e.target.value)}
-                        placeholder="Paste image URL (Unsplash or local asset)..."
-                        className="flex-1 text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (newImgUrl.trim()) {
-                            setItemImgUrls([...itemImgUrls, newImgUrl.trim()]);
-                            setNewImgUrl('');
-                          }
-                        }}
-                        className="bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-bold px-4 rounded-xl text-xs transition-colors cursor-pointer"
-                      >
-                        Add
-                      </button>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase block">Product Photos (Cloudinary Upload / Multiple URLs)</label>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="flex-1 flex gap-2">
+                        <input
+                          type="text"
+                          value={newImgUrl}
+                          onChange={(e) => setNewImgUrl(e.target.value)}
+                          placeholder="Paste image URL..."
+                          className="flex-1 text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (newImgUrl.trim()) {
+                              setItemImgUrls([...itemImgUrls, newImgUrl.trim()]);
+                              setNewImgUrl('');
+                            }
+                          }}
+                          className="bg-[#3C110D] text-[#F8A324] font-bold px-4 rounded-xl text-xs transition-colors cursor-pointer shrink-0 border border-[#F8A324]/30"
+                        >
+                          Add URL
+                        </button>
+                      </div>
+
+                      <label className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 border border-[#F8A324]/30">
+                        {uploadingImage ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F8A324]" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <UploadCloud className="w-4 h-4 text-[#F8A324]" />
+                            <span>Upload File</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingImage}
+                          onChange={(e) => handleFileUpload(e, (uploadedUrl) => setItemImgUrls([...itemImgUrls, uploadedUrl]))}
+                        />
+                      </label>
                     </div>
                     {itemImgUrls.length > 0 && (
                       <div className="space-y-1">

@@ -18,6 +18,8 @@ export default function LiveOrders() {
   const [completedItems, setCompletedItems] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [channelFilter, setChannelFilter] = useState('ALL');
+  const [expandedAddresses, setExpandedAddresses] = useState({});
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const audioContextRef = useRef(null);
@@ -73,7 +75,7 @@ export default function LiveOrders() {
           const todayStr = new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
           const active = data.filter(order => {
             const orderDate = new Date(order.created_at).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-            return order.status !== 'served' && order.status !== 'cancelled' && orderDate === todayStr;
+            return order.status !== 'served' && order.status !== 'delivered' && order.status !== 'cancelled' && orderDate === todayStr;
           });
           setOrders(active);
         } else {
@@ -115,7 +117,8 @@ export default function LiveOrders() {
           total_amount: newOrder.total_amount,
           status: newOrder.status,
           created_at: newOrder.created_at,
-          items: newOrder.items || []
+          items: newOrder.items || [],
+          delivery_address: newOrder.delivery_address
         };
         setOrders((prevOrders) => [formatted, ...prevOrders]);
         playNewOrderSound();
@@ -125,8 +128,8 @@ export default function LiveOrders() {
       // 2. Sync order status updates from server/other staff
       const handleOrderStatusChange = (updatedOrder) => {
         setOrders((prevOrders) => {
-          // If status is changed to served or cancelled, remove from kitchen view
-          if (updatedOrder.status === 'served' || updatedOrder.status === 'cancelled') {
+          // If status is changed to served, delivered, or cancelled, remove from kitchen view
+          if (updatedOrder.status === 'served' || updatedOrder.status === 'delivered' || updatedOrder.status === 'cancelled') {
             return prevOrders.filter(order => order.id !== updatedOrder.id);
           }
           // Otherwise, update properties
@@ -204,7 +207,8 @@ export default function LiveOrders() {
                          tableNum.toLowerCase().includes(query) ||
                          customer.toLowerCase().includes(query);
     const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
-    return matchesQuery && matchesStatus;
+    const matchesChannel = channelFilter === 'ALL' || order.order_channel === channelFilter;
+    return matchesQuery && matchesStatus && matchesChannel;
   });
 
   return (
@@ -278,6 +282,16 @@ export default function LiveOrders() {
               <option value="preparing">In Preparation</option>
               <option value="ready">Ready to Serve</option>
             </select>
+            <select
+              value={channelFilter}
+              onChange={(e) => setChannelFilter(e.target.value)}
+              className="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#F8A324] w-full md:w-auto cursor-pointer"
+            >
+              <option value="ALL">All Order Types</option>
+              <option value="dine_in">Dine-In</option>
+              <option value="takeaway">Takeaway</option>
+              <option value="delivery">Home Delivery</option>
+            </select>
           </div>
         </div>
 
@@ -290,15 +304,15 @@ export default function LiveOrders() {
         ) : (
           /* Orders Tabular Kitchen View */
           <div className="overflow-x-auto">
-            <table className="min-w-[900px] w-full text-left border-collapse">
+            <table className="min-w-[1200px] w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50/80 border-b border-gray-100 text-[10px] font-black uppercase text-gray-400 tracking-wider">
-                  <th className="py-3.5 px-4 sm:px-6 w-28">Order Ticket</th>
-                  <th className="py-3.5 px-4 sm:px-6 w-28">Seating / Mode</th>
-                  <th className="py-3.5 px-4 sm:px-6 w-36">Wait Time</th>
-                  <th className="py-3.5 px-4 sm:px-6">Dishes Checklist</th>
-                  <th className="py-3.5 px-4 sm:px-6 w-48">Kitchen Notes</th>
-                  <th className="py-3.5 px-4 sm:px-6 text-center w-40">Actions</th>
+                  <th className="py-3.5 px-4 sm:px-6 w-48">Order Ticket</th>
+                  <th className="py-3.5 px-4 sm:px-6 w-48">Seating / Mode</th>
+                  <th className="py-3.5 px-4 sm:px-6 w-40">Wait Time</th>
+                  <th className="py-3.5 px-4 sm:px-6 min-w-[360px]">Dishes Checklist</th>
+                  <th className="py-3.5 px-4 sm:px-6 w-56">Kitchen Notes</th>
+                  <th className="py-3.5 px-4 sm:px-6 text-center w-64">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-xs text-gray-700 font-semibold">
@@ -315,9 +329,14 @@ export default function LiveOrders() {
                     >
                       {/* Ticket ID */}
                       <td className="py-4 px-4 sm:px-6">
-                        <span className="font-bold text-gray-900 block">#{order.id}</span>
+                        <span className="font-bold text-gray-900 block whitespace-nowrap">#{order.order_number || order.id}</span>
+                        {order.scheduled_time && (
+                          <span className="bg-purple-100 text-purple-800 text-[8px] font-bold px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-purple-250 block w-max">
+                            📅 {new Date(order.scheduled_time).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                          </span>
+                        )}
                         {isDelayed && (
-                          <span className="bg-rose-100 text-rose-800 text-[8px] font-bold px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-rose-200">
+                          <span className="bg-rose-100 text-rose-800 text-[8px] font-bold px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-rose-200 block w-max">
                             Urgent / Delay
                           </span>
                         )}
@@ -326,8 +345,31 @@ export default function LiveOrders() {
                       {/* Seating Table & Details */}
                       <td className="py-4 px-4 sm:px-6">
                         <span className="font-bold text-gray-900 block">
-                          {order.table_number ? `Table ${order.table_number}` : 'Takeaway'}
+                          {order.order_channel === 'dine_in' ? '🍽️ Dine-In' : order.order_channel === 'delivery' ? '🚗 Delivery' : '🛍️ Takeaway'}
                         </span>
+                        {order.delivery_address && (
+                          <div className="mt-1.5">
+                            {expandedAddresses[order.id] ? (
+                              <div className="text-[10px] text-[#691F1A] bg-rose-50 border border-red-200/50 rounded p-1.5 font-semibold max-w-[200px] break-words relative">
+                                <span>📍 {order.delivery_address}</span>
+                                <button
+                                  onClick={() => setExpandedAddresses(prev => ({ ...prev, [order.id]: false }))}
+                                  className="text-[8px] text-gray-400 block mt-1 hover:underline text-left cursor-pointer font-bold"
+                                >
+                                  Hide Address
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setExpandedAddresses(prev => ({ ...prev, [order.id]: true }))}
+                                className="text-[9px] text-[#691F1A] bg-rose-50 border border-red-200/40 hover:bg-rose-100/40 rounded px-1.5 py-0.5 font-semibold cursor-pointer flex items-center gap-1 transition-all"
+                                title="Click to show address"
+                              >
+                                <span>📍 Show Address</span>
+                              </button>
+                            )}
+                          </div>
+                        )}
                         {/* Customer Info */}
                         <span className="text-[10px] text-gray-500 block mt-1 font-semibold">
                           👤 {order.customer_name || 'Guest'}
@@ -339,16 +381,16 @@ export default function LiveOrders() {
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
                             : 'bg-amber-50 text-amber-700 border-amber-100'
                         }`}>
-                          💳 {order.payment_method === 'cash' ? 'Cash' : order.payment_method === 'card' ? 'Card' : 'UPI'} ({order.payment_status})
+                          💳 {order.payment_method === 'cash' ? 'Cash' : order.payment_method === 'card' ? 'Card' : order.payment_method === 'cod' ? 'COD' : 'UPI'} ({order.payment_status})
                         </span>
                       </td>
 
                       {/* Wait Time */}
                       <td className="py-4 px-4 sm:px-6">
-                        <span className="font-semibold block text-gray-600">
+                        <span className="font-semibold block text-gray-600 whitespace-nowrap">
                           {calculateMinutesAgo(order.created_at)}
                         </span>
-                        <span className="text-[10px] text-gray-400 block mt-0.5">
+                        <span className="text-[10px] text-gray-400 block mt-0.5 whitespace-nowrap">
                           {new Date(order.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}
                         </span>
                       </td>
@@ -395,11 +437,11 @@ export default function LiveOrders() {
 
                       {/* Actions */}
                       <td className="py-4 px-4 sm:px-6 text-center">
-                        <div className="flex flex-col gap-1.5 items-center">
+                        <div className="flex flex-row gap-2 items-center justify-center">
                           {order.status === 'received' && (
                             <button
                               onClick={() => updateOrderStatus(order.id, 'preparing')}
-                              className="w-full bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm"
+                              className="w-max bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm shrink-0"
                             >
                               Start Preparing
                             </button>
@@ -407,17 +449,34 @@ export default function LiveOrders() {
                           {order.status === 'preparing' && (
                             <button
                               onClick={() => updateOrderStatus(order.id, 'ready')}
-                              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm"
+                              className="w-max bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm shrink-0"
                             >
                               Mark Ready
                             </button>
                           )}
                           {order.status === 'ready' && (
+                            order.order_channel === 'delivery' ? (
+                              <button
+                                onClick={() => updateOrderStatus(order.id, 'out_for_delivery')}
+                                className="w-max bg-[#F8A324] hover:bg-[#d97a10] text-[#3C110D] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0"
+                              >
+                                Out for Delivery
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => updateOrderStatus(order.id, 'served')}
+                                className="w-max bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0"
+                              >
+                                Complete / Served
+                              </button>
+                            )
+                          )}
+                          {order.status === 'out_for_delivery' && (
                             <button
-                              onClick={() => updateOrderStatus(order.id, 'served')}
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm"
+                              onClick={() => updateOrderStatus(order.id, 'delivered')}
+                              className="w-max bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0"
                             >
-                              Complete / Served
+                              Mark Delivered
                             </button>
                           )}
                           <button

@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser(data.user);
-      return true;
+      return data.user;
     } catch (err) {
       setError(err.message);
       setLoading(false);

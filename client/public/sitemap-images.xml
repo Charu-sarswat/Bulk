@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://bombaychowpati.com/</loc>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=1200</image:loc>
+      <image:title>Crispy Pani Puri - Bombay Chowpati Hyderabad</image:title>
+      <image:caption>Authentic Mumbai Mineral Water Pani Puri at Bombay Chowpati, Abids, Hyderabad</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=1200</image:loc>
+      <image:title>Amul Butter Pav Bhaji - Bombay Chowpati</image:title>
+      <image:caption>Sizzling Special Amul Butter Pav Bhaji made fresh at Bombay Chowpati restaurant in Abids Hyderabad</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=1200</image:loc>
+      <image:title>Royal Raj Kachori - Bombay Chowpati</image:title>
+      <image:caption>Crispy Royal Raj Kachori filled with sprouts, sweet curd and pomegranate at Bombay Chowpati Hyderabad</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800</image:loc>
+      <image:title>Sweet Mango Lassi - Bombay Chowpati</image:title>
+      <image:caption>Chilled Sweet Mango Lassi with saffron and almonds at Bombay Chowpati, Abids</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://bombaychowpati.com/menu</loc>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=800</image:loc>
+      <image:title>Pure Veg Digital Menu - Bombay Chowpati</image:title>
+      <image:caption>Browse the complete 100% pure vegetarian menu of Bombay Chowpati, Hyderabad</image:caption>
+    </image:image>
+  </url>
+</urlset>

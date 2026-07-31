@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSEO } from '../../hooks/useSEO';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../../context/SocketContext';
 import { useToast } from '../../context/ToastContext';
@@ -9,6 +10,11 @@ import {
 import { restaurantConfig } from '../../config/restaurant';
 
 export default function OrderStatus() {
+  useSEO({
+    title: 'Order Status - Live Tracking',
+    description: 'Track your Bombay Chowpati order in real-time.',
+    noIndex: true,
+  });
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -52,12 +58,14 @@ export default function OrderStatus() {
             updated_at: updatedOrder.updated_at
           }));
           
-          let alertMsg = `Order status updated to ${updatedOrder.status.toUpperCase()}`;
+          let alertMsg = `Order status updated to ${updatedOrder.status.replace(/_/g, ' ').toUpperCase()}`;
           if (updatedOrder.status === 'preparing') alertMsg = 'Chef is preparing your meal!';
-          if (updatedOrder.status === 'ready') alertMsg = 'Your order is ready and heading to your table!';
+          if (updatedOrder.status === 'ready') alertMsg = order?.order_channel === 'delivery' ? 'Your order is packed and ready for delivery!' : 'Your order is ready and heading to your table!';
+          if (updatedOrder.status === 'out_for_delivery') alertMsg = 'Valet is on the way with your food!';
+          if (updatedOrder.status === 'delivered') alertMsg = 'Your order has been delivered. Enjoy!';
           if (updatedOrder.status === 'served') alertMsg = 'Bon appétit! Order has been served.';
           
-          addToast(alertMsg, updatedOrder.status === 'served' ? 'success' : 'info');
+          addToast(alertMsg, (updatedOrder.status === 'served' || updatedOrder.status === 'delivered') ? 'success' : 'info');
         }
       });
     }
@@ -72,7 +80,7 @@ export default function OrderStatus() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gold-50 bg-[#fbfaf7]">
+      <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] flex items-center justify-center bg-[#fbfaf7]">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-4 animate-spin"></div>
           <p className="text-gray-500 font-medium font-serif">Tracking order dispatch...</p>
@@ -83,7 +91,7 @@ export default function OrderStatus() {
 
   if (!order) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-rose-50/50 bg-[#fbfaf7]">
+      <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] flex flex-col items-center justify-center p-6 bg-[#fbfaf7]">
         <div className="glass-panel max-w-md w-full p-8 rounded-2xl shadow-xl text-center border-rose-100 bg-white">
           <HelpCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
           <h2 className="text-2xl font-serif font-bold text-gray-900 mb-2">Order Not Found</h2>
@@ -99,15 +107,30 @@ export default function OrderStatus() {
     );
   }
 
+  const isDelivery = order.order_channel === 'delivery';
+
   // Stepper Progression Mapping
-  const steps = [
+  const steps = isDelivery ? [
+    { key: 'received', title: 'Order Received', desc: 'The kitchen has logged your ticket.', icon: Clock },
+    { key: 'preparing', title: 'Preparing', desc: 'Our chef is preparing your fresh meal.', icon: Utensils },
+    { key: 'ready', title: 'Food Ready', desc: 'Order is packed and ready for delivery.', icon: Sparkles },
+    { key: 'out_for_delivery', title: 'Out for Delivery', desc: 'Valet has picked up your order and is on the way.', icon: Award },
+    { key: 'delivered', title: 'Delivered', desc: 'Order has been delivered at your doorstep.', icon: CheckCircle }
+  ] : [
     { key: 'received', title: 'Order Received', desc: 'The kitchen has logged your ticket.', icon: Clock },
     { key: 'preparing', title: 'Preparing', desc: 'Our chef is preparing your fresh meal.', icon: Utensils },
     { key: 'ready', title: 'Food Ready', desc: 'Dish has plated and leaves the pass.', icon: Sparkles },
     { key: 'served', title: 'Served & Satiated', desc: 'Items served. Enjoy your culinary experience!', icon: Award }
   ];
 
-  const statusIndexMap = {
+  const statusIndexMap = isDelivery ? {
+    'received': 0,
+    'preparing': 1,
+    'ready': 2,
+    'out_for_delivery': 3,
+    'delivered': 4,
+    'cancelled': -1
+  } : {
     'received': 0,
     'preparing': 1,
     'ready': 2,
@@ -119,9 +142,9 @@ export default function OrderStatus() {
 
   // Helper for WhatsApp Pre-filled text
   const generateWhatsAppLink = () => {
-    const tableInfo = order.table_number ? `Table ${order.table_number}` : 'Takeaway';
-    const message = `Hello, I am sitting at ${tableInfo}. I need assistance regarding my Order #${order.id} (Total: ${restaurantConfig.currency}${parseFloat(order.total_amount).toFixed(2)}). Thank you!`;
-    return `https://wa.me/${restaurantConfig.supportPhone}?text=${encodeURIComponent(message)}`;
+    const tableInfo = order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway';
+    const message = `Hello, I placed a ${tableInfo} order. I need assistance regarding my Order #${order.order_number || order.id} (Total: ${restaurantConfig.currency}${parseFloat(order.total_amount).toFixed(2)}). Thank you!`;
+    return `https://wa.me/${restaurantConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
   const handlePrintInvoice = () => {
@@ -137,7 +160,7 @@ export default function OrderStatus() {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Order #${order.id} Invoice</title>
+          <title>Order #${order.order_number || order.id} Invoice</title>
           <style>
             @media print {
               body { margin: 0; padding: 10px; }
@@ -158,9 +181,9 @@ export default function OrderStatus() {
           <h2 class="text-center" style="margin: 0; font-size: 18px;">${restaurantConfig.name}</h2>
           <p class="text-center" style="font-size: 11px; margin: 5px 0;">Digital QR Order System</p>
           <div class="divider"></div>
-          <p style="font-size: 12px; margin: 3px 0;"><b>Order ID:</b> #${order.id}</p>
+          <p style="font-size: 12px; margin: 3px 0;"><b>Order ID:</b> #${order.order_number || order.id}</p>
           <p style="font-size: 12px; margin: 3px 0;"><b>Date:</b> ${new Date(order.created_at).toLocaleString()}</p>
-          <p style="font-size: 12px; margin: 3px 0;"><b>Service:</b> ${order.table_number ? 'Table ' + order.table_number : 'Takeaway'}</p>
+          <p style="font-size: 12px; margin: 3px 0;"><b>Service:</b> ${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</p>
           <div class="divider"></div>
           <table>
             ${itemsHtml}
@@ -188,7 +211,7 @@ export default function OrderStatus() {
 
   const finalTotal = parseFloat(order.total_amount);
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-20 bg-[#fbfaf7] pt-[64px] sm:pt-[76px]">
+    <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] bg-gray-50/50 pb-20 bg-[#fbfaf7]">
 
 
       <main className="max-w-md mx-auto px-6 py-8 space-y-6">
@@ -216,7 +239,7 @@ export default function OrderStatus() {
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
                   : 'bg-amber-50 text-amber-700 border border-amber-100 animate-pulse'
               }`}>
-                {order.payment_status === 'paid' ? 'Paid' : 'Pay at Counter'}
+                {order.payment_status === 'paid' ? 'Paid' : order.payment_method === 'cod' ? 'Cash on Delivery' : 'Pay at Counter'}
               </span>
               <span className="text-gray-300 font-semibold">•</span>
               <span className="text-gray-500 font-bold uppercase">{order.payment_method} Payment</span>

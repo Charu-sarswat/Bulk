@@ -166,11 +166,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, totalAmount }
           )}
         </div>
 
-        {/* Footer Security Badge */}
-        <div className="p-4 bg-white border-t border-gray-150 flex items-center justify-center gap-1.5 text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>256-Bit SSL Encrypted UPI Gateway</span>
-        </div>
+
 
       </div>
     </div>

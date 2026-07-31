@@ -57,7 +57,7 @@ export default function UserManagement() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const response = await fetch(`${apiUrl}/api/auth/register`, {
+      const response = await fetch(`${apiUrl}/api/auth/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -310,7 +310,7 @@ export default function UserManagement() {
               </button>
             </div>
 
-            <form onSubmit={handleAddUserSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleAddUser} className="p-6 space-y-4">
               <div className="space-y-1">
                 <label className="block text-[11px] font-black uppercase text-gray-500 tracking-wider">
                   Username *
@@ -319,8 +319,8 @@ export default function UserManagement() {
                   type="text"
                   required
                   placeholder="e.g. cashier_chowpati"
-                  value={formUsername}
-                  onChange={(e) => setFormUsername(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#F8A324]"
                 />
               </div>
@@ -333,8 +333,8 @@ export default function UserManagement() {
                   type="password"
                   required
                   placeholder="Enter strong password"
-                  value={formPassword}
-                  onChange={(e) => setFormPassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#F8A324]"
                 />
               </div>
@@ -344,8 +344,8 @@ export default function UserManagement() {
                   Access Role *
                 </label>
                 <select
-                  value={formRole}
-                  onChange={(e) => setFormRole(e.target.value)}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#F8A324]"
                 >
                   <option value="staff">Staff (Cashier / Counter)</option>

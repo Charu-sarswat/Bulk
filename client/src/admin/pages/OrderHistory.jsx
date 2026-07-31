@@ -11,7 +11,7 @@ import {
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
 import Pagination from '../components/Pagination';
-import WhatsAppIcon from '../../customer/components/WhatsAppIcon';
+
 
 export default function OrderHistory() {
   const { token, user } = useAuth();
@@ -42,6 +42,25 @@ export default function OrderHistory() {
   const [paymentMethod, setPaymentMethod] = useState('counter');
   const [paymentStatus, setPaymentStatus] = useState('paid');
   const [orderNotes, setOrderNotes] = useState('');
+  
+  // Custom states for order channel, delivery address & scheduling
+  const [orderChannel, setOrderChannel] = useState('dine_in');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [orderTimeType, setOrderTimeType] = useState('now');
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduledTime, setScheduledTime] = useState('');
+
+  useEffect(() => {
+    if (orderChannel === 'delivery') {
+      if (paymentMethod !== 'online' && paymentMethod !== 'cod') {
+        setPaymentMethod('online');
+      }
+    } else {
+      if (paymentMethod === 'cod') {
+        setPaymentMethod('counter');
+      }
+    }
+  }, [orderChannel, paymentMethod]);
 
   // Cart for new order
   const [cart, setCart] = useState([]); // [{ item_id, name, price, quantity, notes, stock_quantity }]
@@ -113,6 +132,11 @@ export default function OrderHistory() {
     setPaymentMethod('counter');
     setPaymentStatus('paid');
     setOrderNotes('');
+    setOrderChannel('dine_in');
+    setDeliveryAddress('');
+    setOrderTimeType('now');
+    setScheduledDate('');
+    setScheduledTime('');
     setCreateModalOpen(true);
   };
 
@@ -170,23 +194,46 @@ export default function OrderHistory() {
     let customerPhone = guestPhone;
 
     if (selectedCustomerId) {
-      const found = customers.find(c => c.id === parseInt(selectedCustomerId, 10));
+      const found = customers.find(c => c.id === selectedCustomerId);
       if (found) {
         customerName = found.name;
         customerPhone = found.phone;
       }
     }
 
+    if (!customerName || !customerName.trim()) {
+      addToast('Customer Name is compulsory', 'warning');
+      return;
+    }
+
+    if (!customerPhone || customerPhone.trim().length < 10) {
+      addToast('Customer Phone Number is compulsory and must be at least 10 digits', 'warning');
+      return;
+    }
+
+    if (orderChannel === 'delivery' && !deliveryAddress.trim()) {
+      addToast('Please enter delivery address', 'warning');
+      return;
+    }
+
+    if (orderTimeType === 'scheduled' && (!scheduledDate || !scheduledTime)) {
+      addToast('Please pick a valid Date and Time for scheduled order', 'warning');
+      return;
+    }
+
     const payload = {
       admin_created: true,
-      table_id: selectedTableId ? parseInt(selectedTableId, 10) : null,
-      table_number_override: !selectedTableId ? (customTableNumber || 'Takeaway') : null,
-      customer_id: selectedCustomerId ? parseInt(selectedCustomerId, 10) : null,
+      table_id: null,
+      table_number_override: orderChannel === 'dine_in' ? 'Dine-In' : orderChannel === 'delivery' ? 'Delivery' : 'Takeaway',
+      customer_id: selectedCustomerId || null,
       customer_name: customerName || null,
       customer_phone: customerPhone || null,
       payment_method: paymentMethod,
       payment_status: paymentStatus,
       notes: orderNotes || null,
+      order_channel: orderChannel,
+      delivery_address: orderChannel === 'delivery' ? deliveryAddress.trim() : '',
+      scheduled_time: orderTimeType === 'scheduled' && scheduledDate && scheduledTime ? `${scheduledDate}T${scheduledTime}:00` : null,
       items: cart.map(c => ({
         menu_item_id: c.item_id,
         name: c.name,
@@ -216,6 +263,30 @@ export default function OrderHistory() {
     } catch (err) {
       console.error(err);
       addToast('Error placing order.', 'error');
+    }
+  };
+
+  const handleUpdateOrderField = async (orderId, fields) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(fields)
+      });
+      const data = await response.json();
+      if (response.ok) {
+        addToast(data.message || 'Order updated successfully', 'success');
+        setSelectedOrder(prev => prev && prev.id === orderId ? { ...prev, ...fields } : prev);
+        fetchOrders();
+      } else {
+        addToast(data.message || 'Failed to update order', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Failed to update order', 'error');
     }
   };
   const filteredOrders = Array.isArray(orders) ? orders.filter((order) => {
@@ -265,9 +336,15 @@ export default function OrderHistory() {
           <div class="divider"></div>
           
           <div class="flex-between item">
-            <span>Table: ${selectedOrder.table_number || 'Takeaway'}</span>
+             <span>Mode: ${selectedOrder.order_channel === 'dine_in' ? 'Dine-In' : selectedOrder.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</span>
             <span>Type: ${selectedOrder.payment_method}</span>
           </div>
+          ${selectedOrder.delivery_address ? `
+          <div class="item">Address: ${selectedOrder.delivery_address}</div>
+          ` : ''}
+          ${selectedOrder.scheduled_time ? `
+          <div class="item">Scheduled: ${new Date(selectedOrder.scheduled_time).toLocaleString('en-IN')}</div>
+          ` : ''}
           ${selectedOrder.customer_name ? `
           <div class="item">Customer: ${selectedOrder.customer_name}</div>
           ` : ''}
@@ -304,7 +381,7 @@ export default function OrderHistory() {
 
   const filteredMenuItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(menuSearch.toLowerCase());
-    const matchesCat = menuCatFilter === 'ALL' || item.category_id === parseInt(menuCatFilter, 10);
+    const matchesCat = menuCatFilter === 'ALL' || item.category_id === menuCatFilter;
     return matchesSearch && matchesCat;
   });
 
@@ -325,17 +402,7 @@ export default function OrderHistory() {
     exportToCSV('Bombay_Chowpati_Orders_Sheet', headers, rows);
   };
 
-  const handleSendWhatsAppUpdate = (order) => {
-    if (!order.customer_phone) {
-      addToast('Customer phone number not available for this order', 'warning');
-      return;
-    }
-    const cleanPhone = order.customer_phone.replace(/\D/g, '');
-    const text = encodeURIComponent(
-      `Hello ${order.customer_name || 'Valued Customer'}! Update on your Bombay Chowpati Order #${order.order_number || order.id}:\nStatus: *${order.status.toUpperCase()}*\nTotal: ₹${order.total_amount}. Thank you!`
-    );
-    window.open(`https://wa.me/91${cleanPhone}?text=${text}`, '_blank');
-  };
+
 
   // Reset to page 1 when search or filters change
   React.useEffect(() => { setCurrentPage(1); }, [searchQuery, statusFilter, payFilter]);
@@ -357,7 +424,7 @@ export default function OrderHistory() {
           className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-2 border border-white/20 shadow-xs transition-all cursor-pointer"
         >
           <Download className="w-4 h-4 text-[#F8A324]" />
-          <span>Export Sheet (CSV)</span>
+          <span>Export Sheet (Excel)</span>
         </button>
 
         <button
@@ -484,20 +551,33 @@ export default function OrderHistory() {
                   .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                   .map((order) => (
                   <tr key={order.id} className="hover:bg-[#FFF9EE]/20 transition-colors">
-                    <td className="py-4 px-4 sm:px-6 text-center font-bold text-gray-900">#{order.id}</td>
+                    <td className="py-4 px-4 sm:px-6 text-center font-bold text-gray-900">#{order.order_number || order.id}</td>
                     <td className="py-4 px-4 sm:px-6">
-                      <div className="font-semibold text-gray-900">{order.table_number ? `Table ${order.table_number}` : 'Takeaway'}</div>
-                      {order.customer_name && <div className="text-[10px] text-gray-500 font-normal">👤 {order.customer_name}</div>}
+                       <div className="font-semibold text-gray-900">
+                         {order.order_channel === 'dine_in' ? '🍽️ Dine-In' : order.order_channel === 'delivery' ? '🚗 Delivery' : '🛍️ Takeaway'}
+                       </div>
+                      {order.delivery_address && (
+                        <div className="text-[9px] text-[#691F1A] bg-rose-50 border border-red-200/30 rounded px-1.5 py-0.5 mt-0.5 max-w-[150px] truncate block w-max" title={order.delivery_address}>
+                          📍 {order.delivery_address}
+                        </div>
+                      )}
+                      {order.scheduled_time && (
+                        <div className="text-[9px] text-purple-800 bg-purple-50 border border-purple-200/30 rounded px-1.5 py-0.5 mt-0.5 w-max">
+                          📅 {new Date(order.scheduled_time).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                        </div>
+                      )}
+                      {order.customer_name && <div className="text-[10px] text-gray-500 font-normal mt-0.5">👤 {order.customer_name}</div>}
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-xs text-gray-400 font-light">
                       {new Date(order.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-center">
                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
-                         order.status === 'served' ? 'bg-emerald-50 text-emerald-700' : 
-                         order.status === 'cancelled' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
+                         order.status === 'served' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700' : 
+                         order.status === 'cancelled' ? 'bg-red-50 text-red-700' : 
+                         order.status === 'out_for_delivery' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'
                        }`}>
-                         {order.status}
+                         {order.status.replace(/_/g, ' ')}
                        </span>
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-center">
@@ -526,15 +606,7 @@ export default function OrderHistory() {
                         >
                           <Printer className="w-3.5 h-3.5" />
                         </button>
-                        {order.customer_phone && (
-                          <button
-                            onClick={() => handleSendWhatsAppBill(order)}
-                            className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
-                            title="Send WhatsApp Bill"
-                          >
-                            <Send className="w-3.5 h-3.5" />
-                          </button>
-                        )}
+
                       </div>
                     </td>
                   </tr>
@@ -654,34 +726,92 @@ export default function OrderHistory() {
                   <ShoppingBag className="w-4 h-4 text-gold-600" /> Order Details
                 </h4>
 
-                {/* Table Selection */}
+                {/* Order Channel Selector */}
                 <div className="space-y-3 mb-4">
                   <div>
-                    <label className="block text-[11px] font-bold text-gray-600 mb-1">Select Dining Table / Service</label>
+                    <label className="block text-[11px] font-bold text-gray-600 mb-1">Order Channel / Dining Type</label>
                     <select
-                      value={selectedTableId}
-                      onChange={(e) => setSelectedTableId(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none"
+                      value={orderChannel}
+                      onChange={(e) => {
+                        setOrderChannel(e.target.value);
+                        if (e.target.value !== 'dine_in') {
+                          setSelectedTableId('');
+                        }
+                      }}
+                      className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none cursor-pointer"
                     >
-                      <option value="">-- Takeaway / Custom Location --</option>
-                      {tables.map(t => (
-                        <option key={t.id} value={t.id}>
-                          Table {t.table_number} ({t.capacity} seats - {t.status})
-                        </option>
-                      ))}
+                      <option value="dine_in">Dine-In (In Restaurant)</option>
+                      <option value="takeaway">Takeaway (Self Pickup)</option>
+                      <option value="delivery">Delivery (Home Delivery)</option>
                     </select>
                   </div>
 
-                  {!selectedTableId && (
+
+                  {orderChannel === 'delivery' && (
                     <div>
-                      <label className="block text-[10px] font-bold text-gray-400 mb-1">Custom Location / Table Override</label>
-                      <input
-                        type="text"
-                        value={customTableNumber}
-                        onChange={(e) => setCustomTableNumber(e.target.value)}
-                        placeholder="e.g. Counter, Takeaway, Parcel 1"
-                        className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none"
+                      <label className="block text-[11px] font-bold text-gray-600 mb-1">Delivery Address *</label>
+                      <textarea
+                        required
+                        value={deliveryAddress}
+                        onChange={(e) => setDeliveryAddress(e.target.value)}
+                        placeholder="Enter complete address for delivery..."
+                        rows="2"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none resize-none font-semibold placeholder:font-normal"
                       />
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Scheduling Section */}
+                <div className="space-y-2 mb-4 border-t border-gray-200/60 pt-3">
+                  <label className="block text-[11px] font-bold text-gray-600 mb-1">Order Timing</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setOrderTimeType('now')}
+                      className={`p-2 rounded-xl border text-xs font-bold transition-all text-center cursor-pointer ${
+                        orderTimeType === 'now'
+                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                          : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                      }`}
+                    >
+                      Immediate
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setOrderTimeType('scheduled')}
+                      className={`p-2 rounded-xl border text-xs font-bold transition-all text-center cursor-pointer ${
+                        orderTimeType === 'scheduled'
+                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                          : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                      }`}
+                    >
+                      Schedule
+                    </button>
+                  </div>
+                  {orderTimeType === 'scheduled' && (
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div>
+                        <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Date *</span>
+                        <input
+                          type="date"
+                          required
+                          value={scheduledDate}
+                          onChange={(e) => setScheduledDate(e.target.value)}
+                          className="w-full text-xs p-1.5 border border-gray-200 rounded-xl focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Time *</span>
+                        <input
+                          type="time"
+                          required
+                          value={scheduledTime}
+                          onChange={(e) => setScheduledTime(e.target.value)}
+                          className="w-full text-xs p-1.5 border border-gray-200 rounded-xl focus:outline-none"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -776,12 +906,21 @@ export default function OrderHistory() {
                       <select
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-semibold"
+                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-semibold cursor-pointer"
                       >
-                        <option value="counter">Cash / Counter</option>
-                        <option value="upi">UPI / QR</option>
-                        <option value="card">Card</option>
-                        <option value="online">Online</option>
+                        {orderChannel === 'delivery' ? (
+                          <>
+                            <option value="online">Online</option>
+                            <option value="cod">Cash on Delivery (COD)</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="counter">Cash / Counter</option>
+                            <option value="upi">UPI / QR</option>
+                            <option value="card">Card</option>
+                            <option value="online">Online</option>
+                          </>
+                        )}
                       </select>
                     </div>
 
@@ -838,7 +977,19 @@ export default function OrderHistory() {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <div className="text-xs text-gray-400 font-bold tracking-wider uppercase mb-1">Details</div>
-                  <div className="font-semibold text-sm">{selectedOrder.table_number ? `Table ${selectedOrder.table_number}` : 'Takeaway'}</div>
+                  <div className="font-semibold text-sm text-gray-800">
+                    {selectedOrder.order_channel === 'dine_in' ? '🍽️ Dine-In' : selectedOrder.order_channel === 'delivery' ? '🚗 Delivery' : '🛍️ Takeaway'}
+                  </div>
+                  {selectedOrder.delivery_address && (
+                    <div className="text-[11px] text-rose-800 bg-rose-50 border border-red-200/40 rounded px-2 py-1 mt-1.5 font-medium max-w-[250px] break-words">
+                      📍 Address: {selectedOrder.delivery_address}
+                    </div>
+                  )}
+                  {selectedOrder.scheduled_time && (
+                    <div className="text-[11px] text-purple-800 bg-purple-50 border border-purple-200/40 rounded px-2 py-1 mt-1.5 font-medium">
+                      📅 Scheduled: {new Date(selectedOrder.scheduled_time).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
+                    </div>
+                  )}
                   <div className="text-xs text-gray-500 mt-1">{new Date(selectedOrder.created_at).toLocaleString('en-IN')}</div>
                   {(selectedOrder.customer_name || selectedOrder.customer_phone) && (
                     <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100">
@@ -847,10 +998,36 @@ export default function OrderHistory() {
                     </div>
                   )}
                 </div>
-                <div className="text-right">
-                  <div className="text-xs text-gray-400 font-bold tracking-wider uppercase mb-1">Status</div>
-                  <div className="font-semibold text-sm capitalize">{selectedOrder.status}</div>
-                  <div className="text-xs text-gray-500 mt-1 capitalize">{selectedOrder.payment_status} ({selectedOrder.payment_method})</div>
+                <div className="text-right space-y-3">
+                  <div>
+                    <label className="block text-[10px] text-gray-400 font-bold tracking-wider uppercase mb-1">Status</label>
+                    <select
+                      value={selectedOrder.status}
+                      onChange={(e) => handleUpdateOrderField(selectedOrder.id, { status: e.target.value })}
+                      className="bg-white border border-gray-200 text-gray-800 text-xs font-semibold rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer"
+                    >
+                      <option value="received">Received</option>
+                      <option value="preparing">Preparing</option>
+                      <option value="ready">Ready</option>
+                      <option value="out_for_delivery">Out for Delivery</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="served">Served</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-gray-400 font-bold tracking-wider uppercase mb-1">Payment</label>
+                    <select
+                      value={selectedOrder.payment_status}
+                      onChange={(e) => handleUpdateOrderField(selectedOrder.id, { payment_status: e.target.value })}
+                      className="bg-white border border-gray-200 text-gray-800 text-xs font-semibold rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="paid">Paid</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                    <div className="text-[9px] text-gray-400 mt-1 uppercase font-bold tracking-wider">Method: {selectedOrder.payment_method}</div>
+                  </div>
                 </div>
               </div>
 
@@ -859,7 +1036,7 @@ export default function OrderHistory() {
                 {selectedOrder.items?.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-start">
                     <div>
-                      <div className="text-sm font-semibold">{item.quantity}x {item.name}</div>
+                       <div className="text-sm font-semibold text-gray-800">{item.quantity}x {item.name}</div>
                       {item.notes && <div className="text-xs text-amber-600 mt-0.5">Note: {item.notes}</div>}
                     </div>
                     <div className="text-sm font-bold text-gray-900">
@@ -886,18 +1063,7 @@ export default function OrderHistory() {
                 Print Invoice
               </button>
 
-              {selectedOrder.customer_phone && (
-                <button 
-                  onClick={() => {
-                    const text = encodeURIComponent(`Hello ${selectedOrder.customer_name || 'Valued Guest'}! Your Bombay Chowpati Order #${selectedOrder.id} status is: ${selectedOrder.status.toUpperCase()}. Total Amount: ${restaurantConfig.currency}${parseFloat(selectedOrder.total_amount).toFixed(2)}. Thank you!`);
-                    window.open(`https://wa.me/${selectedOrder.customer_phone.replace(/\D/g, '')}?text=${text}`, '_blank');
-                  }}
-                  className="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer text-xs uppercase tracking-wider shadow-md"
-                >
-                  <WhatsAppIcon className="w-4 h-4" color="currentColor" />
-                  Notify Customer
-                </button>
-              )}
+
             </div>
           </div>
         </div>

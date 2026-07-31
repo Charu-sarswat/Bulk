@@ -98,9 +98,9 @@ router.get('/users', auth, async (req, res) => {
   }
 });
 
-// @route   POST api/auth/users
+// @route   POST api/auth/users or api/auth/register
 // @desc    Create a new system user (Private - Admin only)
-router.post('/users', auth, async (req, res) => {
+router.post(['/users', '/register'], auth, async (req, res) => {
   const { username, password, role } = req.body;
   if (!username || !password || !role) {
     return res.status(400).json({ message: 'Please enter all fields' });

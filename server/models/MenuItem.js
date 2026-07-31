@@ -6,8 +6,6 @@ const menuItemSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   price: { type: Number, required: true, min: 0 },
   delivery_price: { type: Number, default: 0 },
-  swiggy_price: { type: Number, default: 0 },
-  zomato_price: { type: Number, default: 0 },
   image_url: { type: String, default: '' },
   image_urls: [{ type: String }],
   is_veg: { type: Boolean, default: true },

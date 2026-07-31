@@ -30,8 +30,53 @@ export default function CartDrawer({
   
   // Dining and Channels
   const [orderChannel, setOrderChannel] = useState('dine_in');
-  const [customTableNum, setCustomTableNum] = useState(tableNumber || '');
-  const [tables, setTables] = useState([]);
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [detectingLocation, setDetectingLocation] = useState(false);
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      addToast('Geolocation is not supported by your browser.', 'error');
+      return;
+    }
+    setDetectingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`, {
+            headers: {
+              'Accept-Language': 'en'
+            }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.display_name) {
+              setDeliveryAddress(data.display_name);
+              addToast('Location detected successfully!', 'success');
+            } else {
+              setDeliveryAddress(`${latitude}, ${longitude}`);
+              addToast('Coordinates fetched, but address lookup failed.', 'warning');
+            }
+          } else {
+            setDeliveryAddress(`${latitude}, ${longitude}`);
+            addToast('Coordinates fetched, but address lookup failed.', 'warning');
+          }
+        } catch (err) {
+          console.error(err);
+          setDeliveryAddress(`${latitude}, ${longitude}`);
+          addToast('Coordinates fetched, but address lookup failed.', 'warning');
+        } finally {
+          setDetectingLocation(false);
+        }
+      },
+      (error) => {
+        console.error(error);
+        addToast(error.message || 'Failed to retrieve location.', 'error');
+        setDetectingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
 
   // Scheduled Order State
   const [orderTimeType, setOrderTimeType] = useState('now'); // 'now' or 'scheduled'
@@ -43,30 +88,16 @@ export default function CartDrawer({
   const [guestPhone, setGuestPhone] = useState(() => localStorage.getItem('guest_phone') || '');
 
   useEffect(() => {
-    if (tableNumber) {
-      setOrderChannel('dine_in');
-      setCustomTableNum(tableNumber);
-    } else {
-      setOrderChannel('takeaway');
-    }
-  }, [tableNumber]);
-
-  useEffect(() => {
-    const fetchTables = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/api/tables`);
-        if (res.ok) {
-          const data = await res.json();
-          setTables(data);
-        }
-      } catch (err) {
-        console.error(err);
+    if (orderChannel === 'delivery') {
+      if (paymentMethod !== 'upi' && paymentMethod !== 'cod') {
+        setPaymentMethod('upi');
       }
-    };
-    if (isOpen) {
-      fetchTables();
+    } else {
+      if (paymentMethod === 'cod') {
+        setPaymentMethod('counter');
+      }
     }
-  }, [isOpen, apiUrl]);
+  }, [orderChannel, paymentMethod]);
 
   if (!isOpen) return null;
 
@@ -81,11 +112,12 @@ export default function CartDrawer({
     const activeName = customerUser ? customerUser.name : guestName.trim();
 
     const orderPayload = {
-      table_id: orderChannel === 'dine_in' ? tableId || null : null,
-      table_snapshot: orderChannel === 'dine_in' ? (customTableNum || 'Table 1') : orderChannel.toUpperCase(),
+      table_id: null,
+      table_snapshot: orderChannel === 'dine_in' ? 'Dine-In' : orderChannel.toUpperCase(),
       customer_name: activeName || 'Guest Customer',
       customer_phone: activePhone,
       order_channel: orderChannel,
+      delivery_address: orderChannel === 'delivery' ? deliveryAddress.trim() : '',
       payment_method: paymentMethod,
       payment_utr: utrData?.utr || '',
       notes: orderNotes,
@@ -162,6 +194,11 @@ export default function CartDrawer({
 
     if (!activePhone || activePhone.length < 10) {
       addToast('Customer phone number is compulsory for checkout', 'warning');
+      return;
+    }
+
+    if (orderChannel === 'delivery' && !deliveryAddress.trim()) {
+      addToast('Please enter your delivery address', 'warning');
       return;
     }
 
@@ -443,25 +480,42 @@ export default function CartDrawer({
                     onChange={(e) => setOrderChannel(e.target.value)}
                     className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#691F1A]"
                   >
-                    <option value="dine_in">Dine-In (In Restaurant)</option>
+                    <option value="dine_in">Dine-In</option>
                     <option value="takeaway">Takeaway (Self Pickup)</option>
+                    <option value="delivery">Home Delivery</option>
                   </select>
 
-                  {orderChannel === 'dine_in' && (
-                    <div className="pt-1">
-                      <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Table Number</span>
-                      <select
-                        value={customTableNum}
-                        onChange={(e) => setCustomTableNum(e.target.value)}
-                        className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#691F1A]"
-                      >
-                        <option value="">Select Table...</option>
-                        {tables.map(t => (
-                          <option key={t.id} value={t.table_number}>
-                            Table {t.table_number} ({t.capacity} Guests)
-                          </option>
-                        ))}
-                      </select>
+
+                  {orderChannel === 'delivery' && (
+                    <div className="pt-1 animate-fade-in space-y-1.5">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block">Delivery Address *</span>
+                        <button
+                          type="button"
+                          onClick={handleDetectLocation}
+                          disabled={detectingLocation}
+                          className="text-[9px] font-black text-[#691F1A] hover:underline flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                        >
+                          {detectingLocation ? (
+                            <>
+                              <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+                              <span>Detecting...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>📍 Detect Location</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <textarea
+                        required
+                        value={deliveryAddress}
+                        onChange={(e) => setDeliveryAddress(e.target.value)}
+                        placeholder="Enter complete address for delivery..."
+                        rows="2"
+                        className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A] resize-none font-semibold placeholder:font-normal"
+                      />
                     </div>
                   )}
                 </div>
@@ -498,22 +552,36 @@ export default function CartDrawer({
                       className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
                         paymentMethod === 'upi'
                           ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
-                          : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                          : 'border-gray-250 bg-white text-gray-400 hover:text-gray-600'
                       }`}
                     >
                       Pay Online (UPI)
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('counter')}
-                      className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
-                        paymentMethod === 'counter'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
-                          : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
-                      }`}
-                    >
-                      Pay Cash at Counter
-                    </button>
+                    {orderChannel === 'delivery' ? (
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('cod')}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                          paymentMethod === 'cod'
+                            ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                            : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        Cash on Delivery
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('counter')}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                          paymentMethod === 'counter'
+                            ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                            : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        Pay at Counter
+                      </button>
+                    )}
                   </div>
                 </div>
 

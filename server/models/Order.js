@@ -17,13 +17,14 @@ const orderSchema = new mongoose.Schema({
   customer_phone: { type: String, required: true, trim: true },
   order_channel: { 
     type: String, 
-    enum: ['dine_in', 'takeaway', 'delivery', 'swiggy', 'zomato'], 
+    enum: ['dine_in', 'takeaway', 'delivery'], 
     default: 'dine_in' 
   },
+  delivery_address: { type: String, default: '' },
   scheduled_time: { type: Date, default: null },
   status: { 
     type: String, 
-    enum: ['received', 'preparing', 'ready', 'served', 'cancelled'], 
+    enum: ['received', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'served', 'cancelled'], 
     default: 'received' 
   },
   payment_status: { 
@@ -33,7 +34,7 @@ const orderSchema = new mongoose.Schema({
   },
   payment_method: { 
     type: String, 
-    enum: ['counter', 'online', 'upi', 'card'], 
+    enum: ['counter', 'online', 'upi', 'card', 'cod'], 
     default: 'upi' 
   },
   payment_utr: { type: String, default: '' },
