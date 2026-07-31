@@ -58,39 +58,41 @@ export const restaurantData = {
     { label: "Years of Culinary Excellence", value: "10+ Years" }
   ],
 
-  // Awards & Recognitions Won by Restaurant
   awards: [
     {
       id: 1,
-      title: "Best Street Food of Hyderabad",
-      year: "2025",
-      organization: "Times Food & Nightlife Awards",
-      description: "Awarded #1 Authentic Chaat Bhandar for unmatched Pani Puri & Pav Bhaji taste.",
-      icon: "Trophy"
+      title: "Pride of Southern India Awards 2026",
+      year: "2026",
+      organization: "Best Chat Bhandar of the Year",
+      description: "Honoured with the 'Best Chat Bhandar of the Year' award at the Pride of Southern India Awards 2026. The award was presented by legendary Bollywood Actress and former Member of Rajya Sabha, Jaya Prada, at The Park Hyderabad.",
+      icon: "Trophy",
+      images: [
+        "/src/assets/awards/img4.jpeg",
+        "/src/assets/awards/img1.jpg"
+      ]
     },
     {
       id: 2,
-      title: "Iconic Pure Veg Chaat Brand",
-      year: "2024",
-      organization: "Telangana Hospitality Excellence",
-      description: "Recognized for maintaining 100% pure vegetarian hygiene and authentic Mumbai recipes.",
-      icon: "Award"
+      title: "Pride India Awards 2026",
+      year: "2026",
+      organization: "Indian Iconic Chat Bhandar of the Year",
+      description: "Awarded the Certificate of Excellence as the Indian Iconic Chat Bhandar of the Year 2026, celebrating outstanding quality, hygiene, and authenticity in street food.",
+      icon: "Award",
+      images: [
+        "/src/assets/awards/img2.jpg"
+      ]
     },
     {
       id: 3,
-      title: "Google Top Rated Restro 4.8★",
-      year: "2024",
-      organization: "Google My Business Reviews",
-      description: "Voted by over 5,000+ local foodies and tourists as the top street food destination in Abids.",
-      icon: "Star"
-    },
-    {
-      id: 4,
-      title: "Hygiene & Food Safety Gold Badge",
-      year: "2024",
-      organization: "FSSAI Food Safety Audit",
-      description: "Certified Grade-A kitchen cleanliness, fresh ingredients, and purified mineral water.",
-      icon: "ShieldCheck"
+      title: "Pride India Awards 2025",
+      year: "2025",
+      organization: "Indian Iconic Chat Bhandar of the Year",
+      description: "Winner of the Indian Iconic Chat Bhandar of the Year 2025 at the Pride India & Business Awards. Certificate of Excellence proudly presented to Bombay Chowpati.",
+      icon: "Star",
+      images: [
+        "/src/assets/awards/img5.jpeg",
+        "/src/assets/awards/img3.jpg"
+      ]
     }
   ],
 

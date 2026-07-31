@@ -112,39 +112,8 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {restaurantData.awards.map((award) => (
-              <div 
-                key={award.id}
-                className="bg-white border border-[#F8A324]/30 rounded-3xl p-6 hover:border-[#F8A324] hover:border-2 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
-              >
-                <div className="space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 rounded-2xl bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] group-hover:scale-110 transition-transform">
-                      {award.icon === 'Trophy' && <Trophy className="w-6 h-6" />}
-                      {award.icon === 'Award' && <Award className="w-6 h-6" />}
-                      {award.icon === 'Star' && <Star className="w-6 h-6" />}
-                      {award.icon === 'ShieldCheck' && <ShieldCheck className="w-6 h-6" />}
-                    </div>
-                    <span className="bg-[#691F1A] text-white text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                      {award.year}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-serif font-extrabold text-lg text-gray-900 group-hover:text-[#691F1A] transition-colors leading-tight">
-                      {award.title}
-                    </h3>
-                    <p className="text-[11px] text-[#F8A324] font-bold mt-0.5">{award.organization}</p>
-                  </div>
-
-                  <p className="text-gray-650 text-xs leading-relaxed font-light">
-                    {award.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Premium Layout: Left side shows active selected award, Right side shows vertical scrollable checklist of awards */}
+          <AwardsShowcase />
 
         </div>
       </section>
@@ -453,6 +422,125 @@ export default function Landing() {
         isOpen={isCateringOpen} 
         onClose={() => setIsCateringOpen(false)} 
       />
+    </div>
+  );
+}
+
+function AwardsShowcase() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const activeAward = restaurantData.awards[activeIdx] || {};
+  const awardImages = activeAward.images || [];
+
+  // Reset active image index whenever the main award index changes
+  React.useEffect(() => {
+    setActiveImgIdx(0);
+  }, [activeIdx]);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch md:bg-white md:border md:border-[#F8A324]/30 md:rounded-3xl p-0 md:p-6 sm:md:p-8">
+      {/* Left Column: Active Highlight (7 Cols) */}
+      <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+        <div className="space-y-4">
+          <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#691F1A]/5 border border-[#F8A324]/10 shadow-inner group">
+            <img 
+              src={awardImages[activeImgIdx] || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600'} 
+              alt={activeAward.title} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+            />
+            <div className="absolute top-4 left-4 bg-[#691F1A] text-white text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-[#F8A324]/30 z-10">
+              🏆 Award Year {activeAward.year}
+            </div>
+
+            {/* If the active award has multiple images, show thumbnails on top of image to toggle */}
+            {awardImages.length > 1 && (
+              <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 z-10">
+                {awardImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImgIdx(idx)}
+                    className={`w-12 h-10 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                      idx === activeImgIdx ? 'border-[#F8A324] scale-105 shadow-md' : 'border-white/50 opacity-80'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] shrink-0">
+                {activeAward.icon === 'Trophy' && <Trophy className="w-6 h-6" />}
+                {activeAward.icon === 'Award' && <Award className="w-6 h-6" />}
+                {activeAward.icon === 'Star' && <Star className="w-6 h-6" />}
+              </div>
+              <div>
+                <h3 className="font-serif font-black text-2xl text-gray-900 leading-tight">
+                  {activeAward.title}
+                </h3>
+                <p className="text-xs text-[#F8A324] font-extrabold uppercase tracking-widest mt-0.5">{activeAward.organization}</p>
+              </div>
+            </div>
+
+            <p className="text-gray-700 text-sm leading-relaxed font-light whitespace-pre-line border-t border-gray-100 pt-4">
+              {activeAward.description}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column: Interactive List Selector (5 Cols) */}
+      <div className="lg:col-span-5 flex flex-col justify-start space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
+        <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block pb-1 border-b border-gray-100">
+          Select Award ({restaurantData.awards.length} Recognitions)
+        </span>
+        
+        {restaurantData.awards.map((award, index) => {
+          const isActive = index === activeIdx;
+          const firstImg = award.images && award.images[0];
+          return (
+            <button
+              key={award.id}
+              onClick={() => setActiveIdx(index)}
+              className={`w-full text-left flex items-center gap-4 p-3 rounded-2xl border transition-all duration-200 cursor-pointer ${
+                isActive 
+                  ? 'bg-[#691F1A]/5 border-[#691F1A] shadow-sm' 
+                  : 'bg-white border-[#F8A324]/20 hover:border-[#F8A324]/50'
+              }`}
+            >
+              {/* Award preview thumbnail */}
+              <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100 relative">
+                <img 
+                  src={firstImg} 
+                  alt={award.title} 
+                  className="w-full h-full object-cover"
+                />
+                {award.images && award.images.length > 1 && (
+                  <div className="absolute bottom-0.5 right-0.5 bg-[#691F1A] text-white text-[8px] font-bold px-1 rounded">
+                    +{award.images.length - 1}
+                  </div>
+                )}
+              </div>
+
+              {/* Award brief details */}
+              <div className="space-y-0.5 min-w-0 flex-1">
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-[11px] font-bold text-gray-900 truncate">{award.title}</span>
+                  <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 ${
+                    isActive ? 'bg-[#691F1A] text-white' : 'bg-gray-100 text-gray-500'
+                  }`}>{award.year}</span>
+                </div>
+                <p className="text-[10px] text-gray-500 truncate font-light leading-tight">
+                  {award.organization}
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
