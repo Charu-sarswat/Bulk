@@ -118,7 +118,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SECTION 3: DIRECT INSTAGRAM REELS VIDEO SHOWCASE */}
+      {/* SECTION 3: DIRECT INSTAGRAM REELS VIDEO SHOWCASE (HIDDEN TEMPORARILY)
       <section id="reels" className="py-20 px-4 sm:px-6 bg-[#FFF9EE] border-t border-gray-100">
         <div className="max-w-7xl mx-auto space-y-12">
           
@@ -147,13 +147,13 @@ export default function Landing() {
             </a>
           </div>
 
-          {/* Live Behold.so Instagram Widget Feed */}
           <div className="bg-white border border-[#F8A324]/30 rounded-3xl p-6">
             <behold-widget feed-id="2WnN1UUjIVz2nA9DMCtO"></behold-widget>
           </div>
 
         </div>
       </section>
+      */}
 
       {/* SECTION 4: DEDICATED PARTY & CATERING SECTION */}
       <section id="catering" className="py-20 px-4 sm:px-6 bg-[#FFFDF9] relative border-t border-gray-100">
