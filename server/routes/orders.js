@@ -532,6 +532,30 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Send Web Push notification to registered administrators
+    try {
+      const PushSubscription = require('../models/PushSubscription');
+      const { sendPushNotification } = require('../config/webPush');
+      
+      const adminSubscriptions = await PushSubscription.find();
+      const payload = {
+        title: 'New Order Placed! 🍽️',
+        body: `${newOrder.customer_name} placed a ${newOrder.order_channel.toUpperCase().replace('_', ' ')} order (${newOrder.order_number}) for ₹${newOrder.total_amount}.`,
+        url: `/admin/live-orders`,
+        icon: '/logo.png',
+        badge: '/logo.png'
+      };
+
+      for (const sub of adminSubscriptions) {
+        const isExpired = await sendPushNotification(sub.subscription, payload);
+        if (isExpired) {
+          await PushSubscription.deleteOne({ _id: sub._id });
+        }
+      }
+    } catch (pushErr) {
+      console.error('Error broadcasting push notifications:', pushErr.message);
+    }
+
     res.status(201).json({
       id: newOrder.order_number || newOrder._id,
       _id: newOrder._id,

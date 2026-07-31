@@ -5,7 +5,8 @@ import { useSocket } from '../../context/SocketContext';
 import { useToast } from '../../context/ToastContext';
 import { 
   CheckCircle, Clock, Utensils, Award, HelpCircle, 
-  ChevronLeft, MessageSquare, PhoneCall, Receipt, Sparkles 
+  ChevronLeft, MessageSquare, PhoneCall, Receipt, Sparkles,
+  Star, ExternalLink
 } from 'lucide-react';
 import { restaurantConfig } from '../../config/restaurant';
 
@@ -242,8 +243,35 @@ export default function OrderStatus() {
                 {order.payment_status === 'paid' ? 'Paid' : order.payment_method === 'cod' ? 'Cash on Delivery' : 'Pay at Counter'}
               </span>
               <span className="text-gray-300 font-semibold">•</span>
-              <span className="text-gray-500 font-bold uppercase">{order.payment_method} Payment</span>
             </div>
+          </div>
+        )}
+
+        {/* Google Review Prompt Card (Visible when order is served/delivered) */}
+        {(order.status === 'served' || order.status === 'delivered') && (
+          <div className="bg-gradient-to-br from-[#FFF9EE] to-white border border-[#F8A324]/40 rounded-2xl p-6 shadow-sm text-center space-y-4 animate-fade-in">
+            <div className="flex justify-center text-amber-500 gap-1 animate-bounce">
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-serif font-black text-lg text-gray-900">Enjoyed Your Meal? 😋</h3>
+              <p className="text-xs text-gray-650 font-light leading-relaxed">
+                Your feedback helps us grow! Please share your dining experience and rate us on Google.
+              </p>
+            </div>
+            <a
+              href="https://g.page/r/CYziHBfS7U_wEAE/review"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-md w-full"
+            >
+              <span>Write a Review</span>
+              <ExternalLink className="w-4 h-4 text-white" />
+            </a>
           </div>
         )}
 
@@ -372,7 +400,7 @@ export default function OrderStatus() {
             className="flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-4 rounded-xl text-xs transition-colors text-center cursor-pointer shadow-sm"
           >
             <PhoneCall className="w-4 h-4 text-[#F8A324]" />
-            <span>Call Waiter</span>
+            <span>Call Support</span>
           </a>
         </div>
       </main>

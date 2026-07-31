@@ -4,6 +4,10 @@ const http = require('http');
 const socketIo = require('socket.io');
 const db = require('./config/db');
 require('dotenv').config();
+const { initWebPush } = require('./config/webPush');
+
+// Initialize Web Push
+initWebPush();
 
 const app = express();
 const server = http.createServer(app);

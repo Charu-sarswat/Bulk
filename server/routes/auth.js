@@ -164,4 +164,59 @@ router.delete('/users/:id', auth, async (req, res) => {
   }
 });
 
+// @route   POST api/auth/push/subscribe
+// @desc    Register push notification subscription for admin
+// @access  Private (Admin/Staff/Kitchen)
+router.post('/push/subscribe', auth, async (req, res) => {
+  try {
+    const { subscription } = req.body;
+    if (!subscription || !subscription.endpoint) {
+      return res.status(400).json({ message: 'Invalid subscription payload' });
+    }
+
+    const PushSubscription = require('../models/PushSubscription');
+    
+    // Check if subscription already exists for this endpoint
+    let sub = await PushSubscription.findOne({ 'subscription.endpoint': subscription.endpoint });
+    
+    if (sub) {
+      // Update associated admin_id if needed
+      sub.admin_id = req.user.id;
+      await sub.save();
+    } else {
+      // Create new subscription entry
+      sub = new PushSubscription({
+        admin_id: req.user.id,
+        subscription
+      });
+      await sub.save();
+    }
+
+    res.status(201).json({ message: 'Push subscription registered successfully' });
+  } catch (err) {
+    console.error('Push subscribe error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   POST api/auth/push/unsubscribe
+// @desc    Remove push notification subscription
+// @access  Private (Admin/Staff/Kitchen)
+router.post('/push/unsubscribe', auth, async (req, res) => {
+  try {
+    const { endpoint } = req.body;
+    if (!endpoint) {
+      return res.status(400).json({ message: 'Endpoint is required' });
+    }
+
+    const PushSubscription = require('../models/PushSubscription');
+    await PushSubscription.deleteOne({ 'subscription.endpoint': endpoint });
+    
+    res.json({ message: 'Push subscription removed successfully' });
+  } catch (err) {
+    console.error('Push unsubscribe error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 module.exports = router;
