@@ -164,6 +164,34 @@ router.delete('/users/:id', auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/auth/users/:id/password
+// @desc    Change system user's password (Private - Admin only)
+// @access  Private (Admin only)
+router.put('/users/:id/password', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied: Admin only' });
+    }
+
+    const { password } = req.body;
+    if (!password || password.trim().length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+
+    const userObj = await User.findById(req.params.id);
+    if (!userObj) return res.status(404).json({ message: 'User not found' });
+
+    const salt = await bcrypt.genSalt(10);
+    userObj.password_hash = await bcrypt.hash(password, salt);
+    await userObj.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('Change password error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 // @route   POST api/auth/push/subscribe
 // @desc    Register push notification subscription for admin
 // @access  Private (Admin/Staff/Kitchen)

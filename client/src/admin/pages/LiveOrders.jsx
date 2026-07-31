@@ -172,7 +172,19 @@ export default function LiveOrders() {
         if (nextStatus === 'served' || nextStatus === 'cancelled') {
           return prevOrders.filter(order => order.id !== orderId);
         }
-        return prevOrders.map(order => order.id === orderId ? { ...order, status: nextStatus, updated_at: updatedOrder.updated_at } : order);
+        return prevOrders.map(order => 
+          order.id === orderId 
+            ? { 
+                ...order, 
+                status: nextStatus, 
+                updated_at: updatedOrder.updated_at,
+                delivery_job_id: updatedOrder.delivery_job_id || order.delivery_job_id,
+                delivery_status: updatedOrder.delivery_status || order.delivery_status,
+                delivery_rider_name: updatedOrder.delivery_rider_name || order.delivery_rider_name,
+                delivery_rider_phone: updatedOrder.delivery_rider_phone || order.delivery_rider_phone
+              } 
+            : order
+        );
       });
 
       addToast(`Order #${orderId} marked as ${nextStatus}`, 'success');
@@ -375,6 +387,15 @@ export default function LiveOrders() {
                           👤 {order.customer_name || 'Guest'}
                           {order.customer_phone && <span className="text-gray-400 block font-normal">{order.customer_phone}</span>}
                         </span>
+                        {/* Shadowfax Rider Info */}
+                        {order.order_channel === 'delivery' && order.delivery_job_id && (
+                          <div className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[9px] font-black rounded-lg p-1.5 mt-1.5 max-w-[200px]">
+                            <div>🚚 SFX Rider Details:</div>
+                            <div className="text-gray-700 font-bold mt-0.5">{order.delivery_rider_name || 'Assigning...'}</div>
+                            {order.delivery_rider_phone && <div className="text-gray-500 font-normal">{order.delivery_rider_phone}</div>}
+                            <div className="text-indigo-600 font-black uppercase tracking-wider text-[8px] mt-0.5">Status: {order.delivery_status || 'scheduled'}</div>
+                          </div>
+                        )}
                         {/* Payment Info */}
                         <span className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded uppercase mt-1.5 border ${
                           order.payment_status === 'paid' 

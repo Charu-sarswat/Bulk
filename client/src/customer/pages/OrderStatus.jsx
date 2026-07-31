@@ -51,11 +51,14 @@ export default function OrderStatus() {
       joinOrderRoom(orderId);
       
       socket.on('order_status_change', (updatedOrder) => {
-        if (updatedOrder.id === parseInt(orderId)) {
+        if (updatedOrder.id === orderId || updatedOrder.order_number === orderId) {
           setOrder((prevOrder) => ({
             ...prevOrder,
             status: updatedOrder.status,
             payment_status: updatedOrder.payment_status,
+            delivery_status: updatedOrder.delivery_status,
+            delivery_rider_name: updatedOrder.delivery_rider_name,
+            delivery_rider_phone: updatedOrder.delivery_rider_phone,
             updated_at: updatedOrder.updated_at
           }));
           
@@ -243,6 +246,43 @@ export default function OrderStatus() {
                 {order.payment_status === 'paid' ? 'Paid' : order.payment_method === 'cod' ? 'Cash on Delivery' : 'Pay at Counter'}
               </span>
               <span className="text-gray-300 font-semibold">•</span>
+            </div>
+          </div>
+        )}
+
+        {/* Shadowfax Live Delivery Valet Card */}
+        {order.order_channel === 'delivery' && order.delivery_job_id && (
+          <div className="bg-white border border-[#F8A324]/30 rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-extrabold shrink-0">
+                  🚚
+                </div>
+                <div>
+                  <h4 className="font-serif font-black text-sm text-gray-900">Shadowfax Delivery</h4>
+                  <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mt-0.5">ID: {order.delivery_job_id}</span>
+                </div>
+              </div>
+              <span className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                {order.delivery_status.replace(/_/g, ' ')}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between gap-4 text-xs">
+              <div>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Assigned Rider</span>
+                <span className="font-bold text-gray-900 text-sm mt-0.5 block">{order.delivery_rider_name || 'Assigning nearest rider...'}</span>
+              </div>
+              
+              {order.delivery_rider_phone && (
+                <a
+                  href={`tel:${order.delivery_rider_phone}`}
+                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-extrabold py-2 px-4 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <PhoneCall className="w-3.5 h-3.5" />
+                  <span>Call Rider</span>
+                </a>
+              )}
             </div>
           </div>
         )}

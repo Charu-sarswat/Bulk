@@ -122,13 +122,6 @@ export default function Login() {
             </button>
           </form>
         </div>
-
-        {/* Demo Hints */}
-        <div className="text-center mt-6 text-xs text-amber-100/60 font-medium space-x-3">
-          <span>Admin: <strong className="text-[#F8A324]">admin / admin123</strong></span>
-          <span>•</span>
-          <span>Staff: <strong className="text-[#F8A324]">staff / staff123</strong></span>
-        </div>
       </div>
     </div>
   );

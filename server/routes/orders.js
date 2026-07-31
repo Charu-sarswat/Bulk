@@ -587,7 +587,25 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
     }
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
-    if (status) order.status = status;
+    if (status) {
+      order.status = status;
+      
+      // If status is updated to ready AND it is a delivery order, trigger Shadowfax ride booking
+      if (status === 'ready' && order.order_channel === 'delivery' && !order.delivery_job_id) {
+        try {
+          const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
+          const job = await createShadowfaxDeliveryJob(order);
+          if (job.success) {
+            order.delivery_job_id = job.delivery_id;
+            order.delivery_status = job.status; // e.g. 'rider_assigned'
+            order.delivery_rider_name = job.rider_name;
+            order.delivery_rider_phone = job.rider_phone;
+          }
+        } catch (deliveryErr) {
+          console.error('Shadowfax scheduling error:', deliveryErr.message);
+        }
+      }
+    }
     if (payment_status) order.payment_status = payment_status;
     if (payment_utr !== undefined) order.payment_utr = payment_utr;
 
@@ -602,6 +620,9 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
         order_number: order.order_number,
         status: order.status,
         payment_status: order.payment_status,
+        delivery_status: order.delivery_status,
+        delivery_rider_name: order.delivery_rider_name,
+        delivery_rider_phone: order.delivery_rider_phone,
         updated_at: order.updated_at
       };
       io.emit('order_status_updated', payload);
@@ -615,10 +636,77 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       id: order._id,
       status: order.status,
       payment_status: order.payment_status,
+      delivery_status: order.delivery_status,
+      delivery_rider_name: order.delivery_rider_name,
+      delivery_rider_phone: order.delivery_rider_phone,
       message: 'Order updated'
     });
   } catch (err) {
     console.error('Update order status error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   POST /api/orders/delivery/webhook
+// @desc    Receive live delivery status updates from Shadowfax (Public)
+// @access  Public
+router.post('/delivery/webhook', async (req, res) => {
+  try {
+    const { client_order_number, sfx_order_id, status, rider_details } = req.body;
+
+    const order = await Order.findOne({ 
+      $or: [
+        { order_number: client_order_number },
+        { delivery_job_id: sfx_order_id }
+      ]
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Map Shadowfax status to our local delivery/order states
+    if (status) {
+      order.delivery_status = status; // e.g. 'at_store', 'out_for_delivery', 'delivered'
+      if (status === 'out_for_delivery') {
+        order.status = 'out_for_delivery';
+      } else if (status === 'delivered') {
+        order.status = 'delivered';
+        order.payment_status = 'paid'; // delivery confirmed
+      }
+    }
+
+    if (rider_details) {
+      if (rider_details.name) order.delivery_rider_name = rider_details.name;
+      if (rider_details.phone) order.delivery_rider_phone = rider_details.phone;
+    }
+
+    await order.save();
+
+    // Broadcast update via Socket.IO
+    const io = req.app.get('socketio');
+    if (io) {
+      const payload = {
+        id: order.order_number || order._id,
+        _id: order._id,
+        order_number: order.order_number,
+        status: order.status,
+        payment_status: order.payment_status,
+        delivery_status: order.delivery_status,
+        delivery_rider_name: order.delivery_rider_name,
+        delivery_rider_phone: order.delivery_rider_phone,
+        updated_at: order.updated_at
+      };
+      io.emit('order_status_updated', payload);
+      io.to(`order_${order._id}`).emit('order_status_change', payload);
+      if (order.order_number) {
+        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+      }
+    }
+
+    res.json({ success: true, message: 'Status updated successfully' });
+  } catch (err) {
+    console.error('Shadowfax webhook processing error:', err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 });

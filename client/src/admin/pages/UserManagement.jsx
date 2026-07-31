@@ -22,6 +22,11 @@ export default function UserManagement() {
   const [role, setRole] = useState('staff');
   const [submitting, setSubmitting] = useState(false);
 
+  // Password change states
+  const [selectedUserForPassword, setSelectedUserForPassword] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordChanging, setPasswordChanging] = useState(false);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -81,6 +86,38 @@ export default function UserManagement() {
       addToast('Error creating user account', 'error');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.trim().length < 6) {
+      addToast('Password must be at least 6 characters long', 'warning');
+      return;
+    }
+    setPasswordChanging(true);
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/users/${selectedUserForPassword.id}/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ password: newPassword })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        addToast(`Password for ${selectedUserForPassword.username} updated!`, 'success');
+        setNewPassword('');
+        setSelectedUserForPassword(null);
+      } else {
+        addToast(data.message || 'Failed to update password', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Network error while updating password', 'error');
+    } finally {
+      setPasswordChanging(false);
     }
   };
 
@@ -257,11 +294,18 @@ export default function UserManagement() {
                     <td className="py-4 px-4 sm:px-6 text-gray-400 font-light">
                       {new Date(u.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
-                    <td className="py-4 px-4 sm:px-6 text-right">
+                    <td className="py-4 px-4 sm:px-6 text-right space-x-1">
+                      <button
+                        onClick={() => setSelectedUserForPassword(u)}
+                        className="p-2 text-amber-600 hover:bg-amber-50 rounded-xl transition-all cursor-pointer inline-block"
+                        title="Change user password"
+                      >
+                        <Key className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => handleDeleteUser(u.id, u.username)}
                         disabled={u.id === currentUser.id}
-                        className="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer disabled:opacity-30 disabled:hover:bg-transparent"
+                        className="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer disabled:opacity-30 disabled:hover:bg-transparent inline-block"
                         title={u.id === currentUser.id ? "Cannot delete active session" : "Delete system user"}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -369,6 +413,71 @@ export default function UserManagement() {
                 >
                   <Check className="w-4 h-4" />
                   {submitting ? 'Creating...' : 'Create User'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {selectedUserForPassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-[#FFF9EE] text-gray-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-[#F8A324]/20 flex flex-col">
+            <div className="p-5 border-b border-[#F8A324]/20 flex justify-between items-center bg-white shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#691F1A]">
+                  <Key className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-base text-gray-900">Change Password</h3>
+                  <span className="text-[10px] text-[#691F1A] uppercase tracking-wider font-extrabold block">User: {selectedUserForPassword.username}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedUserForPassword(null);
+                  setNewPassword('');
+                }} 
+                className="w-8 h-8 rounded-full bg-gray-150 flex items-center justify-center hover:bg-gray-200 transition-colors text-gray-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleChangePassword} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="block text-[11px] font-black uppercase text-gray-500 tracking-wider">
+                  New Password *
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Enter at least 6 characters"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#F8A324]"
+                />
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedUserForPassword(null);
+                    setNewPassword('');
+                  }}
+                  className="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-3 rounded-xl transition-all cursor-pointer font-bold text-xs uppercase"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={passwordChanging}
+                  className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  {passwordChanging ? 'Updating...' : 'Update Password'}
                 </button>
               </div>
             </form>

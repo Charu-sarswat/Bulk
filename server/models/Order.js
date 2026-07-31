@@ -21,6 +21,10 @@ const orderSchema = new mongoose.Schema({
     default: 'dine_in' 
   },
   delivery_address: { type: String, default: '' },
+  delivery_job_id: { type: String, default: '' },
+  delivery_rider_name: { type: String, default: '' },
+  delivery_rider_phone: { type: String, default: '' },
+  delivery_status: { type: String, default: '' }, // 'assigning', 'rider_assigned', 'at_store', 'out_for_delivery', 'delivered'
   scheduled_time: { type: Date, default: null },
   status: { 
     type: String, 
