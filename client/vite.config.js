@@ -11,23 +11,26 @@ export default defineConfig({
     strictPort: true, // Fail if port is taken (instead of silently changing)
   },
   build: {
-    // Generate source maps for better debugging in production (optional)
     sourcemap: false,
-    // Improve chunk splitting for better caching & LCP/FCP (Core Web Vitals)
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          icons: ['lucide-react'],
+        // rolldown (Vite 8) requires manualChunks as a function, not an object
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor';
+          }
+          if (id.includes('node_modules/react-router-dom') || id.includes('node_modules/react-router')) {
+            return 'router';
+          }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'icons';
+          }
         },
-        // Stable asset filenames improve caching
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
       },
     },
-    // Reduce chunk size warnings threshold
     chunkSizeWarningLimit: 1000,
   },
 })
