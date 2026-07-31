@@ -65,6 +65,16 @@ export default function Menu() {
     }
   }, [tableId, apiUrl]);
 
+  // Read search query parameter from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get('search');
+    if (searchParam) {
+      setSearchQuery(searchParam);
+      setIsSearchOpen(true);
+    }
+  }, []);
+
   // Fetch Menu Categories and Items
   const fetchMenuData = useCallback(async () => {
     try {

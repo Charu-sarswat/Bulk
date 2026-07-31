@@ -428,6 +428,7 @@ export default function Landing() {
 function AwardsShowcase() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const [lightboxImage, setLightboxImage] = useState(null);
   const activeAward = restaurantData.awards[activeIdx] || {};
   const awardImages = activeAward.images || [];
 
@@ -436,14 +437,20 @@ function AwardsShowcase() {
     setActiveImgIdx(0);
   }, [activeIdx]);
 
+  const activeSrc = awardImages[activeImgIdx] || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600';
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch md:bg-white md:border md:border-[#F8A324]/30 md:rounded-3xl p-0 md:p-6 sm:md:p-8">
       {/* Left Column: Active Highlight (7 Cols) */}
       <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
         <div className="space-y-4">
-          <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#691F1A]/5 border border-[#F8A324]/10 shadow-inner group">
+          <div 
+            onClick={() => setLightboxImage(activeSrc)}
+            className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#691F1A]/5 border border-[#F8A324]/10 shadow-inner group cursor-zoom-in"
+            title="Click to view full image"
+          >
             <img 
-              src={awardImages[activeImgIdx] || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600'} 
+              src={activeSrc} 
               alt={activeAward.title} 
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
             />
@@ -451,9 +458,15 @@ function AwardsShowcase() {
               🏆 Award Year {activeAward.year}
             </div>
 
+            {/* Lightbox Icon Indicator on Hover */}
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none" />
+
             {/* If the active award has multiple images, show thumbnails on top of image to toggle */}
             {awardImages.length > 1 && (
-              <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 z-10">
+              <div 
+                className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 z-10"
+                onClick={(e) => e.stopPropagation()} // Prevent opening lightbox when clicking thumbnails
+              >
                 {awardImages.map((img, idx) => (
                   <button
                     key={idx}
@@ -540,6 +553,44 @@ function AwardsShowcase() {
           );
         })}
       </div>
+
+      {/* Full Screen Lightbox Modal */}
+      {lightboxImage && (
+        <div 
+          onClick={() => setLightboxImage(null)}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-center items-center p-4 cursor-zoom-out animate-fade-in"
+        >
+          {/* Close Button */}
+          <button 
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer text-xl font-bold shadow-lg z-10"
+          >
+            ✕
+          </button>
+          
+          <div className="relative max-w-4xl max-h-[85vh] flex flex-col items-center justify-center">
+            <img 
+              src={lightboxImage} 
+              alt="Award Full View" 
+              className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10 transition-transform duration-300 scale-100"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image itself
+            />
+            
+            {/* Description Overlay Banner */}
+            <div 
+              className="w-full mt-4 bg-[#1A0A09]/90 border border-[#F8A324]/30 p-4 rounded-xl text-center text-white space-y-1 cursor-default shrink-0 shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h4 className="font-serif font-black text-base text-[#F8A324] leading-tight">
+                {activeAward.title}
+              </h4>
+              <p className="text-[10px] sm:text-xs text-amber-100/90 font-light leading-relaxed max-w-2xl mx-auto">
+                {activeAward.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

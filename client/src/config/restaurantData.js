@@ -8,7 +8,7 @@ export const restaurantData = {
   // Core Brand Identity
   name: "Bombay Chowpati",
   subTitle: "Chat Bhandar",
-  tagline: "100% Pure Veg Authentic Mumbai Chaat & Fast Food",
+  tagline: "100% Pure Veg Authentic Mumbai Chat & Fast Food",
   description: "Experience the vibrant culinary heritage of authentic Mumbai street food in Hyderabad. From crispy Pani Puris and royal Raj Kachori to sizzling Amul Butter Pav Bhaji, every dish is prepared fresh with 100% pure vegetarian passion.",
   establishedYear: "2015",
   isPureVeg: true,
@@ -67,6 +67,7 @@ export const restaurantData = {
       description: "Honoured with the 'Best Chat Bhandar of the Year' award at the Pride of Southern India Awards 2026. The award was presented by legendary Bollywood Actress and former Member of Rajya Sabha, Jaya Prada, at The Park Hyderabad.",
       icon: "Trophy",
       images: [
+        "/awards/img6.jpeg",
         "/awards/img4.jpeg",
         "/awards/img1.jpg"
       ]
@@ -100,7 +101,7 @@ export const restaurantData = {
   cateringPackages: [
     {
       id: 1,
-      title: "Live Pani Puri & Chaat Counter",
+      title: "Live Pani Puri & Chat Counter",
       subtitle: "Interactive Live Setup",
       description: "Hygienic Mineral Water Pani Puri (3 Flavors), Sev Puri, Dahi Puri, and Bhel Puri prepared fresh live for your guests.",
       badge: "Most Popular",
@@ -108,11 +109,11 @@ export const restaurantData = {
     },
     {
       id: 2,
-      title: "Sizzling Amul Pav Bhaji Tawa",
+      title: "Sizzling Tawa Pav Bhaji",
       subtitle: "Hot Butter Feast",
       description: "Live hot Tawa Pav Bhaji cooked with pure Amul butter, served with soft toasted Pav, fresh lemon, and chopped onions.",
       badge: "Chef Special",
-      items: ["Amul Butter Pav Bhaji", "Cheese Pav Bhaji", "Masala Pav", "Garlic Chutney", "Kachumber Salad"]
+      items: ["Special Butter Pav Bhaji", "Cheese Pav Bhaji", "Masala Pav", "Garlic Chutney", "Chole Kulche"]
     },
     {
       id: 3,
@@ -248,11 +249,11 @@ export const restaurantData = {
       { name: "Staff & Admin Portal", path: "/admin/login" }
     ],
     topSpecialties: [
-      { name: "Bombay Pani Puri (8 Pcs)", path: "/menu" },
-      { name: "Special Amul Butter Pav Bhaji", path: "/menu" },
-      { name: "Royal Raj Kachori", path: "/menu" },
-      { name: "Chole Bhature & Lassi", path: "/menu" },
-      { name: "Pure Veg Dum Biryani", path: "/menu" }
+      { name: "Bombay Pani Puri (5 Pcs)", path: "/menu?search=Pani+Puri" },
+      { name: "Special Butter Pav Bhaji", path: "/menu?search=Pav+Bhaji" },
+      { name: "Special Ragda Chat", path: "/menu?search=Ragda+Chat" },
+      { name: "Special Chole Kulche", path: "/menu?search=Chole+Kulche" },
+      { name: "Special Dahi Puri", path: "/menu?search=Dahi+Puri" }
     ]
   }
 };
