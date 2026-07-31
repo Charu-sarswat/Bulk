@@ -46,7 +46,7 @@ export const restaurantData = {
     fallbackImage: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=1600",
     badgeText: "100% Pure Vegetarian Culinary Art",
     titleLine1: "Authentic Mumbai",
-    titleLine2: "Chaat & Street Food",
+    titleLine2: "Chat & Street Food",
     subtitle: "Crispy Puris, Tangy Chutneys, Sizzling Pav Bhaji & Pure Veg Feasts in Abids, Hyderabad."
   },
 
