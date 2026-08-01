@@ -132,6 +132,14 @@ export default function LiveOrders() {
           if (updatedOrder.status === 'served' || updatedOrder.status === 'delivered' || updatedOrder.status === 'cancelled') {
             return prevOrders.filter(order => order.id !== updatedOrder.id);
           }
+          
+          const exists = prevOrders.some(order => order.id === updatedOrder.id);
+          if (!exists) {
+            // It's a new order being synced! Add it to the list
+            playNewOrderSound();
+            return [updatedOrder, ...prevOrders];
+          }
+
           // Otherwise, update properties
           return prevOrders.map(order => order.id === updatedOrder.id ? { ...order, status: updatedOrder.status, payment_status: updatedOrder.payment_status } : order);
         });
@@ -290,6 +298,7 @@ export default function LiveOrders() {
               className="bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#F8A324] w-full md:w-auto cursor-pointer"
             >
               <option value="ALL">All Active Statuses</option>
+              <option value="hold">On Hold</option>
               <option value="received">Received / New</option>
               <option value="preparing">In Preparation</option>
               <option value="ready">Ready to Serve</option>
@@ -336,18 +345,23 @@ export default function LiveOrders() {
                     <tr 
                       key={order.id} 
                       className={`hover:bg-gray-50/20 transition-colors ${
-                        isDelayed ? 'bg-rose-50/30' : ''
+                        order.status === 'hold' ? 'bg-orange-50/40 border-l-4 border-orange-400' : isDelayed ? 'bg-rose-50/30' : ''
                       }`}
                     >
                       {/* Ticket ID */}
                       <td className="py-4 px-4 sm:px-6">
                         <span className="font-bold text-gray-900 block whitespace-nowrap">#{order.order_number || order.id}</span>
+                        {order.status === 'hold' && (
+                          <span className="bg-orange-100 text-orange-800 text-[8px] font-black px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-orange-200 block w-max animate-pulse">
+                            ⏸️ On Hold
+                          </span>
+                        )}
                         {order.scheduled_time && (
                           <span className="bg-purple-100 text-purple-800 text-[8px] font-bold px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-purple-250 block w-max">
                             📅 {new Date(order.scheduled_time).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
                           </span>
                         )}
-                        {isDelayed && (
+                        {isDelayed && order.status !== 'hold' && (
                           <span className="bg-rose-100 text-rose-800 text-[8px] font-bold px-1.5 py-0.5 rounded mt-1 inline-block uppercase border border-rose-200 block w-max">
                             Urgent / Delay
                           </span>
@@ -459,6 +473,14 @@ export default function LiveOrders() {
                       {/* Actions */}
                       <td className="py-4 px-4 sm:px-6 text-center">
                         <div className="flex flex-row gap-2 items-center justify-center">
+                          {order.status === 'hold' && (
+                            <button
+                              onClick={() => updateOrderStatus(order.id, 'preparing')}
+                              className="w-max bg-orange-500 hover:bg-orange-600 text-white font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm shrink-0"
+                            >
+                              Release & Prepare
+                            </button>
+                          )}
                           {order.status === 'received' && (
                             <button
                               onClick={() => updateOrderStatus(order.id, 'preparing')}

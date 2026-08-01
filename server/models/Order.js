@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema({
   scheduled_time: { type: Date, default: null },
   status: { 
     type: String, 
-    enum: ['received', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'served', 'cancelled'], 
+    enum: ['received', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'served', 'cancelled', 'hold'], 
     default: 'received' 
   },
   payment_status: { 

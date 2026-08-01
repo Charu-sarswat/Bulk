@@ -298,20 +298,29 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
       filter.status = status;
     }
 
+    // India Timezone Date Range (UTC+5:30)
+    const indiaOffset = 5.5 * 60 * 60 * 1000;
+
     // RBAC Date Protection: Staff can ONLY see today's orders
     if (req.user.role === 'staff') {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
+      const now = new Date();
+      const startOfDay = new Date(now.getTime() + indiaOffset);
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      const dbStart = new Date(startOfDay.getTime() - indiaOffset);
 
-      filter.created_at = { $gte: startOfDay, $lte: endOfDay };
+      const endOfDay = new Date(now.getTime() + indiaOffset);
+      endOfDay.setUTCHours(23, 59, 59, 999);
+      const dbEnd = new Date(endOfDay.getTime() - indiaOffset);
+
+      filter.created_at = { $gte: dbStart, $lte: dbEnd };
     } else if (date) {
       const selectedDate = new Date(date);
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999);
+      // Treat the date input as local local time
+      const startOfDay = new Date(selectedDate.getTime());
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(selectedDate.getTime());
+      endOfDay.setUTCHours(23, 59, 59, 999);
 
       filter.created_at = { $gte: startOfDay, $lte: endOfDay };
     }
@@ -536,7 +545,7 @@ router.post('/', async (req, res) => {
       customer_phone: customer_phone.trim(),
       order_channel: order_channel || 'dine_in',
       scheduled_time: scheduled_time ? new Date(scheduled_time) : null,
-      status: 'received',
+      status: req.body.status || 'received',
       payment_status: 'pending',
       payment_method: payment_method || 'upi',
       payment_utr: payment_utr || '',
@@ -612,6 +621,170 @@ router.post('/', async (req, res) => {
 
   } catch (err) {
     console.error('Create order error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   PUT /api/orders/:id/items
+// @desc    Update order items and adjust raw materials inventory (Admin/Staff only)
+router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  const { items } = req.body;
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ message: 'Order must contain at least one item' });
+  }
+
+  try {
+    let order = null;
+    const mongoose = require('mongoose');
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      order = await Order.findById(req.params.id);
+    }
+    if (!order) {
+      order = await Order.findOne({ order_number: req.params.id });
+    }
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    // Protect completed/cancelled orders from being edited
+    if (['served', 'delivered', 'cancelled'].includes(order.status)) {
+      return res.status(400).json({ message: 'Completed or cancelled orders cannot be edited' });
+    }
+
+    const MenuItem = mongoose.model('MenuItem');
+    const RawMaterial = require('../models/RawMaterial');
+    const InventoryLog = require('../models/InventoryLog');
+
+    // 1. Restore raw materials from OLD items
+    for (const oldItem of order.items) {
+      if (oldItem.menu_item_id) {
+        const mItem = await MenuItem.findById(oldItem.menu_item_id);
+        if (mItem && mItem.recipe && mItem.recipe.length > 0) {
+          for (const ing of mItem.recipe) {
+            if (ing.raw_material_id) {
+              const rawMat = await RawMaterial.findById(ing.raw_material_id);
+              if (rawMat) {
+                const oldRequiredQty = Number(ing.quantity_required) * Number(oldItem.quantity);
+                rawMat.stock_quantity += oldRequiredQty;
+                await rawMat.save();
+
+                await InventoryLog.create({
+                  raw_material_id: rawMat._id,
+                  change_type: 'STOCK_ADD',
+                  quantity_change: oldRequiredQty,
+                  previous_stock: rawMat.stock_quantity - oldRequiredQty,
+                  new_stock: rawMat.stock_quantity,
+                  reason: `Restored: Order #${order.order_number} items adjustment`,
+                  recorded_by: req.user.username || 'System'
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 2. Compute new items and deduct raw materials
+    let total_amount = 0;
+    const newOrderItems = [];
+
+    for (const item of items) {
+      let itemPrice = Number(item.price);
+      let itemName = item.name;
+
+      if (item.menu_item_id) {
+        const menuItem = await MenuItem.findById(item.menu_item_id);
+        if (menuItem) {
+          itemName = menuItem.name;
+          itemPrice = Number(menuItem.price);
+
+          // Deduct raw materials recipe
+          if (menuItem.recipe && menuItem.recipe.length > 0) {
+            for (const ing of menuItem.recipe) {
+              if (ing.raw_material_id) {
+                const rawMat = await RawMaterial.findById(ing.raw_material_id);
+                if (rawMat) {
+                  const newRequiredQty = Number(ing.quantity_required) * Number(item.quantity);
+                  const prevRawStock = rawMat.stock_quantity;
+                  const newRawStock = Math.max(0, prevRawStock - newRequiredQty);
+
+                  rawMat.stock_quantity = newRawStock;
+                  await rawMat.save();
+
+                  await InventoryLog.create({
+                    raw_material_id: rawMat._id,
+                    change_type: 'ORDER_DEDUCT',
+                    quantity_change: -newRequiredQty,
+                    previous_stock: prevRawStock,
+                    new_stock: newRawStock,
+                    reason: `Auto deduction for Order #${order.order_number} adjustment`,
+                    recorded_by: req.user.username || 'System'
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const lineTotal = itemPrice * Number(item.quantity);
+      total_amount += lineTotal;
+
+      newOrderItems.push({
+        menu_item_id: item.menu_item_id || null,
+        name: itemName,
+        quantity: Number(item.quantity),
+        price: itemPrice,
+        notes: item.notes || ''
+      });
+    }
+
+    order.items = newOrderItems;
+    order.total_amount = total_amount;
+    await order.save();
+
+    // Broadcast socket event for real-time kitchen & admin screens
+    const io = req.app.get('socketio');
+    if (io) {
+      const payload = {
+        id: order.order_number || order._id,
+        _id: order._id,
+        order_number: order.order_number,
+        table_number: order.table_snapshot,
+        customer_name: order.customer_name,
+        customer_phone: order.customer_phone,
+        order_channel: order.order_channel,
+        scheduled_time: order.scheduled_time,
+        total_amount: order.total_amount,
+        status: order.status,
+        payment_status: order.payment_status,
+        payment_method: order.payment_method,
+        delivery_address: order.delivery_address,
+        items: order.items.map(i => ({
+          id: i._id,
+          menu_item_id: i.menu_item_id,
+          name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+          notes: i.notes
+        })),
+        created_at: order.created_at
+      };
+      io.emit('order_status_change', payload);
+      if (order.order_number) {
+        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+      }
+    }
+
+    res.json({
+      message: 'Order items updated successfully',
+      order: {
+        id: order.order_number || order._id,
+        order_number: order.order_number,
+        total_amount: order.total_amount,
+        items: order.items
+      }
+    });
+  } catch (err) {
+    console.error('Update order items error:', err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 });

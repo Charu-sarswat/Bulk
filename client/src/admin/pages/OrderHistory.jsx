@@ -4,7 +4,7 @@ import { useToast } from '../../context/ToastContext';
 import { restaurantConfig } from '../../config/restaurant';
 import { exportToCSV } from '../../utils/csvExporter';
 import { 
-  FileText, Search, Eye, Printer, X, Plus, 
+  FileText, Search, Eye, Printer, X, Plus, Edit,
   Utensils, User, CreditCard, ShoppingBag, CheckCircle2, 
   AlertTriangle, Filter, Send, Download, IndianRupee, TrendingUp
 } from 'lucide-react';
@@ -32,6 +32,12 @@ export default function OrderHistory() {
   const [customers, setCustomers] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
+  
+  // States for Editing Order Items
+  const [isEditingItems, setIsEditingItems] = useState(false);
+  const [editItemsList, setEditItemsList] = useState([]);
+  const [editSearchQuery, setEditSearchQuery] = useState('');
+  const [editingOrderId, setEditingOrderId] = useState(null);
   
   // Create Order Form State
   const [selectedTableId, setSelectedTableId] = useState('');
@@ -123,6 +129,7 @@ export default function OrderHistory() {
 
   const handleOpenCreateModal = () => {
     fetchCreateOrderDependencies();
+    setEditingOrderId(null);
     setCart([]);
     setSelectedTableId('');
     setCustomTableNumber('');
@@ -137,6 +144,41 @@ export default function OrderHistory() {
     setOrderTimeType('now');
     setScheduledDate('');
     setScheduledTime('');
+    setCreateModalOpen(true);
+  };
+
+  const handleOpenEditModal = (order) => {
+    fetchCreateOrderDependencies();
+    setEditingOrderId(order.id);
+    setCart(order.items.map(item => ({
+      item_id: item.menu_item_id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      notes: item.notes || ''
+    })));
+    setSelectedTableId(order.table_id || '');
+    setCustomTableNumber(order.table_snapshot || '');
+    setSelectedCustomerId(order.customer_id || '');
+    setGuestName(order.customer_name || '');
+    setGuestPhone(order.customer_phone || '');
+    setPaymentMethod(order.payment_method || 'counter');
+    setPaymentStatus(order.payment_status || 'paid');
+    setOrderNotes(order.notes || '');
+    setOrderChannel(order.order_channel || 'dine_in');
+    setDeliveryAddress(order.delivery_address || '');
+    if (order.scheduled_time) {
+      setOrderTimeType('scheduled');
+      const d = new Date(order.scheduled_time);
+      const dateStr = d.toISOString().split('T')[0];
+      const timeStr = d.toTimeString().split(' ')[0].substring(0, 5);
+      setScheduledDate(dateStr);
+      setScheduledTime(timeStr);
+    } else {
+      setOrderTimeType('now');
+      setScheduledDate('');
+      setScheduledTime('');
+    }
     setCreateModalOpen(true);
   };
 
@@ -183,8 +225,47 @@ export default function OrderHistory() {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
 
-  const handleCreateOrderSubmit = async (e) => {
-    e.preventDefault();
+  const handleCreateOrderSubmit = async (e, customStatus = 'received') => {
+    if (e) e.preventDefault();
+
+    if (editingOrderId) {
+      if (cart.length === 0) {
+        addToast('Order must contain at least one dish.', 'warning');
+        return;
+      }
+      try {
+        const res = await fetch(`${apiUrl}/api/orders/${editingOrderId}/items`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            items: cart.map(c => ({
+              menu_item_id: c.item_id,
+              name: c.name,
+              price: c.price,
+              quantity: c.quantity,
+              notes: c.notes || null
+            }))
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          addToast(`Order #${editingOrderId} updated successfully!`, 'success');
+          setCreateModalOpen(false);
+          setEditingOrderId(null);
+          fetchOrders();
+        } else {
+          addToast(data.message || 'Failed to update order', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        addToast('Error saving order updates.', 'error');
+      }
+      return;
+    }
+
     if (cart.length === 0) {
       addToast('Please add at least one dish to the order.', 'warning');
       return;
@@ -234,6 +315,7 @@ export default function OrderHistory() {
       order_channel: orderChannel,
       delivery_address: orderChannel === 'delivery' ? deliveryAddress.trim() : '',
       scheduled_time: orderTimeType === 'scheduled' && scheduledDate && scheduledTime ? `${scheduledDate}T${scheduledTime}:00` : null,
+      status: customStatus,
       items: cart.map(c => ({
         menu_item_id: c.item_id,
         name: c.name,
@@ -263,6 +345,89 @@ export default function OrderHistory() {
     } catch (err) {
       console.error(err);
       addToast('Error placing order.', 'error');
+    }
+  };
+
+  const handleStartEditItems = () => {
+    setEditItemsList(selectedOrder.items.map(item => ({
+      menu_item_id: item.menu_item_id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      notes: item.notes || ''
+    })));
+    setIsEditingItems(true);
+  };
+
+  const handleUpdateEditItemQty = (menuItemId, change) => {
+    setEditItemsList(prev => prev.map(item => {
+      if (item.menu_item_id === menuItemId) {
+        const newQty = Math.max(1, item.quantity + change);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    }));
+  };
+
+  const handleUpdateEditItemNotes = (menuItemId, notes) => {
+    setEditItemsList(prev => prev.map(item => {
+      if (item.menu_item_id === menuItemId) {
+        return { ...item, notes };
+      }
+      return item;
+    }));
+  };
+
+  const handleRemoveEditItem = (menuItemId) => {
+    setEditItemsList(prev => prev.filter(item => item.menu_item_id !== menuItemId));
+  };
+
+  const handleAddDishToEditList = (dish) => {
+    const existing = editItemsList.find(i => i.menu_item_id === dish.id);
+    if (existing) {
+      setEditItemsList(editItemsList.map(i => i.menu_item_id === dish.id ? { ...i, quantity: i.quantity + 1 } : i));
+    } else {
+      setEditItemsList([...editItemsList, {
+        menu_item_id: dish.id,
+        name: dish.name,
+        price: dish.price,
+        quantity: 1,
+        notes: ''
+      }]);
+    }
+    setEditSearchQuery('');
+  };
+
+  const handleSaveEditedItems = async () => {
+    if (editItemsList.length === 0) {
+      addToast('Order must contain at least one item', 'warning');
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/api/orders/${selectedOrder.id}/items`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ items: editItemsList })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast('Order items updated successfully!', 'success');
+        setIsEditingItems(false);
+        setSelectedOrder(prev => ({
+          ...prev,
+          items: data.order.items,
+          total_amount: data.order.total_amount
+        }));
+        fetchOrders();
+      } else {
+        addToast(data.message || 'Failed to update order items', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Error saving order updates.', 'error');
     }
   };
 
@@ -513,6 +678,7 @@ export default function OrderHistory() {
                 <option value="preparing">Preparing</option>
                 <option value="ready">Ready</option>
                 <option value="served">Served</option>
+                <option value="hold">On Hold</option>
                 <option value="cancelled">Cancelled</option>
               </select>
 
@@ -575,7 +741,8 @@ export default function OrderHistory() {
                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
                          order.status === 'served' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700' : 
                          order.status === 'cancelled' ? 'bg-red-50 text-red-700' : 
-                         order.status === 'out_for_delivery' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700'
+                         order.status === 'out_for_delivery' ? 'bg-purple-50 text-purple-700' :
+                         order.status === 'hold' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-blue-50 text-blue-700'
                        }`}>
                          {order.status.replace(/_/g, ' ')}
                        </span>
@@ -599,6 +766,16 @@ export default function OrderHistory() {
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
+                        {/* Only allow editing if status is not served, delivered, or cancelled */}
+                        {!['served', 'delivered', 'cancelled'].includes(order.status) && (
+                          <button
+                            onClick={() => handleOpenEditModal(order)}
+                            className="p-1.5 bg-gray-100 text-[#691F1A] hover:bg-orange-500/20 hover:text-orange-600 rounded-lg transition-colors cursor-pointer"
+                            title="Edit Order"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                         <button
                           onClick={() => handlePrintBill(order)}
                           className="p-1.5 bg-gray-100 text-gray-600 hover:bg-gold-500/20 hover:text-gold-700 rounded-lg transition-colors cursor-pointer"
@@ -639,11 +816,13 @@ export default function OrderHistory() {
               <div>
                 <h3 className="font-serif font-bold text-xl text-gray-900 flex items-center gap-2">
                   <Plus className="w-5 h-5 text-gold-500" />
-                  Create New Order (Admin)
+                  {editingOrderId ? `Edit Order #${editingOrderId}` : 'Create New Order (Admin)'}
                 </h3>
-                <span className="text-xs text-gray-400">Place walk-in or phone order with real-time stock awareness</span>
+                <span className="text-xs text-gray-400">
+                  {editingOrderId ? 'Modify items, quantities, and instructions on this active ticket' : 'Place walk-in or phone order with real-time stock awareness'}
+                </span>
               </div>
-              <button onClick={() => setCreateModalOpen(false)} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <button onClick={() => { setCreateModalOpen(false); setEditingOrderId(null); }} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -944,15 +1123,37 @@ export default function OrderHistory() {
                     </span>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={cart.length === 0}
-                    className={`w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer ${
-                      cart.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gold-500 hover:bg-gold-600'
-                    }`}
-                  >
-                    Place & Print Order
-                  </button>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {editingOrderId ? (
+                      <button
+                        type="button"
+                        disabled={cart.length === 0}
+                        onClick={() => handleCreateOrderSubmit(null)}
+                        className="col-span-2 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer bg-gold-500 hover:bg-gold-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      >
+                        Save Order Changes
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          disabled={cart.length === 0}
+                          onClick={() => handleCreateOrderSubmit(null, 'hold')}
+                          className={`py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 disabled:cursor-not-allowed`}
+                        >
+                          Hold Order
+                        </button>
+                        <button
+                          type="button"
+                          disabled={cart.length === 0}
+                          onClick={() => handleCreateOrderSubmit(null, 'received')}
+                          className={`py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer bg-gold-500 hover:bg-gold-600 disabled:bg-gray-300 disabled:cursor-not-allowed`}
+                        >
+                          Place & Print
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </form>
             </div>
@@ -966,9 +1167,9 @@ export default function OrderHistory() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col slide-up">
             <div className="flex justify-between items-center p-5 border-b border-gray-100">
               <h3 className="font-serif font-bold text-xl text-gray-900 flex items-center gap-2">
-                Order #{selectedOrder.id}
-              </h3>
-              <button onClick={() => setSelectedOrder(null)} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
+                Order #{selectedOrder.order_number || selectedOrder.id}
+            </h3>
+            <button onClick={() => { setSelectedOrder(null); setIsEditingItems(false); }} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1006,6 +1207,7 @@ export default function OrderHistory() {
                       onChange={(e) => handleUpdateOrderField(selectedOrder.id, { status: e.target.value })}
                       className="bg-white border border-gray-200 text-gray-800 text-xs font-semibold rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer"
                     >
+                      <option value="hold">On Hold</option>
                       <option value="received">Received</option>
                       <option value="preparing">Preparing</option>
                       <option value="ready">Ready</option>
@@ -1031,27 +1233,151 @@ export default function OrderHistory() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="text-xs text-gray-400 font-bold tracking-wider uppercase border-b border-gray-100 pb-2">Items</div>
-                {selectedOrder.items?.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-start">
-                    <div>
-                       <div className="text-sm font-semibold text-gray-800">{item.quantity}x {item.name}</div>
-                      {item.notes && <div className="text-xs text-amber-600 mt-0.5">Note: {item.notes}</div>}
-                    </div>
-                    <div className="text-sm font-bold text-gray-900">
-                      {restaurantConfig.currency}{(item.price * item.quantity).toFixed(2)}
-                    </div>
+              {isEditingItems ? (
+                <div className="space-y-4">
+                  <div className="text-xs text-gray-400 font-bold tracking-wider uppercase border-b border-gray-100 pb-2">Edit Order Items</div>
+                  
+                  {/* Search bar to add new items */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search and add a dish..."
+                      value={editSearchQuery}
+                      onChange={(e) => setEditSearchQuery(e.target.value)}
+                      className="w-full bg-[#FFF9EE]/30 border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#F8A324]"
+                    />
+                    
+                    {editSearchQuery.trim() && (
+                      <div className="absolute left-0 right-0 z-30 mt-1 max-h-40 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg divide-y divide-gray-50">
+                        {menuItems
+                          .filter(item => item.name.toLowerCase().includes(editSearchQuery.toLowerCase()))
+                          .map(item => (
+                            <button
+                              key={item.id}
+                              type="button"
+                              onClick={() => handleAddDishToEditList(item)}
+                              className="w-full text-left px-4 py-2 text-xs font-bold text-gray-800 hover:bg-amber-50/50 flex justify-between cursor-pointer"
+                            >
+                              <span>{item.name}</span>
+                              <span className="text-gold-600">{restaurantConfig.currency}{item.price.toFixed(2)}</span>
+                            </button>
+                          ))}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-              
-              <div className="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
-                <span className="font-bold text-gray-700">Total</span>
-                <span className="font-bold text-xl text-gold-600">
-                  {restaurantConfig.currency}{parseFloat(selectedOrder.total_amount).toFixed(2)}
-                </span>
-              </div>
+
+                  {/* List of current items to edit */}
+                  <div className="space-y-3.5 max-h-[30vh] overflow-y-auto pr-1">
+                    {editItemsList.map((item, idx) => (
+                      <div key={idx} className="p-3 bg-gray-50 border border-gray-100 rounded-xl space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold text-gray-800">{item.name}</span>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateEditItemQty(item.menu_item_id, -1)}
+                              className="w-5 h-5 bg-white hover:bg-gray-100 border border-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer text-gray-800"
+                            >
+                              -
+                            </button>
+                            <span className="text-xs font-bold px-1 text-gray-800">{item.quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateEditItemQty(item.menu_item_id, 1)}
+                              className="w-5 h-5 bg-white hover:bg-gray-100 border border-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer text-gray-800"
+                            >
+                              +
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveEditItem(item.menu_item_id)}
+                              className="p-1 text-rose-500 hover:bg-rose-50 rounded ml-2 cursor-pointer"
+                              title="Delete Item"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between items-center text-[10px]">
+                          <input
+                            type="text"
+                            placeholder="Instruction/note..."
+                            value={item.notes}
+                            onChange={(e) => handleUpdateEditItemNotes(item.menu_item_id, e.target.value)}
+                            className="bg-white border border-gray-200 rounded px-2.5 py-1 text-[10px] flex-1 mr-4 focus:outline-none focus:border-[#F8A324]"
+                          />
+                          <span className="font-bold text-gray-900 shrink-0">
+                            {restaurantConfig.currency}{(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center font-bold">
+                    <span className="text-gray-700 text-xs">New Total</span>
+                    <span className="text-lg text-gold-600">
+                      {restaurantConfig.currency}
+                      {editItemsList.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingItems(false)}
+                      className="flex-1 py-2 bg-gray-150 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveEditedItems}
+                      className="flex-1 py-2 bg-gold-500 hover:bg-gold-600 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+                      <div className="text-xs text-gray-400 font-bold tracking-wider uppercase">Items</div>
+                      {/* Only allow editing if status is not served, delivered, or cancelled */}
+                      {!['served', 'delivered', 'cancelled'].includes(selectedOrder.status) && (
+                        <button
+                          type="button"
+                          onClick={handleStartEditItems}
+                          className="text-[10px] font-black text-[#691F1A] hover:underline cursor-pointer flex items-center gap-1 font-sans"
+                        >
+                          ✏️ Edit Items
+                        </button>
+                      )}
+                    </div>
+                    {selectedOrder.items?.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-start">
+                        <div>
+                          <div className="text-sm font-semibold text-gray-800">{item.quantity}x {item.name}</div>
+                          {item.notes && <div className="text-xs text-amber-600 mt-0.5">Note: {item.notes}</div>}
+                        </div>
+                        <div className="text-sm font-bold text-gray-900">
+                          {restaurantConfig.currency}{(item.price * item.quantity).toFixed(2)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+                    <span className="font-bold text-gray-700">Total</span>
+                    <span className="font-bold text-xl text-gold-600">
+                      {restaurantConfig.currency}{parseFloat(selectedOrder.total_amount).toFixed(2)}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="p-5 border-t border-gray-100 bg-gray-50 flex gap-3">

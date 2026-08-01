@@ -61,8 +61,8 @@ export default function Landing() {
         </video>
 
         {/* Video Gradient Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A0A09]/95 via-[#1A0A09]/75 to-[#110504]/90 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#691F1A]/70 via-transparent to-[#691F1A]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A0A09]/60 via-[#1A0A09]/35 to-[#110504]/55 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#691F1A]/35 via-transparent to-[#691F1A]/35 pointer-events-none" />
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto space-y-8 animate-fade-in text-white">
