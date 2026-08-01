@@ -55,27 +55,27 @@ export default function Landing() {
           muted 
           playsInline
           poster={restaurantData.hero.fallbackImage}
-          className="absolute inset-0 w-full h-full object-cover scale-105 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover scale-105 pointer-events-none brightness-110"
         >
           <source src={restaurantData.hero.videoUrl} type="video/mp4" />
         </video>
 
         {/* Video Gradient Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A0A09]/60 via-[#1A0A09]/35 to-[#110504]/55 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#691F1A]/35 via-transparent to-[#691F1A]/35 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-black/35 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#691F1A]/12 via-transparent to-[#691F1A]/12 pointer-events-none" />
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto space-y-8 animate-fade-in text-white">
           
           {/* Main Headline */}
           <div className="space-y-4">
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black tracking-tight leading-none text-white drop-shadow-2xl">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black tracking-tight leading-none text-amber-50 drop-shadow-2xl">
               {restaurantData.hero.titleLine1} <br />
-              <span className="bg-gradient-to-r from-[#FFD9AA] via-[#F8A324] to-[#FFBD73] bg-clip-text text-transparent drop-shadow-lg">
+              <span className="bg-gradient-to-r from-[#F59E0B] via-[#D97706] to-[#F59E0B] bg-clip-text text-transparent drop-shadow-lg">
                 {restaurantData.hero.titleLine2}
               </span>
             </h1>
-            <p className="text-amber-100/90 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto font-light pt-2">
+            <p className="text-amber-200/90 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto font-semibold pt-2">
               {restaurantData.hero.subtitle}
             </p>
           </div>
