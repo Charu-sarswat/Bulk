@@ -1,0 +1,24 @@
+{
+  "short_name": "Bombay Chowpati",
+  "name": "Bombay Chowpati - Chat Bhandar",
+  "description": "Hyderabad's favourite authentic Mumbai chat. 100% Pure Veg.",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFF9EE",
+  "theme_color": "#691F1A",
+  "display": "standalone",
+  "orientation": "portrait"
+}

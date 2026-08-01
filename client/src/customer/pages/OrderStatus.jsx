@@ -24,6 +24,11 @@ export default function OrderStatus() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const orderRef = React.useRef(order);
+  useEffect(() => {
+    orderRef.current = order;
+  }, [order]);
+
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function OrderStatus() {
           
           let alertMsg = `Order status updated to ${updatedOrder.status.replace(/_/g, ' ').toUpperCase()}`;
           if (updatedOrder.status === 'preparing') alertMsg = 'Chef is preparing your meal!';
-          if (updatedOrder.status === 'ready') alertMsg = order?.order_channel === 'delivery' ? 'Your order is packed and ready for delivery!' : 'Your order is ready and heading to your table!';
+          if (updatedOrder.status === 'ready') alertMsg = orderRef.current?.order_channel === 'delivery' ? 'Your order is packed and ready for delivery!' : 'Your order is ready and heading to your table!';
           if (updatedOrder.status === 'out_for_delivery') alertMsg = 'Valet is on the way with your food!';
           if (updatedOrder.status === 'delivered') alertMsg = 'Your order has been delivered. Enjoy!';
           if (updatedOrder.status === 'served') alertMsg = 'Bon appétit! Order has been served.';
@@ -243,7 +248,13 @@ export default function OrderStatus() {
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
                   : 'bg-amber-50 text-amber-700 border border-amber-100 animate-pulse'
               }`}>
-                {order.payment_status === 'paid' ? 'Paid' : order.payment_method === 'cod' ? 'Cash on Delivery' : 'Pay at Counter'}
+                {order.payment_status === 'paid' 
+                  ? 'Paid' 
+                  : order.payment_method === 'upi'
+                    ? 'UPI (Pending Verification)'
+                    : order.payment_method === 'cod' 
+                      ? 'Cash on Delivery' 
+                      : 'Pay at Counter'}
               </span>
               <span className="text-gray-300 font-semibold">•</span>
             </div>
@@ -342,6 +353,12 @@ export default function OrderStatus() {
                     nodeColors = 'bg-[#F8A324] border-[#F8A324] text-white shadow-md shadow-[#F8A324]/25 animate-pulse';
                     labelColors = 'text-[#F8A324] font-black';
                   } else if (step.key === 'served') {
+                    nodeColors = 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/25';
+                    labelColors = 'text-emerald-600 font-extrabold';
+                  } else if (step.key === 'out_for_delivery') {
+                    nodeColors = 'bg-indigo-500 border-indigo-500 text-white shadow-md shadow-indigo-500/25 animate-pulse';
+                    labelColors = 'text-indigo-600 font-extrabold';
+                  } else if (step.key === 'delivered') {
                     nodeColors = 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/25';
                     labelColors = 'text-emerald-600 font-extrabold';
                   }

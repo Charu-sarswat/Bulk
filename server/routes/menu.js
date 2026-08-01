@@ -13,7 +13,10 @@ router.get('/categories', async (req, res) => {
     const menuItems = await MenuItem.find().sort({ created_at: -1 });
 
     const result = categories.map(cat => {
-      const items = menuItems.filter(item => item.category_id && item.category_id.toString() === cat._id.toString());
+      const items = menuItems.filter(item => 
+        (item.category_id && item.category_id.toString() === cat._id.toString()) ||
+        (item.category_ids && item.category_ids.some(id => id && id.toString() === cat._id.toString()))
+      );
       return {
         id: cat._id,
         name: cat.name,
@@ -40,7 +43,8 @@ router.get('/categories', async (req, res) => {
           variants: i.variants,
           addons: i.addons,
           is_combo: i.is_combo,
-          combo_items: i.combo_items
+          combo_items: i.combo_items,
+          category_ids: i.category_ids || []
         }))
       };
     });
@@ -78,7 +82,8 @@ router.get('/items', async (req, res) => {
       variants: i.variants,
       addons: i.addons,
       is_combo: i.is_combo,
-      combo_items: i.combo_items
+      combo_items: i.combo_items,
+      category_ids: i.category_ids || []
     }));
     res.json(formatted);
   } catch (err) {
@@ -93,7 +98,8 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
   try {
     const { 
       category_id, name, description, price, delivery_price,
-      image_url, is_veg, is_featured, is_available, stock_quantity, variants, addons 
+      image_url, image_urls, is_veg, is_featured, is_available, stock_quantity, variants, addons,
+      is_combo, combo_items, category_ids
     } = req.body;
 
     if (!name || price === undefined) {
@@ -107,13 +113,16 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
       price: Number(price),
       delivery_price: delivery_price ? Number(delivery_price) : Number(price),
       image_url: image_url || '',
-      image_urls: image_url ? [image_url] : [],
+      image_urls: image_urls || (image_url ? [image_url] : []),
       is_veg: is_veg !== undefined ? Boolean(is_veg) : true,
       is_featured: is_featured !== undefined ? Boolean(is_featured) : false,
       is_available: is_available !== undefined ? Boolean(is_available) : true,
       stock_quantity: stock_quantity !== undefined ? Number(stock_quantity) : 50,
       variants: variants || [],
-      addons: addons || []
+      addons: addons || [],
+      is_combo: is_combo !== undefined ? Boolean(is_combo) : false,
+      combo_items: combo_items || [],
+      category_ids: category_ids || []
     });
 
     await newItem.save();
@@ -238,6 +247,21 @@ router.delete('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (
     res.json({ message: 'Category and all associated items deleted successfully' });
   } catch (err) {
     console.error('Delete category error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   DELETE /api/menu/items/:id
+// @desc    Delete menu item (Admin/Staff)
+router.delete('/items/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
+  try {
+    const deletedItem = await MenuItem.findByIdAndDelete(req.params.id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Menu item not found' });
+    }
+    res.json({ message: 'Menu item deleted successfully' });
+  } catch (err) {
+    console.error('Delete item error:', err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 });

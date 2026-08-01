@@ -26,6 +26,7 @@ const menuItemSchema = new mongoose.Schema({
   }],
   is_combo: { type: Boolean, default: false },
   combo_items: [{ type: String }],
+  category_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
   created_at: { type: Date, default: Date.now }
 });
 

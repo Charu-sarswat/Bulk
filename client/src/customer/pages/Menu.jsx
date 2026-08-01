@@ -111,8 +111,10 @@ export default function Menu() {
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCat = selectedCategory === 'all' || 
-      (item.category_id && item.category_id.toString() === selectedCategory.toString());
-    return matchesSearch && matchesCat;
+      (item.category_id && item.category_id.toString() === selectedCategory.toString()) ||
+      (item.category_ids && item.category_ids.some(id => id && id.toString() === selectedCategory.toString()));
+    const matchesAvailable = item.is_available !== false;
+    return matchesSearch && matchesCat && matchesAvailable;
   }).sort((a, b) => {
     if (priceSort === 'low-to-high') return parseFloat(a.price) - parseFloat(b.price);
     if (priceSort === 'high-to-low') return parseFloat(b.price) - parseFloat(a.price);
@@ -286,6 +288,11 @@ export default function Menu() {
                           ★ Special
                         </span>
                       )}
+                      {item.is_combo && (
+                        <span className="bg-amber-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-md shadow-sm uppercase tracking-wider flex items-center gap-0.5">
+                          Combo
+                        </span>
+                      )}
                     </div>
                     {/* Cart qty badge */}
                     {cartQty > 0 && (
@@ -402,6 +409,7 @@ export default function Menu() {
         isOpen={!!customizationItem}
         onClose={() => setCustomizationItem(null)}
         item={customizationItem}
+        menuItems={menuItems}
         onAddToCart={addToCart}
       />
 

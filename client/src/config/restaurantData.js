@@ -8,8 +8,8 @@ export const restaurantData = {
   // Core Brand Identity
   name: "Bombay Chowpati",
   subTitle: "Chat Bhandar",
-  tagline: "100% Pure Veg Authentic Mumbai Chat & Fast Food",
-  description: "Experience the vibrant culinary heritage of authentic Mumbai street food in Hyderabad. From crispy Pani Puris and royal Raj Kachori to sizzling Amul Butter Pav Bhaji, every dish is prepared fresh with 100% pure vegetarian passion.",
+  tagline: "Experience the Authentic Taste of Original Chat",
+  description: "Experience the vibrant culinary heritage of authentic street food in Hyderabad. From crispy Pani Puris and royal Raj Kachori to sizzling Amul Butter Pav Bhaji, every dish is prepared fresh with 100% pure vegetarian passion.",
   establishedYear: "2015",
   isPureVeg: true,
   currency: "₹",
@@ -31,8 +31,8 @@ export const restaurantData = {
   operatingHours: "11:30 AM to 11:30 PM (Open All 7 Days)",
 
   // Social Links & Profiles
-  instagramUrl: "https://www.instagram.com/bombay.chowpati?utm_source=qr&igsh=YmNoemx1Z3poZmFt",
-  instagramHandle: "@bombay.chowpati",
+  instagramUrl: "https://www.instagram.com/bombay_chowpati_?utm_source=qr&igsh=ZTQ0azZ3cWkxd21r",
+  instagramHandle: "@bombay_chowpati_",
   instagramFollowers: "25K+",
   beholdFeedUrl: "", // Add your behold.so JSON Feed URL here to fetch live posts automatically
 
@@ -42,12 +42,12 @@ export const restaurantData = {
 
   // Hero Video & Background Media Assets
   hero: {
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-chef-cooking-a-dish-in-a-restaurant-kitchen-41566-large.mp4",
+    videoUrl: "/vid1.mp4",
     fallbackImage: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=1600",
     badgeText: "100% Pure Vegetarian Culinary Art",
-    titleLine1: "Authentic Mumbai",
-    titleLine2: "Chat & Street Food",
-    subtitle: "Crispy Puris, Tangy Chutneys, Sizzling Pav Bhaji & Pure Veg Feasts in Abids, Hyderabad."
+    titleLine1: "Experience the",
+    titleLine2: "Authentic Taste of Original Chat",
+    subtitle: "From crispy puris to sizzling pav bhaji, enjoy the true authentic taste of original chat every day."
   },
 
   // Restaurant Key Milestones & Stats

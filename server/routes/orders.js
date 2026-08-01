@@ -423,6 +423,10 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ message: 'Delivery address is compulsory for delivery orders' });
   }
 
+  if (order_channel === 'delivery' && payment_method === 'cod') {
+    return res.status(400).json({ message: 'Cash on Delivery payment method is disabled for home delivery orders.' });
+  }
+
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: 'Order must contain at least one item' });
   }
@@ -492,7 +496,7 @@ router.post('/', async (req, res) => {
       order_channel: order_channel || 'dine_in',
       scheduled_time: scheduled_time ? new Date(scheduled_time) : null,
       status: 'received',
-      payment_status: payment_method === 'upi' && payment_utr ? 'paid' : 'pending',
+      payment_status: 'pending',
       payment_method: payment_method || 'upi',
       payment_utr: payment_utr || '',
       total_amount,

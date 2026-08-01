@@ -89,9 +89,7 @@ export default function CartDrawer({
 
   useEffect(() => {
     if (orderChannel === 'delivery') {
-      if (paymentMethod !== 'upi' && paymentMethod !== 'cod') {
-        setPaymentMethod('upi');
-      }
+      setPaymentMethod('upi');
     } else {
       if (paymentMethod === 'cod') {
         setPaymentMethod('counter');
@@ -545,11 +543,11 @@ export default function CartDrawer({
                     <CreditCard className="w-3.5 h-3.5" />
                     Payment Method *
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className={orderChannel === 'delivery' ? "block" : "grid grid-cols-2 gap-2"}>
                     <button
                       type="button"
                       onClick={() => setPaymentMethod('upi')}
-                      className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                      className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
                         paymentMethod === 'upi'
                           ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
                           : 'border-gray-250 bg-white text-gray-400 hover:text-gray-600'
@@ -557,19 +555,7 @@ export default function CartDrawer({
                     >
                       Pay Online (UPI)
                     </button>
-                    {orderChannel === 'delivery' ? (
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('cod')}
-                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
-                          paymentMethod === 'cod'
-                            ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
-                            : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
-                        }`}
-                      >
-                        Cash on Delivery
-                      </button>
-                    ) : (
+                    {orderChannel !== 'delivery' && (
                       <button
                         type="button"
                         onClick={() => setPaymentMethod('counter')}
