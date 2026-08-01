@@ -73,6 +73,12 @@ export default function MenuManagement() {
   const [variants, setVariants] = useState([]); // Array of {name, price}
   const [addons, setAddons] = useState([]); // Array of {name, price}
 
+  // Raw Materials / Recipe States
+  const [rawMaterials, setRawMaterials] = useState([]);
+  const [recipe, setRecipe] = useState([]);
+  const [tempRawId, setTempRawId] = useState('');
+  const [tempRawQty, setTempRawQty] = useState('');
+
   // Temp states to add one
   const [varName, setVarName] = useState('');
   const [varPrice, setVarPrice] = useState('');
@@ -136,6 +142,15 @@ export default function MenuManagement() {
       const itemsRes = await fetch(`${apiUrl}/api/menu/items`);
       const itemsData = await itemsRes.json();
       setItems(itemsData);
+
+      // Fetch raw materials
+      const rawRes = await fetch(`${apiUrl}/api/inventory/raw`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (rawRes.ok) {
+        const rawData = await rawRes.json();
+        setRawMaterials(rawData);
+      }
     } catch (err) {
       console.error(err);
       addToast('Error loading menu database.', 'error');
@@ -247,7 +262,8 @@ export default function MenuManagement() {
       combo_items: comboItems,
       category_ids: categoryIds,
       variants: variants,
-      addons: addons
+      addons: addons,
+      recipe: recipe
     };
 
     try {
@@ -303,6 +319,7 @@ export default function MenuManagement() {
     setCategoryIds(item.category_ids || []);
     setVariants(item.variants || []);
     setAddons(item.addons || []);
+    setRecipe(item.recipe || []);
     setShowItemForm(true);
   };
 
@@ -327,6 +344,9 @@ export default function MenuManagement() {
     setVarPrice('');
     setAddName('');
     setAddPrice('');
+    setRecipe([]);
+    setTempRawId('');
+    setTempRawQty('');
     setShowItemForm(false);
   };
 
@@ -604,6 +624,7 @@ export default function MenuManagement() {
                      type="number"
                      value={catSort}
                      onChange={(e) => setCatSort(parseInt(e.target.value) || 0)}
+                     onWheel={(e) => e.target.blur()}
                      className="w-full text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gold-500"
                   />
                 </div>
@@ -768,6 +789,7 @@ export default function MenuManagement() {
                       required
                       value={itemPrice}
                       onChange={(e) => setItemPrice(e.target.value)}
+                      onWheel={(e) => e.target.blur()}
                       placeholder="Price"
                       className="w-full text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500"
                     />
@@ -919,6 +941,7 @@ export default function MenuManagement() {
                         step="0.01"
                         value={varPrice}
                         onChange={(e) => setVarPrice(e.target.value)}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Extra Price..."
                         className="w-32 text-xs p-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500 bg-white"
                       />
@@ -971,6 +994,7 @@ export default function MenuManagement() {
                         step="0.01"
                         value={addPrice}
                         onChange={(e) => setAddPrice(e.target.value)}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Extra Price..."
                         className="w-32 text-xs p-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500 bg-white"
                       />
@@ -1002,6 +1026,75 @@ export default function MenuManagement() {
                           </button>
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Recipe / Ingredients Builder */}
+                  <div className="col-span-2 border-t border-gray-100 pt-3">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Recipe / Linked Raw Materials (BOM)</label>
+                    
+                    {/* Add Ingredient Form */}
+                    <div className="flex gap-2 mb-2">
+                      <select
+                        value={tempRawId}
+                        onChange={(e) => setTempRawId(e.target.value)}
+                        className="flex-1 text-xs p-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500 bg-white"
+                      >
+                        <option value="">Select Raw Ingredient...</option>
+                        {rawMaterials.map(mat => (
+                          <option key={mat._id || mat.id} value={mat._id || mat.id}>
+                            {mat.name} ({mat.unit})
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={tempRawQty}
+                        onChange={(e) => setTempRawQty(e.target.value)}
+                        onWheel={(e) => e.target.blur()}
+                        placeholder="Qty required..."
+                        className="w-32 text-xs p-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500 bg-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!tempRawId || !tempRawQty) return;
+                          // Avoid duplicates
+                          if (recipe.some(r => r.raw_material_id === tempRawId)) {
+                            addToast('Material already added to recipe', 'warning');
+                            return;
+                          }
+                          setRecipe(prev => [...prev, { 
+                            raw_material_id: tempRawId, 
+                            quantity_required: parseFloat(tempRawQty) || 1 
+                          }]);
+                          setTempRawId('');
+                          setTempRawQty('');
+                        }}
+                        className="bg-gold-500 hover:bg-gold-600 text-charcoal-900 font-bold px-4 rounded-xl text-xs cursor-pointer"
+                      >
+                        Link
+                      </button>
+                    </div>
+
+                    {/* Recipe item list tags */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {recipe.map((r, idx) => {
+                        const mat = rawMaterials.find(m => (m._id || m.id) === r.raw_material_id);
+                        return (
+                          <div key={idx} className="bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1 text-[10px] font-bold text-gray-700 flex items-center gap-1.5">
+                            <span>{mat ? mat.name : 'Unknown Raw Material'} ({r.quantity_required} {mat ? mat.unit : ''})</span>
+                            <button
+                              type="button"
+                              onClick={() => setRecipe(prev => prev.filter((_, i) => i !== idx))}
+                              className="text-gray-400 hover:text-red-500 font-bold"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 

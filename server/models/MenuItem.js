@@ -27,6 +27,10 @@ const menuItemSchema = new mongoose.Schema({
   is_combo: { type: Boolean, default: false },
   combo_items: [{ type: String }],
   category_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+  recipe: [{
+    raw_material_id: { type: mongoose.Schema.Types.ObjectId, ref: 'RawMaterial' },
+    quantity_required: { type: Number, required: true }
+  }],
   created_at: { type: Date, default: Date.now }
 });
 

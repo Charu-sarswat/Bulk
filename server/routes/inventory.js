@@ -84,10 +84,14 @@ router.post('/update', auth, authorizeRoles('admin', 'staff'), async (req, res) 
 // @desc    Get audit trail logs
 router.get('/logs', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const logs = await InventoryLog.find().populate('menu_item_id', 'name').sort({ created_at: -1 }).limit(100);
+    const logs = await InventoryLog.find({ raw_material_id: { $ne: null } })
+      .populate('raw_material_id', 'name')
+      .sort({ created_at: -1 })
+      .limit(100);
+      
     const formatted = logs.map(l => ({
       id: l._id,
-      item_name: l.menu_item_id ? l.menu_item_id.name : 'Deleted Item',
+      item_name: l.raw_material_id ? l.raw_material_id.name : 'Deleted Item',
       change_type: l.change_type,
       quantity_change: l.quantity_change,
       previous_stock: l.previous_stock,

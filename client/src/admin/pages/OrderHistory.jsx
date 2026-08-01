@@ -866,15 +866,15 @@ export default function OrderHistory() {
                             <button
                               type="button"
                               onClick={() => handleUpdateCartQty(cItem.item_id, -1)}
-                              className="w-5 h-5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer"
+                              className="w-5 h-5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer text-gray-800"
                             >
                               -
                             </button>
-                            <span className="text-xs font-bold px-1">{cItem.quantity}</span>
+                            <span className="text-xs font-bold px-1 text-gray-800">{cItem.quantity}</span>
                             <button
                               type="button"
                               onClick={() => handleUpdateCartQty(cItem.item_id, 1)}
-                              className="w-5 h-5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer"
+                              className="w-5 h-5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center font-bold text-xs cursor-pointer text-gray-800"
                             >
                               +
                             </button>

@@ -85,6 +85,7 @@ export default function Login() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="admin / staff / kitchen"
+                  style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
                   className="w-full bg-transparent text-sm text-white focus:outline-none placeholder:text-gray-500"
                 />
               </div>
@@ -101,6 +102,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
+                  style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
                   className="w-full bg-transparent text-sm text-white focus:outline-none placeholder:text-gray-500"
                 />
               </div>

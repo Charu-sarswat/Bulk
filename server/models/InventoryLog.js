@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const inventoryLogSchema = new mongoose.Schema({
-  menu_item_id: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: true },
+  menu_item_id: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', default: null },
+  raw_material_id: { type: mongoose.Schema.Types.ObjectId, ref: 'RawMaterial', default: null },
   change_type: { 
     type: String, 
-    enum: ['STOCK_ADD', 'STOCK_SET', 'DAILY_PREPARED', 'ORDER_DEDUCT', 'RESTOCK', 'WASTAGE'],
+    enum: ['STOCK_ADD', 'STOCK_SET', 'DAILY_PREPARED', 'ORDER_DEDUCT', 'RESTOCK', 'WASTAGE', 'STOCK_SUB'],
     required: true 
   },
   quantity_change: { type: Number, required: true },

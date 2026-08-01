@@ -44,7 +44,8 @@ router.get('/categories', async (req, res) => {
           addons: i.addons,
           is_combo: i.is_combo,
           combo_items: i.combo_items,
-          category_ids: i.category_ids || []
+          category_ids: i.category_ids || [],
+          recipe: i.recipe || []
         }))
       };
     });
@@ -83,7 +84,8 @@ router.get('/items', async (req, res) => {
       addons: i.addons,
       is_combo: i.is_combo,
       combo_items: i.combo_items,
-      category_ids: i.category_ids || []
+      category_ids: i.category_ids || [],
+      recipe: i.recipe || []
     }));
     res.json(formatted);
   } catch (err) {
@@ -99,7 +101,7 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
     const { 
       category_id, name, description, price, delivery_price,
       image_url, image_urls, is_veg, is_featured, is_available, stock_quantity, variants, addons,
-      is_combo, combo_items, category_ids
+      is_combo, combo_items, category_ids, recipe
     } = req.body;
 
     if (!name || price === undefined) {
@@ -122,7 +124,8 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
       addons: addons || [],
       is_combo: is_combo !== undefined ? Boolean(is_combo) : false,
       combo_items: combo_items || [],
-      category_ids: category_ids || []
+      category_ids: category_ids || [],
+      recipe: recipe || []
     });
 
     await newItem.save();

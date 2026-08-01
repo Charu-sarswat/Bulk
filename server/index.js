@@ -59,6 +59,7 @@ app.use('/api/auth/customer', require('./routes/customerAuth'));
 app.use('/api/menu', require('./routes/menu'));
 app.use('/api/tables', require('./routes/tables'));
 app.use('/api/orders', require('./routes/orders'));
+app.use('/api/inventory/raw', require('./routes/inventoryRaw'));
 app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/catering', require('./routes/catering'));
 app.use('/api/customers', require('./routes/customers'));

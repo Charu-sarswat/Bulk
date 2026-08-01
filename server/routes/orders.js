@@ -432,6 +432,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    const order_number = await generateOrderNumber();
     let total_amount = 0;
     const orderItems = [];
 
@@ -463,12 +464,54 @@ router.post('/', async (req, res) => {
           await InventoryLog.create({
             menu_item_id: menuItem._id,
             change_type: 'ORDER_DEDUCT',
-            quantity_change: item.quantity,
+            quantity_change: -item.quantity,
             previous_stock: prevStock,
             new_stock: newStock,
             reason: `Auto deduction for new order`,
             recorded_by: customer_name || 'System'
           });
+
+          // Process raw materials recipe deduction
+          if (menuItem.recipe && menuItem.recipe.length > 0) {
+            const RawMaterial = require('../models/RawMaterial');
+            for (const ingredient of menuItem.recipe) {
+              if (ingredient.raw_material_id) {
+                const rawMat = await RawMaterial.findById(ingredient.raw_material_id);
+                if (rawMat) {
+                  const requiredQty = Number(ingredient.quantity_required) * Number(item.quantity);
+                  const prevRawStock = rawMat.stock_quantity;
+                  const newRawStock = Math.max(0, prevRawStock - requiredQty);
+                  
+                  rawMat.stock_quantity = newRawStock;
+                  await rawMat.save();
+                  
+                  // Log raw material inventory audit
+                  await InventoryLog.create({
+                    raw_material_id: rawMat._id,
+                    change_type: 'ORDER_DEDUCT',
+                    quantity_change: -requiredQty,
+                    previous_stock: prevRawStock,
+                    new_stock: newRawStock,
+                    reason: `Auto deduction for Order #${order_number}`,
+                    recorded_by: customer_name || 'System'
+                  });
+
+                  // If this raw material ran out, auto mark any linked menu items as Sold Out
+                  if (newRawStock === 0) {
+                    const linkedItems = await MenuItem.find({ 
+                      'recipe.raw_material_id': rawMat._id 
+                    });
+                    for (const lItem of linkedItems) {
+                      if (lItem.auto_out_of_stock) {
+                        lItem.is_available = false;
+                        await lItem.save();
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
 
@@ -483,8 +526,6 @@ router.post('/', async (req, res) => {
         notes: item.notes || ''
       });
     }
-
-    const order_number = await generateOrderNumber();
 
     const newOrder = new Order({
       order_number,
