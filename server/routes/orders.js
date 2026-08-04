@@ -1021,7 +1021,8 @@ router.post('/delivery/partner-updates', async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
+      // Return 200 success so Shiprocket's webhook verification pings succeed
+      return res.status(200).json({ success: true, message: 'Order not found (ignored for verification)' });
     }
 
     if (current_status) {
