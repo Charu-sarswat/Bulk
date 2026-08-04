@@ -28,6 +28,32 @@ export default function CartDrawer({
   const [submitting, setSubmitting] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   
+  const [deliveryFee, setDeliveryFee] = useState(45);
+  const [freeThreshold, setFreeThreshold] = useState(399);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch(`${apiUrl}/api/settings`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.delivery_fee !== undefined) setDeliveryFee(data.delivery_fee);
+          if (data.free_delivery_threshold !== undefined) setFreeThreshold(data.free_delivery_threshold);
+        })
+        .catch(err => console.error('Failed to load settings:', err));
+    }
+  }, [isOpen, apiUrl]);
+  
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Dining and Channels
   const [orderChannel, setOrderChannel] = useState('dine_in');
   const [deliveryAddress, setDeliveryAddress] = useState('');
@@ -101,7 +127,8 @@ export default function CartDrawer({
 
   // Totals Calculation based on item price
   const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
-  const total = subtotal;
+  const activeDeliveryFee = (orderChannel === 'delivery' && subtotal < freeThreshold) ? deliveryFee : 0;
+  const total = subtotal + activeDeliveryFee;
 
   const submitOrder = async (utrData = null) => {
     setSubmitting(true);
@@ -574,7 +601,35 @@ export default function CartDrawer({
                 <hr className="border-gray-200/60" />
 
                 {/* Total Breakdown */}
-                <div className="bg-white border border-gray-200 p-4 rounded-2xl">
+                <div className="bg-white border border-gray-200 p-4 rounded-2xl space-y-2.5">
+                  <div className="flex justify-between items-center text-xs font-semibold text-gray-500">
+                    <span>Items Subtotal</span>
+                    <span>{restaurantConfig.currency}{subtotal.toFixed(0)}</span>
+                  </div>
+                  {orderChannel === 'delivery' && (
+                    <>
+                      <div className="flex justify-between items-center text-xs font-semibold text-gray-500">
+                        <span>Delivery Charges</span>
+                        {activeDeliveryFee === 0 ? (
+                          <span className="text-emerald-600 font-extrabold uppercase text-[10px]">Free Delivery</span>
+                        ) : (
+                          <span>{restaurantConfig.currency}{activeDeliveryFee.toFixed(0)}</span>
+                        )}
+                      </div>
+                      <div className={`text-[10px] font-bold p-2.5 rounded-xl text-center transition-all ${
+                        activeDeliveryFee === 0 
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-100/50' 
+                          : 'bg-amber-50 text-amber-800 border border-amber-100/50'
+                      }`}>
+                        {activeDeliveryFee === 0 ? (
+                          <span>🎉 Free delivery applied!</span>
+                        ) : (
+                          <span>💡 Add <strong>{restaurantConfig.currency}{Math.ceil(freeThreshold - subtotal)}</strong> more for <strong>FREE Delivery</strong> (on orders above {restaurantConfig.currency}{freeThreshold})</span>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  <hr className="border-gray-100" />
                   <div className="flex justify-between items-center text-sm font-bold text-gray-800">
                     <span>Total Amount</span>
                     <span className="text-[#691F1A] font-black text-base">{restaurantConfig.currency}{total.toFixed(0)}</span>

@@ -39,6 +39,8 @@ export const restaurantData = {
   // Payment Details
   upiId: "7207836300@okbizaxis",
   payeeName: "Bombay Chowpati Chat Bhandar",
+  deliveryFee: 45,
+  freeDeliveryThreshold: 399,
 
   // Hero Video & Background Media Assets
   hero: {
@@ -129,29 +131,32 @@ export const restaurantData = {
   instagramReels: [
     {
       id: 1,
-      title: "Live Amul Butter Pav Bhaji Tawa Preparation 🧈🍞",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-frying-food-in-a-pan-41565-large.mp4",
-      thumbnail: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600",
-      views: "18.5K",
-      likes: "3.2K",
+      videoUrl: "/reels/reel1.mp4",
       reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
     },
     {
       id: 2,
-      title: "Crispy Mineral Water Pani Puri Burst 💥",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-chef-cooking-a-dish-in-a-restaurant-kitchen-41566-large.mp4",
-      thumbnail: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600",
-      views: "24.1K",
-      likes: "4.8K",
+      videoUrl: "/reels/reel2.mp4",
       reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
     },
     {
       id: 3,
-      title: "Royal Raj Kachori Assembly Live Counter 👑",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-[#14151B]-preparing-a-salad-41568-large.mp4",
-      thumbnail: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600",
-      views: "15.9K",
-      likes: "2.7K",
+      videoUrl: "/reels/reel3.mp4",
+      reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
+    },
+    {
+      id: 4,
+      videoUrl: "/reels/reel4.mp4",
+      reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
+    },
+    {
+      id: 5,
+      videoUrl: "/reels/reel5.mp4",
+      reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
+    },
+    {
+      id: 6,
+      videoUrl: "/reels/reel6.mp4",
       reelUrl: "https://www.instagram.com/bombay_chowpati_?igsh=MWFwYjZxanp3andvdQ=="
     }
   ],

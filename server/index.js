@@ -64,6 +64,7 @@ app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/catering', require('./routes/catering'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/settings', require('./routes/settings'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

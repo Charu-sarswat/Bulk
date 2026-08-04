@@ -7,6 +7,7 @@ import { restaurantConfig } from '../../config/restaurant';
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
 import Pagination from '../components/Pagination';
+import WhatsAppIcon from '../../customer/components/WhatsAppIcon';
 
 export default function CustomerDirectory() {
   const { token } = useAuth();
@@ -269,13 +270,26 @@ export default function CustomerDirectory() {
 
                     {/* Action */}
                     <td className="py-4 px-4 sm:px-6 text-center">
-                      <button
-                        onClick={() => handleOpenDetail(c)}
-                        className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 text-gray-500 hover:text-[#691F1A] rounded-lg transition-colors cursor-pointer"
-                        title="View Complete Profile & History"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleOpenDetail(c)}
+                          className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 text-gray-500 hover:text-[#691F1A] rounded-lg transition-colors cursor-pointer"
+                          title="View Complete Profile & History"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        {c.phone && (
+                          <a
+                            href={`https://wa.me/${c.phone.replace(/[^0-9]/g, '').length === 10 ? '91' + c.phone.replace(/[^0-9]/g, '') : c.phone.replace(/[^0-9]/g, '')}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center shadow-xs"
+                            title="Chat on WhatsApp"
+                          >
+                            <WhatsAppIcon className="w-3.5 h-3.5" color="currentColor" />
+                          </a>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

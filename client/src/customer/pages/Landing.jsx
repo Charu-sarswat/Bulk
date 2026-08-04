@@ -19,6 +19,7 @@ export default function Landing() {
     canonical: 'https://bombaychowpati.com/',
   });
   const [isCateringOpen, setIsCateringOpen] = useState(false);
+  const [activeReel, setActiveReel] = useState(null);
 
   React.useEffect(() => {
     if (window.__bhldScript) return;
@@ -147,8 +148,46 @@ export default function Landing() {
             </a>
           </div>
 
-          <div className="p-0 sm:p-6 bg-transparent sm:bg-white border-0 sm:border border-transparent sm:border-[#F8A324]/30 rounded-none sm:rounded-3xl">
-            <behold-widget feed-id="mxdvTa0NfYXzl03y9WQi"></behold-widget>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mt-8">
+            {restaurantData.instagramReels?.map((reel) => (
+              <div 
+                key={reel.id}
+                onClick={() => setActiveReel(reel)}
+                onMouseEnter={(e) => {
+                  const video = e.currentTarget.querySelector('video');
+                  if (video) video.play().catch((err) => console.log('Autoplay prevented:', err));
+                }}
+                onMouseLeave={(e) => {
+                  const video = e.currentTarget.querySelector('video');
+                  if (video) {
+                    video.pause();
+                    video.currentTime = 0;
+                  }
+                }}
+                className="group relative aspect-[9/16] bg-gray-950 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100/10 hover:border-[#F8A324]/50 hover:-translate-y-1"
+              >
+                {/* Video element that plays on hover, otherwise shows poster or is paused */}
+                <video
+                  src={reel.videoUrl}
+                  className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                  loop
+                  muted
+                  playsInline
+                />
+
+                {/* Subtle dark overlay gradient on hover */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+
+                {/* Minimal Center Play Indicator on Hover */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white shadow-md">
+                    <svg className="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
         </div>
@@ -421,6 +460,34 @@ export default function Landing() {
         isOpen={isCateringOpen} 
         onClose={() => setIsCateringOpen(false)} 
       />
+
+      {/* Video Lightbox Modal */}
+      {activeReel && (
+        <div 
+          onClick={() => setActiveReel(null)}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-center items-center p-4 cursor-zoom-out animate-fade-in"
+        >
+          {/* Close Button */}
+          <button 
+            onClick={() => setActiveReel(null)}
+            className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer text-xl font-bold shadow-lg z-10"
+          >
+            ✕
+          </button>
+          
+          <div className="relative max-w-lg w-full aspect-[9/16] bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center">
+            <video 
+              src={activeReel.videoUrl}
+              className="w-full h-full object-contain"
+              autoPlay
+              controls
+              loop
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { 
   BarChart3, CookingPot, Layers, 
   IndianRupee, LogOut, Menu, User, Shield, FileText,
-  ChevronLeft, ChevronRight, Boxes, X, QrCode
+  ChevronLeft, ChevronRight, Boxes, X, QrCode, Settings
 } from 'lucide-react';
 
 // Brand Logos
@@ -131,7 +131,8 @@ export default function AdminLayout() {
       { path: '/admin/payments', name: 'Payments & Revenue', icon: IndianRupee },
       { path: '/admin/customers', name: 'Customer Directory', icon: User },
       { path: '/admin/users', name: 'System Users', icon: Shield },
-      { path: '/admin/qr', name: 'Table QR Codes', icon: QrCode }
+      { path: '/admin/qr', name: 'Table QR Codes', icon: QrCode },
+      { path: '/admin/settings', name: 'Settings', icon: Settings }
     ];
   } else if (user.role === 'staff') {
     navLinks = [

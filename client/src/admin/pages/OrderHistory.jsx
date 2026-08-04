@@ -282,14 +282,21 @@ export default function OrderHistory() {
       }
     }
 
-    if (!customerName || !customerName.trim()) {
-      addToast('Customer Name is compulsory', 'warning');
-      return;
-    }
+    if (orderChannel !== 'dine_in') {
+      if (!customerName || !customerName.trim()) {
+        addToast('Customer Name is compulsory', 'warning');
+        return;
+      }
 
-    if (!customerPhone || customerPhone.trim().length < 10) {
-      addToast('Customer Phone Number is compulsory and must be at least 10 digits', 'warning');
-      return;
+      if (!customerPhone || customerPhone.trim().length < 10) {
+        addToast('Customer Phone Number is compulsory and must be at least 10 digits', 'warning');
+        return;
+      }
+    } else {
+      if (customerPhone && customerPhone.trim().length > 0 && customerPhone.trim().length < 10) {
+        addToast('Customer Phone Number must be at least 10 digits if provided', 'warning');
+        return;
+      }
     }
 
     if (orderChannel === 'delivery' && !deliveryAddress.trim()) {
@@ -1017,14 +1024,14 @@ export default function OrderHistory() {
                         type="text"
                         value={guestName}
                         onChange={(e) => setGuestName(e.target.value)}
-                        placeholder="Guest Name"
+                        placeholder={orderChannel === 'dine_in' ? "Guest Name (Optional)" : "Guest Name"}
                         className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none"
                       />
                       <input
                         type="text"
                         value={guestPhone}
                         onChange={(e) => setGuestPhone(e.target.value)}
-                        placeholder="Phone Number"
+                        placeholder={orderChannel === 'dine_in' ? "Phone Number (Optional)" : "Phone Number"}
                         className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none"
                       />
                     </div>
@@ -1196,6 +1203,34 @@ export default function OrderHistory() {
                     <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100">
                       {selectedOrder.customer_name && <div className="font-semibold">👤 {selectedOrder.customer_name}</div>}
                       {selectedOrder.customer_phone && <div className="text-[10px] text-gray-400">📞 {selectedOrder.customer_phone}</div>}
+                    </div>
+                  )}
+
+                  {/* Delivery Partner details if applicable */}
+                  {selectedOrder.order_channel === 'delivery' && selectedOrder.delivery_job_id && (
+                    <div className={`mt-3 text-xs border rounded-xl p-3 max-w-[250px] space-y-1 ${
+                      selectedOrder.delivery_job_id.toString().startsWith('SFX')
+                        ? 'bg-indigo-50/50 border-indigo-100/60'
+                        : 'bg-orange-50/50 border-orange-100/60'
+                    }`}>
+                      <div className={`font-black text-[10px] uppercase tracking-wider flex items-center gap-1 ${
+                        selectedOrder.delivery_job_id.toString().startsWith('SFX') ? 'text-indigo-700' : 'text-orange-700'
+                      }`}>
+                        🚚 {selectedOrder.delivery_job_id.toString().startsWith('SFX') ? 'Shadowfax' : 'Shiprocket'} Courier
+                      </div>
+                      <div className="font-bold text-gray-800 text-[11px] mt-1">
+                        Driver: {selectedOrder.delivery_rider_name || 'Assigning...'}
+                      </div>
+                      {selectedOrder.delivery_rider_phone && (
+                        <div className="text-gray-500 text-[10px]">
+                          Phone: {selectedOrder.delivery_rider_phone}
+                        </div>
+                      )}
+                      <div className={`text-[9px] uppercase tracking-widest font-black ${
+                        selectedOrder.delivery_job_id.toString().startsWith('SFX') ? 'text-indigo-600' : 'text-orange-600'
+                      }`}>
+                        Status: {selectedOrder.delivery_status || 'Scheduled'}
+                      </div>
                     </div>
                   )}
                 </div>

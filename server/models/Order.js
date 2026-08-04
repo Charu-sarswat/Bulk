@@ -14,7 +14,14 @@ const orderSchema = new mongoose.Schema({
   table_snapshot: { type: String, default: 'Takeaway' },
   customer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', default: null },
   customer_name: { type: String, default: 'Guest Customer' },
-  customer_phone: { type: String, required: true, trim: true },
+  customer_phone: { 
+    type: String, 
+    required: function() { 
+      return !(this.admin_created && this.order_channel === 'dine_in');
+    }, 
+    trim: true 
+  },
+  admin_created: { type: Boolean, default: false },
   order_channel: { 
     type: String, 
     enum: ['dine_in', 'takeaway', 'delivery'], 

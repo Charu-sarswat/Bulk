@@ -28,6 +28,7 @@ import PaymentReports from './admin/pages/PaymentReports';
 import CustomerDirectory from './admin/pages/CustomerDirectory';
 import UserManagement from './admin/pages/UserManagement';
 import QrGenerator from './admin/pages/QrGenerator';
+import Settings from './admin/pages/Settings';
 
 export default function App() {
   return (
@@ -62,6 +63,7 @@ export default function App() {
                   <Route path="customers" element={<CustomerDirectory />} />
                   <Route path="users" element={<UserManagement />} />
                   <Route path="qr" element={<QrGenerator />} />
+                  <Route path="settings" element={<Settings />} />
                 </Route>
 
                 {/* Catch-all redirect */}

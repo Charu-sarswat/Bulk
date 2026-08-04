@@ -3,6 +3,7 @@ const router = express.Router();
 const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const InventoryLog = require('../models/InventoryLog');
+const Setting = require('../models/Setting');
 const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
 
@@ -417,15 +418,24 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { 
     table_id, table_snapshot, customer_id, customer_name, customer_phone,
-    order_channel, scheduled_time, payment_method, payment_utr, notes, items, delivery_address 
+    order_channel, scheduled_time, payment_method, payment_utr, notes, items, delivery_address,
+    admin_created
   } = req.body;
 
-  if (!customer_name || !customer_name.trim()) {
-    return res.status(400).json({ message: 'Customer name is compulsory' });
-  }
+  const isDineInAdmin = admin_created && order_channel === 'dine_in';
 
-  if (!customer_phone || customer_phone.trim().length < 10) {
-    return res.status(400).json({ message: 'Customer phone number is compulsory and must be at least 10 digits' });
+  if (!isDineInAdmin) {
+    if (!customer_name || !customer_name.trim()) {
+      return res.status(400).json({ message: 'Customer name is compulsory' });
+    }
+
+    if (!customer_phone || customer_phone.trim().length < 10) {
+      return res.status(400).json({ message: 'Customer phone number is compulsory and must be at least 10 digits' });
+    }
+  } else {
+    if (customer_phone && customer_phone.trim().length > 0 && customer_phone.trim().length < 10) {
+      return res.status(400).json({ message: 'Customer phone number must be at least 10 digits if provided' });
+    }
   }
 
   if (order_channel === 'delivery' && (!delivery_address || !delivery_address.trim())) {
@@ -536,13 +546,26 @@ router.post('/', async (req, res) => {
       });
     }
 
+    if (order_channel === 'delivery') {
+      const deliveryFeeSetting = await Setting.findOne({ key: 'delivery_fee' });
+      const thresholdSetting = await Setting.findOne({ key: 'free_delivery_threshold' });
+      
+      const deliveryFee = deliveryFeeSetting ? Number(deliveryFeeSetting.value) : 45;
+      const freeDeliveryThreshold = thresholdSetting ? Number(thresholdSetting.value) : 399;
+
+      if (total_amount < freeDeliveryThreshold) {
+        total_amount += deliveryFee;
+      }
+    }
+
     const newOrder = new Order({
       order_number,
       table_id: table_id || null,
       table_snapshot: table_snapshot || req.body.table_number_override || 'Takeaway',
       customer_id: customer_id || null,
       customer_name: customer_name || 'Guest Customer',
-      customer_phone: customer_phone.trim(),
+      customer_phone: customer_phone ? customer_phone.trim() : '',
+      admin_created: admin_created || false,
       order_channel: order_channel || 'dine_in',
       scheduled_time: scheduled_time ? new Date(scheduled_time) : null,
       status: req.body.status || 'received',
@@ -808,19 +831,19 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
     if (status) {
       order.status = status;
       
-      // If status is updated to ready AND it is a delivery order, trigger Shadowfax ride booking
+      // If status is updated to ready AND it is a delivery order, trigger Shiprocket ride booking
       if (status === 'ready' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         try {
-          const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
-          const job = await createShadowfaxDeliveryJob(order);
+          const { createShiprocketDeliveryJob } = require('../config/shiprocket');
+          const job = await createShiprocketDeliveryJob(order);
           if (job.success) {
             order.delivery_job_id = job.delivery_id;
-            order.delivery_status = job.status; // e.g. 'rider_assigned'
+            order.delivery_status = job.status; // e.g. 'assigning'
             order.delivery_rider_name = job.rider_name;
             order.delivery_rider_phone = job.rider_phone;
           }
         } catch (deliveryErr) {
-          console.error('Shadowfax scheduling error:', deliveryErr.message);
+          console.error('Shiprocket scheduling error:', deliveryErr.message);
         }
       }
     }
@@ -838,6 +861,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
         order_number: order.order_number,
         status: order.status,
         payment_status: order.payment_status,
+        delivery_job_id: order.delivery_job_id,
         delivery_status: order.delivery_status,
         delivery_rider_name: order.delivery_rider_name,
         delivery_rider_phone: order.delivery_rider_phone,
@@ -854,6 +878,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       id: order._id,
       status: order.status,
       payment_status: order.payment_status,
+      delivery_job_id: order.delivery_job_id,
       delivery_status: order.delivery_status,
       delivery_rider_name: order.delivery_rider_name,
       delivery_rider_phone: order.delivery_rider_phone,
@@ -977,6 +1002,75 @@ router.post('/delivery/webhook', async (req, res) => {
     res.json({ success: true, message: 'Status updated successfully' });
   } catch (err) {
     console.error('Shadowfax webhook processing error:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// @route   POST /api/orders/delivery/partner-updates
+// @desc    Receive live delivery status updates from Shiprocket (Public)
+// @access  Public
+router.post('/delivery/partner-updates', async (req, res) => {
+  try {
+    const { order_id, current_status, awb, courier_name, rider_name, rider_phone } = req.body;
+
+    const order = await Order.findOne({ 
+      $or: [
+        { order_number: order_id },
+        { delivery_job_id: awb }
+      ]
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (current_status) {
+      order.delivery_status = current_status;
+      
+      const statusLower = current_status.toLowerCase();
+      if (statusLower.includes('out for delivery') || statusLower.includes('picked up')) {
+        order.status = 'out_for_delivery';
+      } else if (statusLower.includes('delivered')) {
+        order.status = 'delivered';
+        order.payment_status = 'paid';
+      }
+    }
+
+    if (courier_name) {
+      order.delivery_rider_name = rider_name ? `${courier_name} - ${rider_name}` : courier_name;
+    } else if (rider_name) {
+      order.delivery_rider_name = rider_name;
+    }
+    if (rider_phone) {
+      order.delivery_rider_phone = rider_phone;
+    }
+
+    await order.save();
+
+    // Broadcast socket update
+    const io = req.app.get('socketio');
+    if (io) {
+      const payload = {
+        id: order.order_number || order._id,
+        _id: order._id,
+        order_number: order.order_number,
+        status: order.status,
+        payment_status: order.payment_status,
+        delivery_status: order.delivery_status,
+        delivery_rider_name: order.delivery_rider_name,
+        delivery_rider_phone: order.delivery_rider_phone,
+        updated_at: order.updated_at
+      };
+      io.emit('order_status_updated', payload);
+      io.to(`order_${order._id}`).emit('order_status_change', payload);
+      if (order.order_number) {
+        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+      }
+    }
+
+    res.json({ success: true, message: 'Shiprocket status updated successfully' });
+  } catch (err) {
+    console.error('Shiprocket webhook processing error:', err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 });

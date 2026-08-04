@@ -261,20 +261,30 @@ export default function OrderStatus() {
           </div>
         )}
 
-        {/* Shadowfax Live Delivery Valet Card */}
+        {/* Live Delivery Valet Card */}
         {order.order_channel === 'delivery' && order.delivery_job_id && (
           <div className="bg-white border border-[#F8A324]/30 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-extrabold shrink-0">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-extrabold shrink-0 border ${
+                  order.delivery_job_id.toString().startsWith('SFX')
+                    ? 'bg-indigo-50 border-indigo-100 text-indigo-650'
+                    : 'bg-orange-50 border-orange-100 text-orange-650'
+                }`}>
                   🚚
                 </div>
                 <div>
-                  <h4 className="font-serif font-black text-sm text-gray-900">Shadowfax Delivery</h4>
+                  <h4 className="font-serif font-black text-sm text-gray-900">
+                    {order.delivery_job_id.toString().startsWith('SFX') ? 'Shadowfax Delivery' : 'Shiprocket Delivery'}
+                  </h4>
                   <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mt-0.5">ID: {order.delivery_job_id}</span>
                 </div>
               </div>
-              <span className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+              <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border ${
+                order.delivery_job_id.toString().startsWith('SFX')
+                  ? 'bg-indigo-50 border-indigo-100 text-indigo-700'
+                  : 'bg-orange-50 border-orange-100 text-orange-700'
+              }`}>
                 {order.delivery_status.replace(/_/g, ' ')}
               </span>
             </div>
