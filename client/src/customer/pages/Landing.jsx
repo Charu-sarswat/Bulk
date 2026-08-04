@@ -315,11 +315,6 @@ export default function Landing() {
                   </p>
 
                   <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-                    <img 
-                      src={review.avatar} 
-                      alt={review.name} 
-                      className="w-10 h-10 rounded-full object-cover border border-[#F8A324]"
-                    />
                     <div>
                       <h4 className="font-serif font-bold text-xs text-gray-900">{review.name}</h4>
                       <span className="text-[10px] text-[#691F1A] font-semibold block">{review.role}</span>

@@ -157,7 +157,6 @@ export default function OrderStatus() {
   };
 
   const handlePrintInvoice = () => {
-    const printWindow = window.open('', '_blank');
     const itemsHtml = order.items.map(item => `
       <tr>
         <td style="padding: 6px 0; font-size: 13px;">${item.name} x ${item.quantity}</td>
@@ -165,8 +164,17 @@ export default function OrderStatus() {
       </tr>
     `).join('');
 
+    const printFrame = document.createElement('iframe');
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
 
-    printWindow.document.write(`
+    const frameDoc = printFrame.contentWindow.document || printFrame.contentDocument;
+    frameDoc.write(`
       <html>
         <head>
           <title>Order #${order.order_number || order.id} Invoice</title>
@@ -206,16 +214,18 @@ export default function OrderStatus() {
           </table>
           <div class="divider"></div>
           <p class="text-center" style="font-size: 11px; margin-top: 15px;">Thank you for dining with us!</p>
-          <script>
-            window.onload = function() {
-              window.print();
-              window.close();
-            }
-          </script>
         </body>
       </html>
     `);
-    printWindow.document.close();
+    frameDoc.close();
+
+    setTimeout(() => {
+      printFrame.contentWindow.focus();
+      printFrame.contentWindow.print();
+      setTimeout(() => {
+        document.body.removeChild(printFrame);
+      }, 1000);
+    }, 500);
   };
 
   const finalTotal = parseFloat(order.total_amount);
