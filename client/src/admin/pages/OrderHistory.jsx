@@ -1231,6 +1231,16 @@ export default function OrderHistory() {
                       }`}>
                         Status: {selectedOrder.delivery_status || 'Scheduled'}
                       </div>
+                      {!selectedOrder.delivery_job_id.toString().startsWith('SFX') && (
+                        <a
+                          href={`https://shiprocket.co/tracking/${selectedOrder.delivery_job_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-2 text-[8px] bg-orange-600 hover:bg-orange-700 text-white font-bold py-0.5 px-1.5 rounded transition-colors"
+                        >
+                          🔗 Track on Shiprocket
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>

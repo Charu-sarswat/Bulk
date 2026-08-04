@@ -420,8 +420,18 @@ export default function LiveOrders() {
                             <div className="text-gray-700 font-bold mt-0.5">{order.delivery_rider_name || 'Assigning...'}</div>
                             {order.delivery_rider_phone && <div className="text-gray-500 font-normal">{order.delivery_rider_phone}</div>}
                             <div className={`font-black uppercase tracking-wider text-[8px] mt-0.5 ${
-                              order.delivery_job_id.startsWith('SFX') ? 'text-indigo-600' : 'text-orange-600'
+                              order.delivery_job_id.startsWith('SFX') ? 'text-indigo-655' : 'text-orange-655'
                             }`}>Status: {order.delivery_status || 'scheduled'}</div>
+                            {!order.delivery_job_id.startsWith('SFX') && (
+                              <a
+                                href={`https://shiprocket.co/tracking/${order.delivery_job_id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block mt-1.5 text-[8px] bg-orange-600 hover:bg-orange-700 text-white font-bold py-0.5 px-1.5 rounded transition-colors"
+                              >
+                                🔗 Track on Shiprocket
+                              </a>
+                            )}
                           </div>
                         )}
                         {/* Payment Info */}
