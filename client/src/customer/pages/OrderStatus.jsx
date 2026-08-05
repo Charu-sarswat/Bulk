@@ -164,6 +164,10 @@ export default function OrderStatus() {
       </tr>
     `).join('');
 
+    const subtotal = order.items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+    const totalAmount = parseFloat(order.total_amount);
+    const deliveryFee = totalAmount > subtotal ? (totalAmount - subtotal) : 0;
+
     const printFrame = document.createElement('iframe');
     printFrame.style.position = 'fixed';
     printFrame.style.right = '0';
@@ -196,7 +200,9 @@ export default function OrderStatus() {
         </head>
         <body>
           <h2 class="text-center" style="margin: 0; font-size: 18px;">${restaurantConfig.name}</h2>
-          <p class="text-center" style="font-size: 11px; margin: 5px 0;">Digital QR Order System</p>
+          <p class="text-center" style="font-size: 11px; margin: 5px 0 2px; color: #333; line-height: 1.3;">${restaurantConfig.gmbAddress}</p>
+          <p class="text-center" style="font-size: 11px; margin: 0 0 5px; color: #333;">Phone: ${restaurantConfig.formattedPhone}</p>
+          <p class="text-center" style="font-size: 11px; margin: 5px 0; font-weight: bold;">Digital QR Order System</p>
           <div class="divider"></div>
           <p style="font-size: 12px; margin: 3px 0;"><b>Order ID:</b> #${order.order_number || order.id}</p>
           <p style="font-size: 12px; margin: 3px 0;"><b>Date:</b> ${new Date(order.created_at).toLocaleString()}</p>
@@ -207,9 +213,19 @@ export default function OrderStatus() {
           </table>
           <div class="divider"></div>
           <table>
+            <tr style="font-size: 12px; color: #333;">
+              <td style="padding: 3px 0;">Subtotal</td>
+              <td style="text-align: right; padding: 3px 0;">${restaurantConfig.currency}${subtotal.toFixed(2)}</td>
+            </tr>
+            ${deliveryFee > 0 ? `
+            <tr style="font-size: 12px; color: #333;">
+              <td style="padding: 3px 0;">Delivery Charges</td>
+              <td style="text-align: right; padding: 3px 0;">${restaurantConfig.currency}${deliveryFee.toFixed(2)}</td>
+            </tr>
+            ` : ''}
             <tr style="font-weight: bold; font-size: 14px;">
-              <td style="padding: 5px 0;">TOTAL</td>
-              <td style="text-align: right; padding: 5px 0;">${restaurantConfig.currency}${parseFloat(order.total_amount).toFixed(0)}</td>
+              <td style="padding: 5px 0; border-top: 1px dashed #000;">TOTAL</td>
+              <td style="text-align: right; padding: 5px 0; border-top: 1px dashed #000;">${restaurantConfig.currency}${totalAmount.toFixed(2)}</td>
             </tr>
           </table>
           <div class="divider"></div>

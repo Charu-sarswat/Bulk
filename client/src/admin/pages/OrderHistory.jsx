@@ -478,18 +478,24 @@ export default function OrderHistory() {
     return matchesSearch && matchesStatus && matchesPayment;
   }) : [];
 
-  const handlePrint = () => {
-    if (!selectedOrder) return;
+  const handlePrint = (orderToPrint = null) => {
+    const order = orderToPrint || selectedOrder;
+    if (!order) return;
+
+    const subtotal = (order.items || []).reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+    const totalAmount = parseFloat(order.total_amount);
+    const deliveryFee = totalAmount > subtotal ? (totalAmount - subtotal) : 0;
+
     const windowPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
     windowPrint.document.write(`
       <html>
         <head>
-          <title>Invoice #${selectedOrder.id}</title>
+          <title>Invoice #${order.order_number || order.id}</title>
           <style>
             body { font-family: 'Courier New', Courier, monospace; padding: 20px; max-width: 400px; margin: 0 auto; color: #000; }
             .header { text-align: center; margin-bottom: 20px; }
             .header h1 { margin: 0; font-size: 24px; }
-            .header p { margin: 5px 0; font-size: 12px; }
+            .header p { margin: 4px 0; font-size: 11px; color: #333; line-height: 1.3; }
             .divider { border-bottom: 1px dashed #000; margin: 15px 0; }
             .flex-between { display: flex; justify-content: space-between; }
             .item { font-size: 12px; margin-bottom: 5px; }
@@ -500,30 +506,32 @@ export default function OrderHistory() {
         <body>
           <div class="header">
             <h1>${restaurantConfig.name}</h1>
+            <p>${restaurantConfig.gmbAddress}</p>
+            <p>Phone: ${restaurantConfig.formattedPhone}</p>
             <p>${restaurantConfig.tagline}</p>
-            <p>Invoice #${selectedOrder.id}</p>
-            <p>${new Date(selectedOrder.created_at).toLocaleString('en-IN')}</p>
+            <p style="font-weight: bold; margin-top: 8px;">Invoice #${order.order_number || order.id}</p>
+            <p>${new Date(order.created_at).toLocaleString('en-IN')}</p>
           </div>
           
           <div class="divider"></div>
           
           <div class="flex-between item">
-             <span>Mode: ${selectedOrder.order_channel === 'dine_in' ? 'Dine-In' : selectedOrder.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</span>
-            <span>Type: ${selectedOrder.payment_method}</span>
+             <span>Mode: ${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</span>
+            <span>Type: ${order.payment_method}</span>
           </div>
-          ${selectedOrder.delivery_address ? `
-          <div class="item">Address: ${selectedOrder.delivery_address}</div>
+          ${order.delivery_address ? `
+          <div class="item">Address: ${order.delivery_address}</div>
           ` : ''}
-          ${selectedOrder.scheduled_time ? `
-          <div class="item">Scheduled: ${new Date(selectedOrder.scheduled_time).toLocaleString('en-IN')}</div>
+          ${order.scheduled_time ? `
+          <div class="item">Scheduled: ${new Date(order.scheduled_time).toLocaleString('en-IN')}</div>
           ` : ''}
-          ${selectedOrder.customer_name ? `
-          <div class="item">Customer: ${selectedOrder.customer_name}</div>
+          ${order.customer_name ? `
+          <div class="item">Customer: ${order.customer_name}</div>
           ` : ''}
 
           <div class="divider"></div>
           
-          ${selectedOrder.items?.map(item => `
+          ${order.items?.map(item => `
             <div class="flex-between item">
               <span>${item.quantity}x ${item.name}</span>
               <span>${restaurantConfig.currency}${(item.price * item.quantity).toFixed(2)}</span>
@@ -533,9 +541,19 @@ export default function OrderHistory() {
           
           <div class="divider"></div>
           
-          <div class="flex-between total">
+          <div class="flex-between item" style="font-size: 12px; color: #333;">
+            <span>Subtotal</span>
+            <span>${restaurantConfig.currency}${subtotal.toFixed(2)}</span>
+          </div>
+          ${deliveryFee > 0 ? `
+          <div class="flex-between item" style="font-size: 12px; color: #333;">
+            <span>Delivery Charges</span>
+            <span>${restaurantConfig.currency}${deliveryFee.toFixed(2)}</span>
+          </div>
+          ` : ''}
+          <div class="flex-between total" style="border-top: 1px dashed #000; padding-top: 8px;">
             <span>TOTAL</span>
-            <span>${restaurantConfig.currency}${parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
+            <span>${restaurantConfig.currency}${totalAmount.toFixed(2)}</span>
           </div>
           
           <div class="footer">
@@ -549,6 +567,10 @@ export default function OrderHistory() {
       </html>
     `);
     windowPrint.document.close();
+  };
+
+  const handlePrintBill = (order) => {
+    handlePrint(order);
   };
 
   const filteredMenuItems = menuItems.filter(item => {

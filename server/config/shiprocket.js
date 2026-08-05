@@ -39,6 +39,30 @@ async function createShiprocketDeliveryJob(order) {
     const firstName = nameParts[0] || 'Guest';
     const lastName = nameParts.slice(1).join(' ') || 'Customer';
 
+    // Extract pincode, city, and state from address if present
+    const addressStr = order.delivery_address || '';
+    const pincodeMatch = addressStr.match(/\b([1-9][0-9]{5})\b/);
+    const billing_pincode = pincodeMatch ? pincodeMatch[1] : '500001';
+
+    const lowerAddress = addressStr.toLowerCase();
+    let billing_state = 'Telangana';
+    const states = ['andhra pradesh', 'arunachal pradesh', 'assam', 'bihar', 'chhattisgarh', 'goa', 'gujarat', 'haryana', 'himachal pradesh', 'jharkhand', 'karnataka', 'kerala', 'madhya pradesh', 'maharashtra', 'manipur', 'meghalaya', 'mizoram', 'nagaland', 'odisha', 'punjab', 'rajasthan', 'sikkim', 'tamil nadu', 'telangana', 'tripura', 'uttar pradesh', 'uttarakhand', 'west bengal', 'delhi'];
+    for (const s of states) {
+      if (lowerAddress.includes(s)) {
+        billing_state = s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        break;
+      }
+    }
+
+    let billing_city = 'Hyderabad';
+    const cities = ['hyderabad', 'secunderabad', 'bengaluru', 'bangalore', 'mumbai', 'delhi', 'chennai', 'kolkata', 'pune', 'noida', 'gurugram', 'gurgaon', 'ghaziabad', 'faridabad'];
+    for (const c of cities) {
+      if (lowerAddress.includes(c)) {
+        billing_city = c.charAt(0).toUpperCase() + c.slice(1);
+        break;
+      }
+    }
+
     const payload = {
       order_id: order.order_number || order._id.toString(),
       order_date: new Date(order.created_at || Date.now()).toISOString().slice(0, 16).replace('T', ' '),
@@ -46,9 +70,9 @@ async function createShiprocketDeliveryJob(order) {
       billing_customer_name: firstName,
       billing_last_name: lastName,
       billing_address: order.delivery_address || 'Abids Road',
-      billing_city: 'Hyderabad',
-      billing_pincode: '500001',
-      billing_state: 'Telangana',
+      billing_city,
+      billing_pincode,
+      billing_state,
       billing_country: 'India',
       billing_email: 'customer@example.com',
       billing_phone: order.customer_phone || '7207836300',
