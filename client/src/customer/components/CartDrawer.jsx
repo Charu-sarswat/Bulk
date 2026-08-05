@@ -58,6 +58,7 @@ export default function CartDrawer({
   const [orderChannel, setOrderChannel] = useState('dine_in');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [detectingLocation, setDetectingLocation] = useState(false);
+  const [coordinates, setCoordinates] = useState(null);
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
@@ -78,18 +79,22 @@ export default function CartDrawer({
             const data = await res.json();
             if (data && data.display_name) {
               setDeliveryAddress(data.display_name);
+              setCoordinates({ latitude, longitude });
               addToast('Location detected successfully!', 'success');
             } else {
               setDeliveryAddress(`${latitude}, ${longitude}`);
+              setCoordinates({ latitude, longitude });
               addToast('Coordinates fetched, but address lookup failed.', 'warning');
             }
           } else {
             setDeliveryAddress(`${latitude}, ${longitude}`);
+            setCoordinates({ latitude, longitude });
             addToast('Coordinates fetched, but address lookup failed.', 'warning');
           }
         } catch (err) {
           console.error(err);
           setDeliveryAddress(`${latitude}, ${longitude}`);
+          setCoordinates({ latitude, longitude });
           addToast('Coordinates fetched, but address lookup failed.', 'warning');
         } finally {
           setDetectingLocation(false);
@@ -143,6 +148,8 @@ export default function CartDrawer({
       customer_phone: activePhone,
       order_channel: orderChannel,
       delivery_address: orderChannel === 'delivery' ? deliveryAddress.trim() : '',
+      latitude: orderChannel === 'delivery' && coordinates ? coordinates.latitude : null,
+      longitude: orderChannel === 'delivery' && coordinates ? coordinates.longitude : null,
       payment_method: paymentMethod,
       payment_utr: utrData?.utr || '',
       notes: orderNotes,
@@ -536,7 +543,10 @@ export default function CartDrawer({
                       <textarea
                         required
                         value={deliveryAddress}
-                        onChange={(e) => setDeliveryAddress(e.target.value)}
+                        onChange={(e) => {
+                          setDeliveryAddress(e.target.value);
+                          setCoordinates(null);
+                        }}
                         placeholder="Enter complete address for delivery..."
                         rows="2"
                         className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A] resize-none font-semibold placeholder:font-normal"

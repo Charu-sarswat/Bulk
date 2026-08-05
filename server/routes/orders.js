@@ -419,7 +419,7 @@ router.post('/', async (req, res) => {
   const { 
     table_id, table_snapshot, customer_id, customer_name, customer_phone,
     order_channel, scheduled_time, payment_method, payment_utr, notes, items, delivery_address,
-    admin_created
+    admin_created, latitude, longitude
   } = req.body;
 
   const isDineInAdmin = admin_created && order_channel === 'dine_in';
@@ -575,7 +575,9 @@ router.post('/', async (req, res) => {
       total_amount,
       notes: notes || '',
       items: orderItems,
-      delivery_address: delivery_address || ''
+      delivery_address: delivery_address || '',
+      latitude: latitude || null,
+      longitude: longitude || null
     });
 
     await newOrder.save();

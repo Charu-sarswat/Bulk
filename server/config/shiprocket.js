@@ -92,6 +92,28 @@ async function createShiprocketDeliveryJob(order) {
       cleanAddress = 'Abids Road';
     }
 
+    // Geocode delivery address to get latitude/longitude
+    let latitude = order.latitude;
+    let longitude = order.longitude;
+
+    if (!latitude || !longitude) {
+      try {
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(order.delivery_address)}&format=json&limit=1`, {
+          headers: { 'User-Agent': 'BombayChowpati/1.0' }
+        });
+        if (geoRes.ok) {
+          const geoData = await geoRes.json();
+          if (geoData && geoData.length > 0) {
+            latitude = parseFloat(geoData[0].lat);
+            longitude = parseFloat(geoData[0].lon);
+            console.log(`Geocoded coordinates for address: ${latitude}, ${longitude}`);
+          }
+        }
+      } catch (geoErr) {
+        console.error('Nominatim geocoding error:', geoErr.message);
+      }
+    }
+
     const payload = {
       order_id: order.order_number || order._id.toString(),
       order_date: new Date(order.created_at || Date.now()).toISOString().slice(0, 16).replace('T', ' '),
@@ -106,6 +128,8 @@ async function createShiprocketDeliveryJob(order) {
       billing_email: 'customer@example.com',
       billing_phone: order.customer_phone || '7207836300',
       shipping_is_billing: true,
+      latitude,
+      longitude,
       order_items: order.items.map(item => ({
         name: item.name,
         sku: item.menu_item_id ? item.menu_item_id.toString() : 'SKU_GENERIC',
