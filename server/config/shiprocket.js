@@ -47,20 +47,49 @@ async function createShiprocketDeliveryJob(order) {
     const lowerAddress = addressStr.toLowerCase();
     let billing_state = 'Telangana';
     const states = ['andhra pradesh', 'arunachal pradesh', 'assam', 'bihar', 'chhattisgarh', 'goa', 'gujarat', 'haryana', 'himachal pradesh', 'jharkhand', 'karnataka', 'kerala', 'madhya pradesh', 'maharashtra', 'manipur', 'meghalaya', 'mizoram', 'nagaland', 'odisha', 'punjab', 'rajasthan', 'sikkim', 'tamil nadu', 'telangana', 'tripura', 'uttar pradesh', 'uttarakhand', 'west bengal', 'delhi'];
+    let matchedStateWord = '';
     for (const s of states) {
       if (lowerAddress.includes(s)) {
         billing_state = s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        matchedStateWord = s;
         break;
       }
     }
 
     let billing_city = 'Hyderabad';
     const cities = ['hyderabad', 'secunderabad', 'bengaluru', 'bangalore', 'mumbai', 'delhi', 'chennai', 'kolkata', 'pune', 'noida', 'gurugram', 'gurgaon', 'ghaziabad', 'faridabad'];
+    let matchedCityWord = '';
     for (const c of cities) {
       if (lowerAddress.includes(c)) {
         billing_city = c.charAt(0).toUpperCase() + c.slice(1);
+        matchedCityWord = c;
         break;
       }
+    }
+
+    // Clean up addressStr to remove trailing city, state, country, and pincode to avoid duplication
+    let cleanAddress = addressStr;
+    if (pincodeMatch) {
+      cleanAddress = cleanAddress.replace(new RegExp('\\b' + pincodeMatch[1] + '\\b', 'gi'), '');
+    }
+    if (matchedStateWord) {
+      cleanAddress = cleanAddress.replace(new RegExp('\\b' + matchedStateWord + '\\b', 'gi'), '');
+    }
+    if (matchedCityWord) {
+      cleanAddress = cleanAddress.replace(new RegExp('\\b' + matchedCityWord + '\\b', 'gi'), '');
+    }
+    cleanAddress = cleanAddress.replace(/\b(india)\b/gi, '');
+    
+    // Clean up extra commas and spaces
+    cleanAddress = cleanAddress
+      .replace(/,\s*,/g, ',')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^,|,$/g, '')
+      .trim();
+
+    if (!cleanAddress) {
+      cleanAddress = 'Abids Road';
     }
 
     const payload = {
@@ -69,7 +98,7 @@ async function createShiprocketDeliveryJob(order) {
       pickup_location: 'work',
       billing_customer_name: firstName,
       billing_last_name: lastName,
-      billing_address: order.delivery_address || 'Abids Road',
+      billing_address: cleanAddress,
       billing_city,
       billing_pincode,
       billing_state,
