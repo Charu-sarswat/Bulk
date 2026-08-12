@@ -492,72 +492,134 @@ export default function OrderHistory() {
         <head>
           <title>Invoice #${order.order_number || order.id}</title>
           <style>
-            body { font-family: 'Courier New', Courier, monospace; padding: 20px; max-width: 400px; margin: 0 auto; color: #000; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .header h1 { margin: 0; font-size: 24px; }
-            .header p { margin: 4px 0; font-size: 11px; color: #333; line-height: 1.3; }
-            .divider { border-bottom: 1px dashed #000; margin: 15px 0; }
-            .flex-between { display: flex; justify-content: space-between; }
-            .item { font-size: 12px; margin-bottom: 5px; }
-            .total { font-size: 16px; font-weight: bold; margin-top: 10px; }
-            .footer { text-align: center; margin-top: 30px; font-size: 12px; }
+            @media print {
+              body { margin: 0; padding: 0; }
+              * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            }
+            body {
+              font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+              padding: 10px;
+              max-width: 320px;
+              margin: 0 auto;
+              color: #000;
+              font-size: 13px;
+              line-height: 1.4;
+            }
+            * {
+              color: #000 !important;
+              font-weight: bold !important;
+            }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .header-title { font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+            .subtitle { font-size: 11px; margin: 2px 0; }
+            .divider { border-top: 2px solid #000; margin: 10px 0; }
+            .double-divider { border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 5px 0; margin: 10px 0; }
+            .meta-table, .items-table, .summary-table { width: 100%; border-collapse: collapse; }
+            .meta-table td { padding: 3px 0; font-size: 13px; vertical-align: top; }
+            .items-table th { border-bottom: 2px solid #000; padding: 5px 0; font-size: 12px; }
+            .items-table td { padding: 6px 0; font-size: 13px; vertical-align: top; }
+            .summary-table td { padding: 4px 0; font-size: 13px; }
           </style>
         </head>
         <body>
-          <div class="header">
-            <h1>${restaurantConfig.name}</h1>
-            <p>${restaurantConfig.gmbAddress}</p>
-            <p>Phone: ${restaurantConfig.formattedPhone}</p>
-            <p>${restaurantConfig.tagline}</p>
-            <p style="font-weight: bold; margin-top: 8px;">Invoice #${order.order_number || order.id}</p>
-            <p>${new Date(order.created_at).toLocaleString('en-IN')}</p>
+          <div class="text-center">
+            <h2 class="header-title">${restaurantConfig.name}</h2>
+            <p class="subtitle">${restaurantConfig.gmbAddress}</p>
+            <p class="subtitle bold">Phone: ${restaurantConfig.formattedPhone}</p>
+            <p class="bold" style="font-size: 13px; margin: 8px 0 2px 0; letter-spacing: 1px; text-transform: uppercase; border: 1px solid #000; padding: 3px 0; display: block;">OFFICIAL RECEIPT</p>
           </div>
-          
-          <div class="divider"></div>
-          
-          <div class="flex-between item">
-             <span>Mode: ${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</span>
-            <span>Type: ${order.payment_method}</span>
-          </div>
-          ${order.delivery_address ? `
-          <div class="item">Address: ${order.delivery_address}</div>
-          ` : ''}
-          ${order.scheduled_time ? `
-          <div class="item">Scheduled: ${new Date(order.scheduled_time).toLocaleString('en-IN')}</div>
-          ` : ''}
-          ${order.customer_name ? `
-          <div class="item">Customer: ${order.customer_name}</div>
-          ` : ''}
 
           <div class="divider"></div>
-          
-          ${order.items?.map(item => `
-            <div class="flex-between item">
-              <span>${item.quantity}x ${item.name}</span>
-              <span>${restaurantConfig.currency}${(item.price * item.quantity).toFixed(2)}</span>
-            </div>
-            ${item.notes ? `<div style="font-size:10px; margin-left: 15px;">- ${item.notes}</div>` : ''}
-          `).join('')}
-          
+
+          <table class="meta-table">
+            <tr>
+              <td class="bold" style="width: 45%; text-align: left;">Invoice No:</td>
+              <td class="text-right">#${order.order_number || order.id}</td>
+            </tr>
+            <tr>
+              <td class="bold" style="text-align: left;">Date:</td>
+              <td class="text-right">${new Date(order.created_at).toLocaleString('en-IN')}</td>
+            </tr>
+            <tr>
+              <td class="bold" style="text-align: left;">Service Mode:</td>
+              <td class="text-right" style="text-transform: uppercase; font-weight: bold;">${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</td>
+            </tr>
+            <tr>
+              <td class="bold" style="text-align: left;">Payment Method:</td>
+              <td class="text-right" style="text-transform: uppercase; font-weight: bold;">${order.payment_method}</td>
+            </tr>
+            ${order.customer_name ? `
+            <tr>
+              <td class="bold" style="text-align: left;">Customer:</td>
+              <td class="text-right">${order.customer_name}</td>
+            </tr>
+            ` : ''}
+            ${order.delivery_address ? `
+            <tr>
+              <td class="bold" style="text-align: left;">Address:</td>
+              <td class="text-right">${order.delivery_address}</td>
+            </tr>
+            ` : ''}
+            ${order.scheduled_time ? `
+            <tr>
+              <td class="bold" style="text-align: left;">Scheduled:</td>
+              <td class="text-right">${new Date(order.scheduled_time).toLocaleString('en-IN')}</td>
+            </tr>
+            ` : ''}
+          </table>
+
+          <div class="double-divider" style="font-weight: bold; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+            Order Items
+          </div>
+
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th style="width: 70%; text-align: left;">ITEM</th>
+                <th class="text-right" style="width: 30%;">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${order.items?.map(item => `
+                <tr>
+                  <td style="text-align: left; padding: 6px 0;">
+                    <div class="bold" style="font-size: 13px;">${item.name}</div>
+                    <div style="font-size: 11px; color: #333;">${item.quantity} x ${restaurantConfig.currency}${parseFloat(item.price).toFixed(2)}</div>
+                    ${item.notes ? `<div style="font-size: 10px; font-style: italic; color: #444; margin-top: 2px;">Note: ${item.notes}</div>` : ''}
+                  </td>
+                  <td class="text-right bold" style="font-size: 13px; vertical-align: bottom;">
+                    ${restaurantConfig.currency}${(item.price * item.quantity).toFixed(2)}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
           <div class="divider"></div>
-          
-          <div class="flex-between item" style="font-size: 12px; color: #333;">
-            <span>Subtotal</span>
-            <span>${restaurantConfig.currency}${subtotal.toFixed(2)}</span>
-          </div>
-          ${deliveryFee > 0 ? `
-          <div class="flex-between item" style="font-size: 12px; color: #333;">
-            <span>Delivery Charges</span>
-            <span>${restaurantConfig.currency}${deliveryFee.toFixed(2)}</span>
-          </div>
-          ` : ''}
-          <div class="flex-between total" style="border-top: 1px dashed #000; padding-top: 8px;">
-            <span>TOTAL</span>
-            <span>${restaurantConfig.currency}${totalAmount.toFixed(2)}</span>
-          </div>
-          
-          <div class="footer">
-            <p>Thank you for dining with us!</p>
+
+          <table class="summary-table">
+            <tr>
+              <td style="text-align: left;">Subtotal</td>
+              <td class="text-right bold">${restaurantConfig.currency}${subtotal.toFixed(2)}</td>
+            </tr>
+            ${deliveryFee > 0 ? `
+            <tr>
+              <td style="text-align: left;">Delivery Charges</td>
+              <td class="text-right bold">${restaurantConfig.currency}${deliveryFee.toFixed(2)}</td>
+            </tr>
+            ` : ''}
+            <tr class="bold" style="font-size: 15px;">
+              <td style="text-align: left; padding-top: 6px; border-top: 1.5px dashed #000;">TOTAL</td>
+              <td class="text-right" style="padding-top: 6px; border-top: 1.5px dashed #000; font-size: 16px;">${restaurantConfig.currency}${totalAmount.toFixed(2)}</td>
+            </tr>
+          </table>
+
+          <div class="divider"></div>
+
+          <div class="text-center" style="margin-top: 15px; font-size: 12px;">
+            <p class="bold" style="margin: 0 0 5px 0;">Thank you for dining with us!</p>
+            <p style="font-size: 10px; margin: 0; color: #333;">Please visit us again</p>
           </div>
           
           <script>
