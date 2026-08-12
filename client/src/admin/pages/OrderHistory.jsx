@@ -502,8 +502,8 @@ export default function OrderHistory() {
               max-width: 320px;
               margin: 0 auto;
               color: #000;
-              font-size: 13px;
-              line-height: 1.4;
+              font-size: 11px;
+              line-height: 1.3;
             }
             * {
               color: #000 !important;
@@ -511,23 +511,23 @@ export default function OrderHistory() {
             }
             .text-center { text-align: center; }
             .text-right { text-align: right; }
-            .header-title { font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 0.5px; }
-            .subtitle { font-size: 11px; margin: 2px 0; }
-            .divider { border-top: 2px solid #000; margin: 10px 0; }
-            .double-divider { border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 5px 0; margin: 10px 0; }
+            .header-title { font-size: 18px; margin: 0 0 1px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+            .subtitle { font-size: 10px; margin: 0 0 1px 0; line-height: 1.2; }
+            .divider { border-top: 2px solid #000; margin: 6px 0; }
+            .double-divider { border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 2px 0; margin: 6px 0; }
             .meta-table, .items-table, .summary-table { width: 100%; border-collapse: collapse; }
-            .meta-table td { padding: 3px 0; font-size: 13px; vertical-align: top; }
-            .items-table th { border-bottom: 2px solid #000; padding: 5px 0; font-size: 12px; }
-            .items-table td { padding: 6px 0; font-size: 13px; vertical-align: top; }
-            .summary-table td { padding: 4px 0; font-size: 13px; }
+            .meta-table td { padding: 1px 0; font-size: 11px; vertical-align: top; }
+            .items-table th { border-bottom: 2px solid #000; padding: 3px 0; font-size: 11px; }
+            .items-table td { padding: 3px 0; font-size: 11px; vertical-align: top; }
+            .summary-table td { padding: 2px 0; font-size: 11px; }
           </style>
         </head>
         <body>
           <div class="text-center">
             <h2 class="header-title">${restaurantConfig.name}</h2>
             <p class="subtitle">${restaurantConfig.gmbAddress}</p>
-            <p class="subtitle bold">Phone: ${restaurantConfig.formattedPhone}</p>
-            <p class="bold" style="font-size: 13px; margin: 8px 0 2px 0; letter-spacing: 1px; text-transform: uppercase; border: 1px solid #000; padding: 3px 0; display: block;">OFFICIAL RECEIPT</p>
+            <p class="subtitle">Phone: ${restaurantConfig.formattedPhone}</p>
+            <p class="bold" style="font-size: 12px; margin: 5px 0 1px 0; letter-spacing: 1px; text-transform: uppercase; border: 1.5px solid #000; padding: 2px 0; display: block;">RECEIPT</p>
           </div>
 
           <div class="divider"></div>
@@ -543,11 +543,11 @@ export default function OrderHistory() {
             </tr>
             <tr>
               <td class="bold" style="text-align: left;">Service Mode:</td>
-              <td class="text-right" style="text-transform: uppercase; font-weight: bold;">${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</td>
+              <td class="text-right" style="text-transform: uppercase;">${order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}</td>
             </tr>
             <tr>
               <td class="bold" style="text-align: left;">Payment Method:</td>
-              <td class="text-right" style="text-transform: uppercase; font-weight: bold;">${order.payment_method}</td>
+              <td class="text-right" style="text-transform: uppercase;">${order.payment_method}</td>
             </tr>
             ${order.customer_name ? `
             <tr>
@@ -569,7 +569,7 @@ export default function OrderHistory() {
             ` : ''}
           </table>
 
-          <div class="double-divider" style="font-weight: bold; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+          <div class="double-divider" style="font-weight: bold; text-align: center; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
             Order Items
           </div>
 
@@ -583,12 +583,11 @@ export default function OrderHistory() {
             <tbody>
               ${order.items?.map(item => `
                 <tr>
-                  <td style="text-align: left; padding: 6px 0;">
-                    <div class="bold" style="font-size: 13px;">${item.name}</div>
-                    <div style="font-size: 11px; color: #333;">${item.quantity} x ${restaurantConfig.currency}${parseFloat(item.price).toFixed(2)}</div>
-                    ${item.notes ? `<div style="font-size: 10px; font-style: italic; color: #444; margin-top: 2px;">Note: ${item.notes}</div>` : ''}
+                  <td style="text-align: left; padding: 3px 0;">
+                    <div>${item.quantity} x ${item.name}</div>
+                    ${item.notes ? `<div style="font-size: 9px; font-style: italic; color: #444; margin-top: 1px;">Note: ${item.notes}</div>` : ''}
                   </td>
-                  <td class="text-right bold" style="font-size: 13px; vertical-align: bottom;">
+                  <td class="text-right" style="vertical-align: top; padding: 3px 0;">
                     ${restaurantConfig.currency}${(item.price * item.quantity).toFixed(2)}
                   </td>
                 </tr>
@@ -601,25 +600,25 @@ export default function OrderHistory() {
           <table class="summary-table">
             <tr>
               <td style="text-align: left;">Subtotal</td>
-              <td class="text-right bold">${restaurantConfig.currency}${subtotal.toFixed(2)}</td>
+              <td class="text-right">${restaurantConfig.currency}${subtotal.toFixed(2)}</td>
             </tr>
             ${deliveryFee > 0 ? `
             <tr>
               <td style="text-align: left;">Delivery Charges</td>
-              <td class="text-right bold">${restaurantConfig.currency}${deliveryFee.toFixed(2)}</td>
+              <td class="text-right">${restaurantConfig.currency}${deliveryFee.toFixed(2)}</td>
             </tr>
             ` : ''}
-            <tr class="bold" style="font-size: 15px;">
-              <td style="text-align: left; padding-top: 6px; border-top: 1.5px dashed #000;">TOTAL</td>
-              <td class="text-right" style="padding-top: 6px; border-top: 1.5px dashed #000; font-size: 16px;">${restaurantConfig.currency}${totalAmount.toFixed(2)}</td>
+            <tr class="bold" style="font-size: 13px;">
+              <td style="text-align: left; padding-top: 4px; border-top: 1.5px solid #000;">TOTAL</td>
+              <td class="text-right" style="padding-top: 4px; border-top: 1.5px solid #000; font-size: 14px;">${restaurantConfig.currency}${totalAmount.toFixed(2)}</td>
             </tr>
           </table>
 
           <div class="divider"></div>
 
-          <div class="text-center" style="margin-top: 15px; font-size: 12px;">
-            <p class="bold" style="margin: 0 0 5px 0;">Thank you for dining with us!</p>
-            <p style="font-size: 10px; margin: 0; color: #333;">Please visit us again</p>
+          <div class="text-center" style="margin-top: 10px; font-size: 11px;">
+            <p style="margin: 0 0 2px 0;">Thank you for dining with us!</p>
+            <p style="font-size: 9px; margin: 0; color: #333;">Please visit us again</p>
           </div>
           
           <script>
