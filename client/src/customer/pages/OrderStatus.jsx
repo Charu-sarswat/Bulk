@@ -185,6 +185,7 @@ export default function OrderStatus() {
           <style>
             @media print {
               body { margin: 0; padding: 0; }
+              @page { margin: 0; }
               * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             }
             body {
