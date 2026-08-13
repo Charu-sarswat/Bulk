@@ -2,8 +2,35 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
 const MenuItem = require('../models/MenuItem');
+const Order = require('../models/Order');
 const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
+
+// Helper to get order counts per menu item
+async function getMenuItemOrderCounts() {
+  try {
+    const orderCounts = await Order.aggregate([
+      { $unwind: '$items' },
+      { $match: { status: { $ne: 'cancelled' } } },
+      {
+        $group: {
+          _id: '$items.menu_item_id',
+          count: { $sum: '$items.quantity' }
+        }
+      }
+    ]);
+    const countMap = {};
+    orderCounts.forEach(oc => {
+      if (oc._id) {
+        countMap[oc._id.toString()] = oc.count;
+      }
+    });
+    return countMap;
+  } catch (err) {
+    console.error('Error fetching order counts:', err);
+    return {};
+  }
+}
 
 // @route   GET /api/menu/categories
 // @desc    Get all categories with their menu items
@@ -11,9 +38,17 @@ router.get('/categories', async (req, res) => {
   try {
     const categories = await Category.find().sort({ sort_order: 1, created_at: 1 });
     const menuItems = await MenuItem.find().sort({ created_at: -1 });
+    const countMap = await getMenuItemOrderCounts();
+
+    const sortedMenuItems = [...menuItems].sort((a, b) => {
+      const countA = countMap[a._id.toString()] || 0;
+      const countB = countMap[b._id.toString()] || 0;
+      if (countB !== countA) return countB - countA;
+      return b.created_at - a.created_at; // fallback to creation date
+    });
 
     const result = categories.map(cat => {
-      const items = menuItems.filter(item => 
+      const items = sortedMenuItems.filter(item => 
         (item.category_id && item.category_id.toString() === cat._id.toString()) ||
         (item.category_ids && item.category_ids.some(id => id && id.toString() === cat._id.toString()))
       );
@@ -61,8 +96,17 @@ router.get('/categories', async (req, res) => {
 // @desc    Get all menu items
 router.get('/items', async (req, res) => {
   try {
-    const items = await MenuItem.find().populate('category_id', 'name').sort({ name: 1 });
-    const formatted = items.map(i => ({
+    const items = await MenuItem.find().populate('category_id', 'name');
+    const countMap = await getMenuItemOrderCounts();
+    
+    const sortedItems = [...items].sort((a, b) => {
+      const countA = countMap[a._id.toString()] || 0;
+      const countB = countMap[b._id.toString()] || 0;
+      if (countB !== countA) return countB - countA;
+      return a.name.localeCompare(b.name); // fallback to alphabetical
+    });
+
+    const formatted = sortedItems.map(i => ({
       id: i._id,
       category_id: i.category_id ? i.category_id._id : null,
       category_name: i.category_id ? i.category_id.name : 'Unassigned',
