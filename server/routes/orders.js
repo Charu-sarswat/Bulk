@@ -833,19 +833,63 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
     if (status) {
       order.status = status;
       
-      // If status is updated to ready AND it is a delivery order, trigger Shiprocket ride booking
+      const io = req.app.get('socketio');
+
+      // 1. Preparing State: Auto-assign rider 5-10 minutes before food is ready (remaining prep time <= 7 minutes)
+      // Assume average preparation time is 20 minutes. Auto-book after 13 minutes (7 mins remaining).
+      // For development/testing, we use a 15-second delay to make it easily testable in real-time.
+      if (status === 'preparing' && order.order_channel === 'delivery' && !order.delivery_job_id) {
+        const delayMs = process.env.NODE_ENV === 'development' ? 15000 : 13 * 60 * 1000;
+        console.log(`[Shiprocket QUICK] Scheduled auto-rider booking for order ${order.order_number} in ${delayMs / 1000}s`);
+        
+        setTimeout(async () => {
+          try {
+            const Order = require('../models/Order');
+            const currentOrder = await Order.findById(order._id);
+            if (currentOrder && currentOrder.status === 'preparing' && !currentOrder.delivery_job_id) {
+              console.log(`[Shiprocket QUICK] Prep timer reached threshold. Auto-assigning rider for order ${currentOrder.order_number}...`);
+              const { createShiprocketDeliveryJob } = require('../config/shiprocket');
+              const job = await createShiprocketDeliveryJob(currentOrder);
+              if (job.success) {
+                currentOrder.delivery_job_id = job.delivery_id;
+                currentOrder.delivery_status = job.status;
+                currentOrder.delivery_rider_name = job.rider_name;
+                currentOrder.delivery_rider_phone = job.rider_phone;
+                await currentOrder.save();
+                
+                // Broadcast updates
+                broadcastOrderStatus(currentOrder, io);
+
+                // Start simulation if simulated
+                if (job.simulated) {
+                  startSimulatedDeliveryJourney(currentOrder._id.toString(), io);
+                }
+              }
+            }
+          } catch (err) {
+            console.error('[Shiprocket QUICK] Delayed booking error:', err.message);
+          }
+        }, delayMs);
+      }
+
+      // 2. Ready State: Immediate rider booking if not already booked
       if (status === 'ready' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         try {
           const { createShiprocketDeliveryJob } = require('../config/shiprocket');
           const job = await createShiprocketDeliveryJob(order);
           if (job.success) {
             order.delivery_job_id = job.delivery_id;
-            order.delivery_status = job.status; // e.g. 'assigning'
+            order.delivery_status = job.status;
             order.delivery_rider_name = job.rider_name;
             order.delivery_rider_phone = job.rider_phone;
+            
+            if (job.simulated) {
+              // Start simulation
+              startSimulatedDeliveryJourney(order._id.toString(), io);
+            }
           }
         } catch (deliveryErr) {
-          console.error('Shiprocket scheduling error:', deliveryErr.message);
+          console.error('[Shiprocket QUICK] Immediate scheduling error:', deliveryErr.message);
         }
       }
     }
@@ -1009,43 +1053,58 @@ router.post('/delivery/webhook', async (req, res) => {
 });
 
 // @route   POST /api/orders/delivery/partner-updates
-// @desc    Receive live delivery status updates from Shiprocket (Public)
+// @route   POST /api/orders/webhooks/shiprocket
+// @desc    Receive live delivery status updates from Shiprocket (Public / Hyperlocal)
 // @access  Public
-router.post('/delivery/partner-updates', async (req, res) => {
+router.post(['/delivery/partner-updates', '/webhooks/shiprocket'], async (req, res) => {
   try {
-    const { order_id, current_status, awb, courier_name, rider_name, rider_phone } = req.body;
+    const { 
+      order_id, 
+      order_reference_id,
+      current_status, 
+      status,
+      awb, 
+      courier_name, 
+      rider_name, 
+      rider_phone,
+      rider_details
+    } = req.body;
+
+    const refId = order_reference_id || order_id;
+    const finalStatus = status || current_status;
+    const finalRiderName = rider_name || (rider_details && rider_details.name) || courier_name;
+    const finalRiderPhone = rider_phone || (rider_details && rider_details.phone);
 
     const order = await Order.findOne({ 
       $or: [
-        { order_number: order_id },
+        { order_number: refId },
         { delivery_job_id: awb }
       ]
     });
 
     if (!order) {
-      // Return 200 success so Shiprocket's webhook verification pings succeed
       return res.status(200).json({ success: true, message: 'Order not found (ignored for verification)' });
     }
 
-    if (current_status) {
-      order.delivery_status = current_status;
+    if (finalStatus) {
+      order.delivery_status = finalStatus;
       
-      const statusLower = current_status.toLowerCase();
-      if (statusLower.includes('out for delivery') || statusLower.includes('picked up')) {
+      const statusLower = finalStatus.toLowerCase();
+      if (statusLower.includes('out for delivery') || statusLower.includes('picked_up') || statusLower.includes('picked up')) {
         order.status = 'out_for_delivery';
       } else if (statusLower.includes('delivered')) {
         order.status = 'delivered';
         order.payment_status = 'paid';
+      } else if (statusLower.includes('cancelled')) {
+        order.status = 'cancelled';
       }
     }
 
-    if (courier_name) {
-      order.delivery_rider_name = rider_name ? `${courier_name} - ${rider_name}` : courier_name;
-    } else if (rider_name) {
-      order.delivery_rider_name = rider_name;
+    if (finalRiderName) {
+      order.delivery_rider_name = finalRiderName;
     }
-    if (rider_phone) {
-      order.delivery_rider_phone = rider_phone;
+    if (finalRiderPhone) {
+      order.delivery_rider_phone = finalRiderPhone;
     }
 
     await order.save();
@@ -1053,22 +1112,7 @@ router.post('/delivery/partner-updates', async (req, res) => {
     // Broadcast socket update
     const io = req.app.get('socketio');
     if (io) {
-      const payload = {
-        id: order.order_number || order._id,
-        _id: order._id,
-        order_number: order.order_number,
-        status: order.status,
-        payment_status: order.payment_status,
-        delivery_status: order.delivery_status,
-        delivery_rider_name: order.delivery_rider_name,
-        delivery_rider_phone: order.delivery_rider_phone,
-        updated_at: order.updated_at
-      };
-      io.emit('order_status_updated', payload);
-      io.to(`order_${order._id}`).emit('order_status_change', payload);
-      if (order.order_number) {
-        io.to(`order_${order.order_number}`).emit('order_status_change', payload);
-      }
+      broadcastOrderStatus(order, io);
     }
 
     res.json({ success: true, message: 'Shiprocket status updated successfully' });
@@ -1077,5 +1121,101 @@ router.post('/delivery/partner-updates', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+/**
+ * Broadcasts order status changes to connected Socket.IO clients
+ */
+function broadcastOrderStatus(order, io) {
+  if (!io) return;
+  const payload = {
+    id: order.order_number || order._id,
+    _id: order._id,
+    order_number: order.order_number,
+    status: order.status,
+    payment_status: order.payment_status,
+    delivery_status: order.delivery_status,
+    delivery_rider_name: order.delivery_rider_name,
+    delivery_rider_phone: order.delivery_rider_phone,
+    updated_at: order.updated_at
+  };
+  io.emit('order_status_updated', payload);
+  io.to(`order_${order._id}`).emit('order_status_change', payload);
+  if (order.order_number) {
+    io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+  }
+}
+
+/**
+ * Simulates a delivery rider journey for testing in development mode
+ */
+function startSimulatedDeliveryJourney(orderId, io) {
+  if (!io) return;
+  console.log(`[Simulation] Starting simulated delivery journey for order ID: ${orderId}`);
+  
+  // Step 1: Rider Assigned (10 seconds)
+  setTimeout(async () => {
+    try {
+      const currentOrder = await Order.findById(orderId);
+      if (currentOrder && currentOrder.status === 'preparing') {
+        currentOrder.delivery_status = 'assigned';
+        currentOrder.delivery_rider_name = 'Rahul (Shiprocket QUICK Rider)';
+        currentOrder.delivery_rider_phone = '9876543210';
+        await currentOrder.save();
+        console.log(`[Simulation] Order ${currentOrder.order_number} delivery status -> assigned`);
+        broadcastOrderStatus(currentOrder, io);
+      }
+    } catch (e) {
+      console.error('[Simulation Error] Step 1:', e.message);
+    }
+  }, 10000);
+
+  // Step 2: Rider Arrived at Restaurant (20 seconds)
+  setTimeout(async () => {
+    try {
+      const currentOrder = await Order.findById(orderId);
+      if (currentOrder && currentOrder.delivery_status === 'assigned') {
+        currentOrder.delivery_status = 'arrived_at_restaurant';
+        await currentOrder.save();
+        console.log(`[Simulation] Order ${currentOrder.order_number} delivery status -> arrived_at_restaurant`);
+        broadcastOrderStatus(currentOrder, io);
+      }
+    } catch (e) {
+      console.error('[Simulation Error] Step 2:', e.message);
+    }
+  }, 20000);
+
+  // Step 3: Picked Up / On the Way (30 seconds)
+  setTimeout(async () => {
+    try {
+      const currentOrder = await Order.findById(orderId);
+      if (currentOrder && currentOrder.delivery_status === 'arrived_at_restaurant') {
+        currentOrder.delivery_status = 'picked_up';
+        currentOrder.status = 'out_for_delivery';
+        await currentOrder.save();
+        console.log(`[Simulation] Order ${currentOrder.order_number} delivery status -> picked_up`);
+        broadcastOrderStatus(currentOrder, io);
+      }
+    } catch (e) {
+      console.error('[Simulation Error] Step 3:', e.message);
+    }
+  }, 30000);
+
+  // Step 4: Delivered (45 seconds)
+  setTimeout(async () => {
+    try {
+      const currentOrder = await Order.findById(orderId);
+      if (currentOrder && currentOrder.delivery_status === 'picked_up') {
+        currentOrder.delivery_status = 'delivered';
+        currentOrder.status = 'delivered';
+        currentOrder.payment_status = 'paid';
+        await currentOrder.save();
+        console.log(`[Simulation] Order ${currentOrder.order_number} delivery status -> delivered`);
+        broadcastOrderStatus(currentOrder, io);
+      }
+    } catch (e) {
+      console.error('[Simulation Error] Step 4:', e.message);
+    }
+  }, 45000);
+}
 
 module.exports = router;
