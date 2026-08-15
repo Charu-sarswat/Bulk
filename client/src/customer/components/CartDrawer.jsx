@@ -509,14 +509,27 @@ export default function CartDrawer({
                   </label>
                   <select
                     value={orderChannel}
-                    onChange={(e) => setOrderChannel(e.target.value)}
+                    onChange={(e) => {
+                      if (e.target.value === 'delivery') {
+                        addToast('Home delivery is temporarily unavailable. Please choose Dine-In or Takeaway.', 'warning');
+                        return;
+                      }
+                      setOrderChannel(e.target.value);
+                    }}
                     className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#691F1A]"
                   >
-                    <option value="dine_in">Dine-In</option>
-                    <option value="takeaway">Takeaway (Self Pickup)</option>
-                    <option value="delivery">Home Delivery</option>
+                    <option value="dine_in">🍽️ Dine-In</option>
+                    <option value="takeaway">🛍️ Takeaway (Self Pickup)</option>
+                    <option value="delivery" disabled className="text-gray-400 bg-gray-50">
+                      🚫 Home Delivery (Temporarily Unavailable)
+                    </option>
                   </select>
 
+                  {/* Notice for Home Delivery */}
+                  <div className="flex items-center gap-1.5 p-2 bg-amber-50/80 border border-amber-200/60 rounded-lg text-[10px] text-amber-800">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>Home delivery is temporarily unavailable at this moment. You can place <strong>Dine-In</strong> or <strong>Takeaway</strong> orders.</span>
+                  </div>
 
                   {orderChannel === 'delivery' && (
                     <div className="pt-1 animate-fade-in space-y-1.5">

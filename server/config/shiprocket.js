@@ -1,5 +1,6 @@
 const SHIPROCKET_EMAIL = process.env.SHIPROCKET_EMAIL || 'shoebalimohammed03@gmail.com';
 const SHIPROCKET_PASSWORD = process.env.SHIPROCKET_PASSWORD || 'd27Sg2pbPw3s0CdwxW%igZ5naQ$zpv2B';
+const SHIPROCKET_PICKUP_LOCATION = process.env.SHIPROCKET_PICKUP_LOCATION || 'work';
 
 let cachedToken = null;
 let tokenExpiry = null;
@@ -126,7 +127,9 @@ async function createShiprocketDeliveryJob(order) {
     const payload = {
       order_id: order.order_number || order._id.toString(),
       order_date: new Date(order.created_at || Date.now()).toISOString().slice(0, 16).replace('T', ' '),
-      pickup_location: 'work',
+      pickup_location: SHIPROCKET_PICKUP_LOCATION,
+      is_hyperlocal: 1,
+      is_new_hyperlocal: 1,
       billing_customer_name: firstName,
       billing_last_name: lastName,
       billing_address: cleanAddress,
@@ -158,7 +161,8 @@ async function createShiprocketDeliveryJob(order) {
 
     console.log('[Shiprocket QUICK] Creating adhoc order with payload:', JSON.stringify(payload, null, 2));
 
-    const res = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+    // Try dedicated hyperlocal endpoint first, fallback to standard adhoc with hyperlocal flag
+    let res = await fetch('https://apiv2.shiprocket.in/v1/external/hyperlocal/create/adhoc', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -167,7 +171,22 @@ async function createShiprocketDeliveryJob(order) {
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    let data;
+    if (res.ok) {
+      data = await res.json();
+    } else {
+      console.log('[Shiprocket QUICK] Hyperlocal direct create returned status:', res.status, '- trying external/orders/create/adhoc with hyperlocal routing');
+      res = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      data = await res.json();
+    }
+
     if (!res.ok) {
       console.log('Sending payload:', JSON.stringify(payload, null, 2));
       console.log('Shiprocket error response:', JSON.stringify(data, null, 2));
@@ -180,11 +199,10 @@ async function createShiprocketDeliveryJob(order) {
     if (shipment_id) {
       console.log(`[Shiprocket QUICK] Checking hyperlocal serviceability for Shipment ID: ${shipment_id}`);
       let courier_id = null;
-      let courierName = 'Shiprocket Hyperlocal';
+      let courierName = 'Shiprocket Quick';
 
       try {
         const codVal = order.payment_method === 'cod' ? 1 : 0;
-        // Use coordinates to trigger the new hyperlocal routing system
         const serviceUrl = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=500001&delivery_postcode=${billing_pincode}&weight=0.5&cod=${codVal}&is_new_hyperlocal=1&lat_from=${pickupLat}&long_from=${pickupLng}&lat_to=${latitude}&long_to=${longitude}`;
         const serviceRes = await fetch(serviceUrl, {
           method: 'GET',
@@ -196,30 +214,38 @@ async function createShiprocketDeliveryJob(order) {
         if (serviceRes.ok) {
           const serviceData = await serviceRes.json();
           console.log('[Shiprocket QUICK] Serviceability Response:', JSON.stringify(serviceData, null, 2));
-          const couriers = serviceData.data?.available_courier_companies || [];
-          if (couriers.length > 0) {
-            // Select the first available hyperlocal courier partner (e.g. Dunzo, Shadowfax Local, Borzo)
-            courier_id = couriers[0].courier_company_id;
-            courierName = couriers[0].courier_name;
-            console.log(`[Shiprocket QUICK] Selected Hyperlocal Courier: ${courierName} (ID: ${courier_id})`);
-          } else {
-            console.warn('[Shiprocket QUICK] No hyperlocal couriers serviceable for these coordinates in your Shiprocket account.');
+          
+          let couriers = [];
+          if (Array.isArray(serviceData.data)) {
+            couriers = serviceData.data;
+          } else if (Array.isArray(serviceData.data?.available_courier_companies)) {
+            couriers = serviceData.data.available_courier_companies;
           }
-        } else {
-          const errText = await serviceRes.text();
-          console.warn('[Shiprocket QUICK] Serviceability check API error:', errText);
+
+          if (couriers.length > 0) {
+            const selected = couriers[0];
+            courier_id = selected.courier_company_id || selected.id || null;
+            courierName = selected.courier_name || 'Shiprocket Quick';
+            console.log(`[Shiprocket QUICK] Selected Hyperlocal Courier: ${courierName} (ID: ${courier_id})`);
+          }
         }
       } catch (serviceErr) {
         console.error('[Shiprocket QUICK] Hyperlocal serviceability check failed:', serviceErr.message);
       }
 
-      console.log(`[Shiprocket QUICK] Assigning AWB / Rider for Shipment ID: ${shipment_id}`);
-      const assignBody = { shipment_id };
+      console.log(`[Shiprocket QUICK] Assigning Hyperlocal AWB / Rider for Shipment ID: ${shipment_id}`);
+      
+      // Try dedicated hyperlocal AWB assign
+      const assignBody = { 
+        shipment_id,
+        is_hyperlocal: 1,
+        is_new_hyperlocal: 1
+      };
       if (courier_id) {
         assignBody.courier_id = courier_id;
       }
 
-      const awbRes = await fetch('https://apiv2.shiprocket.in/v1/external/courier/assign/awb', {
+      let awbRes = await fetch('https://apiv2.shiprocket.in/v1/external/hyperlocal/assign/rider', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -227,7 +253,23 @@ async function createShiprocketDeliveryJob(order) {
         },
         body: JSON.stringify(assignBody)
       });
-      const awbData = await awbRes.json();
+
+      let awbData;
+      if (awbRes.ok) {
+        awbData = await awbRes.json();
+      } else {
+        console.log('[Shiprocket QUICK] /hyperlocal/assign/rider returned', awbRes.status, '- trying /courier/assign/awb');
+        awbRes = await fetch('https://apiv2.shiprocket.in/v1/external/courier/assign/awb', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(assignBody)
+        });
+        awbData = await awbRes.json();
+      }
+      
       console.log('[Shiprocket QUICK] AWB Assignment Response:', JSON.stringify(awbData, null, 2));
       
       const awbCode = awbData.response?.data?.awb_code || shipment_id;

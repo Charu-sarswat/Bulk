@@ -424,6 +424,12 @@ router.post('/', async (req, res) => {
 
   const isDineInAdmin = admin_created && order_channel === 'dine_in';
 
+  if (order_channel === 'delivery') {
+    return res.status(400).json({ 
+      message: 'Home delivery is temporarily unavailable at this moment. Please choose Dine-In or Takeaway.' 
+    });
+  }
+
   if (!isDineInAdmin) {
     if (!customer_name || !customer_name.trim()) {
       return res.status(400).json({ message: 'Customer name is compulsory' });
@@ -837,19 +843,20 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
 
       // 1. Preparing State: Auto-assign rider 5-10 minutes before food is ready (remaining prep time <= 7 minutes)
       // Assume average preparation time is 20 minutes. Auto-book after 13 minutes (7 mins remaining).
+      // 1. Preparing State: Schedule rider booking after preparation threshold
       // For development/testing, we use a 15-second delay to make it easily testable in real-time.
       if (status === 'preparing' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         const delayMs = process.env.NODE_ENV === 'development' ? 15000 : 13 * 60 * 1000;
-        console.log(`[Shiprocket QUICK] Scheduled auto-rider booking for order ${order.order_number} in ${delayMs / 1000}s`);
+        console.log(`[Shadowfax Hyperlocal] Scheduled auto-rider booking for order ${order.order_number} in ${delayMs / 1000}s`);
         
         setTimeout(async () => {
           try {
             const Order = require('../models/Order');
             const currentOrder = await Order.findById(order._id);
             if (currentOrder && currentOrder.status === 'preparing' && !currentOrder.delivery_job_id) {
-              console.log(`[Shiprocket QUICK] Prep timer reached threshold. Auto-assigning rider for order ${currentOrder.order_number}...`);
-              const { createShiprocketDeliveryJob } = require('../config/shiprocket');
-              const job = await createShiprocketDeliveryJob(currentOrder);
+              console.log(`[Shadowfax Hyperlocal] Prep timer reached threshold. Auto-assigning rider for order ${currentOrder.order_number}...`);
+              const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
+              const job = await createShadowfaxDeliveryJob(currentOrder);
               if (job.success) {
                 currentOrder.delivery_job_id = job.delivery_id;
                 currentOrder.delivery_status = job.status;
@@ -867,7 +874,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
               }
             }
           } catch (err) {
-            console.error('[Shiprocket QUICK] Delayed booking error:', err.message);
+            console.error('[Shadowfax Hyperlocal] Delayed booking error:', err.message);
           }
         }, delayMs);
       }
@@ -875,8 +882,8 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       // 2. Ready State: Immediate rider booking if not already booked
       if (status === 'ready' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         try {
-          const { createShiprocketDeliveryJob } = require('../config/shiprocket');
-          const job = await createShiprocketDeliveryJob(order);
+          const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
+          const job = await createShadowfaxDeliveryJob(order);
           if (job.success) {
             order.delivery_job_id = job.delivery_id;
             order.delivery_status = job.status;
@@ -889,7 +896,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
             }
           }
         } catch (deliveryErr) {
-          console.error('[Shiprocket QUICK] Immediate scheduling error:', deliveryErr.message);
+          console.error('[Shadowfax Hyperlocal] Immediate scheduling error:', deliveryErr.message);
         }
       }
     }
