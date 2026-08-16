@@ -28,9 +28,23 @@ export default function InventoryManagement() {
     exportToCSV('Bombay_Chowpati_Raw_Materials_Sheet', headers, rows);
   };
 
-  const [activeTab, setActiveTab] = useState('raw'); // 'raw' | 'logs'
+  const [activeTab, setActiveTab] = useState('items'); // 'items' | 'raw' | 'logs'
   const [logs, setLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(false);
+
+  // Menu Items / Finished Goods States
+  const [menuItems, setMenuItems] = useState([]);
+  const [itemsLoading, setItemsLoading] = useState(true);
+  const [adjustItemModal, setAdjustItemModal] = useState(null);
+  const [adjustItemForm, setAdjustItemForm] = useState({
+    change_type: 'STOCK_ADD',
+    quantity: 10,
+    reason: '',
+    min_stock_level: 10
+  });
+  const [itemHistoryModal, setItemHistoryModal] = useState(null);
+  const [itemHistoryLogs, setItemHistoryLogs] = useState([]);
+  const [itemHistoryLoading, setItemHistoryLoading] = useState(false);
 
   // Raw Materials States
   const [rawMaterials, setRawMaterials] = useState([]);
@@ -122,8 +136,82 @@ export default function InventoryManagement() {
     }
   };
 
+  const fetchMenuItems = async () => {
+    setItemsLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/api/inventory`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.items) {
+        setMenuItems(data.items);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setItemsLoading(false);
+    }
+  };
+
+  const fetchItemHistory = async (itemId) => {
+    setItemHistoryLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/api/inventory/items/${itemId}/logs`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setItemHistoryLogs(data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setItemHistoryLoading(false);
+    }
+  };
+
+  const handleOpenItemAdjustModal = (item) => {
+    setAdjustItemModal(item);
+    setAdjustItemForm({
+      change_type: 'STOCK_ADD',
+      quantity: 10,
+      reason: 'Dish batch prepared / restocked',
+      min_stock_level: item.min_stock_level || 5
+    });
+  };
+
+  const handleSaveItemStockAdjust = async (e) => {
+    e.preventDefault();
+    if (!adjustItemModal) return;
+
+    try {
+      const res = await fetch(`${apiUrl}/api/inventory/${adjustItemModal.id}/stock`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(adjustItemForm)
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        addToast(`Updated stock for dish "${adjustItemModal.name}"`, 'success');
+        setAdjustItemModal(null);
+        fetchMenuItems();
+        if (activeTab === 'logs') fetchGlobalLogs();
+      } else {
+        addToast(data.message || 'Failed to adjust stock', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Error adjusting dish stock', 'error');
+    }
+  };
+
   useEffect(() => {
     fetchRawMaterials();
+    fetchMenuItems();
   }, [token]);
 
   useEffect(() => {
@@ -233,7 +321,11 @@ export default function InventoryManagement() {
   const lowRawCount = rawMaterials.filter(m => m.stock_quantity <= m.min_stock_level).length;
   const outOfRawCount = rawMaterials.filter(m => m.stock_quantity === 0).length;
 
-  if (rawLoading) {
+  const totalItemsCount = menuItems.length;
+  const lowItemsCount = menuItems.filter(m => m.stock_quantity <= m.min_stock_level).length;
+  const outOfItemsCount = menuItems.filter(m => m.stock_quantity === 0 || !m.is_available).length;
+
+  if (rawLoading && itemsLoading) {
     return <SkeletonLoader type="list" />;
   }
 
@@ -242,7 +334,7 @@ export default function InventoryManagement() {
       {/* Header Controls */}
       <PageHeader 
         title="Inventory & Stock Control" 
-        description="Monitor raw ingredient levels, track auto deductions, and adjust stock."
+        description="Monitor prepared dish batches, raw ingredient levels, and automatic stock deductions."
         icon={Boxes}
       >
         <button
@@ -261,8 +353,12 @@ export default function InventoryManagement() {
             <Boxes className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Total Ingredients</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{totalRawCount}</div>
+            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">
+              {activeTab === 'items' ? 'Total Dishes & Drinks' : 'Total Raw Ingredients'}
+            </span>
+            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">
+              {activeTab === 'items' ? totalItemsCount : totalRawCount}
+            </div>
           </div>
         </div>
 
@@ -271,8 +367,10 @@ export default function InventoryManagement() {
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Low Ingredient Alert</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{lowRawCount}</div>
+            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Low Stock Alert</span>
+            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">
+              {activeTab === 'items' ? lowItemsCount : lowRawCount}
+            </div>
           </div>
         </div>
 
@@ -281,8 +379,10 @@ export default function InventoryManagement() {
             <XCircle className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Out of Stock</span>
-            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">{outOfRawCount}</div>
+            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider block leading-tight">Out of Stock / Sold Out</span>
+            <div className="text-lg sm:text-2xl font-black text-gray-900 font-serif mt-0.5">
+              {activeTab === 'items' ? outOfItemsCount : outOfRawCount}
+            </div>
           </div>
         </div>
       </div>
@@ -293,6 +393,17 @@ export default function InventoryManagement() {
         <div className="overflow-x-auto border-b border-gray-100 bg-gray-50/70">
           <div className="flex px-4 sm:px-6 pt-3 gap-4 sm:gap-6 min-w-max">
             <button
+              onClick={() => setActiveTab('items')}
+              className={`pb-3 font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition-all cursor-pointer ${
+                activeTab === 'items'
+                  ? 'border-[#691F1A] text-[#691F1A]'
+                  : 'border-transparent text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <Boxes className="w-4 h-4" />
+              Dishes & Finished Goods ({menuItems.length})
+            </button>
+            <button
               onClick={() => setActiveTab('raw')}
               className={`pb-3 font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === 'raw'
@@ -301,7 +412,7 @@ export default function InventoryManagement() {
               }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
-              Raw Materials
+              Raw Materials ({rawMaterials.length})
             </button>
             <button
               onClick={() => setActiveTab('logs')}
@@ -316,6 +427,124 @@ export default function InventoryManagement() {
             </button>
           </div>
         </div>
+
+      {/* Tab: Menu Items / Dishes */}
+      {activeTab === 'items' && (
+        <div className="bg-white rounded-3xl border border-gray-150 shadow-xs overflow-hidden">
+          {/* Header Controls for Dishes */}
+          <div className="p-4 sm:p-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
+            <div className="relative flex-1 max-w-md w-full">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search dishes, drinks, or categories..."
+                className="w-full bg-[#FFF9EE]/30 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#F8A324] focus:ring-1"
+              />
+            </div>
+
+            <button
+              onClick={fetchMenuItems}
+              className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${itemsLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+
+          {/* Dishes Table */}
+          {itemsLoading ? (
+            <p className="text-gray-400 text-xs py-12 text-center">Loading menu stock levels...</p>
+          ) : menuItems.length === 0 ? (
+            <div className="text-center py-16">
+              <Boxes className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-semibold text-sm">No dishes found.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-[800px] w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50/80 border-b border-gray-100 text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                    <th className="py-3.5 px-4 sm:px-6">Dish / Product Name</th>
+                    <th className="py-3.5 px-4 sm:px-6">Category</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-center">Stock Level</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-center">Low Threshold</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-center">Status</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 text-xs text-gray-700 font-semibold">
+                  {menuItems
+                    .filter(m => 
+                      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      (m.category_name && m.category_name.toLowerCase().includes(searchQuery.toLowerCase()))
+                    )
+                    .map(item => {
+                      const isLow = item.stock_quantity <= item.min_stock_level && item.stock_quantity > 0;
+                      const isOut = item.stock_quantity === 0 || !item.is_available;
+                      return (
+                        <tr key={item.id} className="hover:bg-[#FFF9EE]/20 transition-colors">
+                          <td className="py-4 px-4 sm:px-6 font-bold text-gray-900 flex items-center gap-2.5">
+                            {item.image_url && (
+                              <img src={item.image_url} alt="" className="w-8 h-8 rounded-lg object-cover" />
+                            )}
+                            <div>
+                              <span>{item.name}</span>
+                              {!item.is_available && (
+                                <span className="ml-2 text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
+                                  Disabled in Menu
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 sm:px-6 text-gray-500">
+                            <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 text-[11px] font-medium">
+                              {item.category_name}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 sm:px-6 text-center font-serif text-base font-bold text-gray-800">
+                            {item.stock_quantity} <span className="text-xs text-gray-400 font-normal">{item.unit || 'portions'}</span>
+                          </td>
+                          <td className="py-4 px-4 sm:px-6 text-center text-gray-500">
+                            {item.min_stock_level} {item.unit || 'portions'}
+                          </td>
+                          <td className="py-4 px-4 sm:px-6 text-center">
+                            <span className={`text-[10px] uppercase font-extrabold px-2.5 py-1 rounded-full flex items-center justify-center gap-1 w-max mx-auto ${
+                              isOut ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                              isLow ? 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse' :
+                              'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            }`}>
+                              {isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 sm:px-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => handleOpenItemAdjustModal(item)}
+                                className="px-3 py-1.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                              >
+                                <SlidersHorizontal className="w-3.5 h-3.5" />
+                                Restock / Adjust
+                              </button>
+                              <button
+                                onClick={() => handleOpenItemHistory(item)}
+                                className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 hover:text-[#691F1A] text-gray-600 rounded-lg transition-colors cursor-pointer"
+                                title="View history"
+                              >
+                                <History className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
 
 
@@ -782,6 +1011,165 @@ export default function InventoryManagement() {
                           isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                         }`}>
                           {log.change_type === 'ORDER_DEDUCT' ? 'Auto-Deduct' : log.change_type.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="text-xs font-semibold text-gray-800">
+                          Stock: {log.previous_stock} → <span className="font-bold text-gold-600">{log.new_stock}</span>
+                          <span className="text-[10px] text-gray-400 ml-1">({isPositive ? `+${log.quantity_change}` : log.quantity_change})</span>
+                        </div>
+                        <div className="text-[10px] text-gray-500">By: {log.recorded_by}</div>
+                      </div>
+
+                      {log.reason && (
+                        <div className="text-xs text-gray-500 bg-white p-2 rounded-lg border border-gray-100">
+                          "{log.reason}"
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Adjust Menu Item Dish Stock Modal */}
+      {adjustItemModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden slide-up">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100">
+              <h3 className="font-serif font-bold text-lg text-gray-900 flex items-center gap-2">
+                <SlidersHorizontal className="w-5 h-5 text-gold-500" />
+                Restock Dish: {adjustItemModal.name}
+              </h3>
+              <button onClick={() => setAdjustItemModal(null)} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveItemStockAdjust} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Action Type</label>
+                <select
+                  value={adjustItemForm.change_type}
+                  onChange={(e) => setAdjustItemForm({...adjustItemForm, change_type: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-gold-500"
+                >
+                  <option value="STOCK_ADD">Add Portions Prepared (+)</option>
+                  <option value="STOCK_SUB">Deduct Portions (-)</option>
+                  <option value="STOCK_SET">Set Absolute Stock (=)</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Current Stock</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={`${adjustItemModal.stock_quantity} ${adjustItemModal.unit || 'portions'}`}
+                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Quantity</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    required
+                    value={adjustItemForm.quantity}
+                    onChange={(e) => setAdjustItemForm({...adjustItemForm, quantity: parseFloat(e.target.value) || 0})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-900 focus:outline-none focus:border-gold-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Low Stock Warning Threshold</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={adjustItemForm.min_stock_level}
+                  onChange={(e) => setAdjustItemForm({...adjustItemForm, min_stock_level: parseFloat(e.target.value) || 0})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Reason / Batch Notes</label>
+                <textarea
+                  rows="2"
+                  value={adjustItemForm.reason}
+                  onChange={(e) => setAdjustItemForm({...adjustItemForm, reason: e.target.value})}
+                  placeholder="e.g. Daily morning prep batch, kitchen stock replenishment..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAdjustItemModal(null)}
+                  className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Save className="w-4 h-4" />
+                  Save Dish Stock
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Menu Item Dish History Modal */}
+      {itemHistoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col slide-up max-h-[85vh]">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100">
+              <div>
+                <h3 className="font-serif font-bold text-lg text-gray-900 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-gold-500" />
+                  {itemHistoryModal.name} - Change History
+                </h3>
+                <span className="text-xs text-gray-400">Dish stock & order deduction trail</span>
+              </div>
+              <button onClick={() => setItemHistoryModal(null)} className="p-1 text-gray-400 hover:bg-gray-100 rounded-lg cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto flex-1 space-y-4">
+              {itemHistoryLoading ? (
+                <p className="text-gray-400 text-xs py-8 text-center">Loading audit log...</p>
+              ) : itemHistoryLogs.length === 0 ? (
+                <p className="text-gray-400 text-xs py-8 text-center">No history logs recorded for this dish.</p>
+              ) : (
+                itemHistoryLogs.map(log => {
+                  const isPositive = log.quantity_change > 0;
+                  return (
+                    <div key={log.id} className="p-3.5 bg-gray-50 border border-gray-100 rounded-xl space-y-2">
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] uppercase font-bold text-gray-400">
+                          {new Date(log.created_at).toLocaleString('en-IN', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit', hour12: true
+                          })}
+                        </span>
+                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                          log.change_type === 'ORDER_DEDUCT' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                          isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                        }`}>
+                          {log.change_type === 'ORDER_DEDUCT' ? 'Order Auto-Deduct' : log.change_type.replace(/_/g, ' ')}
                         </span>
                       </div>
 

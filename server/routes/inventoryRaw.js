@@ -99,6 +99,22 @@ router.put('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
 
     await material.save();
 
+    // If stock is now positive, auto re-enable any menu items that depend on this raw material
+    if (newStock > 0) {
+      try {
+        const MenuItem = require('../models/MenuItem');
+        const linkedItems = await MenuItem.find({ 'recipe.raw_material_id': material._id });
+        for (const item of linkedItems) {
+          if (item.auto_out_of_stock && !item.is_available && item.stock_quantity > 0) {
+            item.is_available = true;
+            await item.save();
+          }
+        }
+      } catch (err) {
+        console.error('Error auto re-enabling linked menu items:', err.message);
+      }
+    }
+
     // Log the stock update if any change occurred
     if (change_type) {
       const log = new InventoryLog({
