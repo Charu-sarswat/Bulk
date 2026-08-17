@@ -271,33 +271,47 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
           </div>
 
           {/* Footer actions */}
-          <div className="p-6 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-4 shrink-0">
-            {/* Quantity selector */}
-            <div className="flex items-center bg-white border border-gray-200 rounded-xl px-1 h-12">
-              <button
-                onClick={handleDecrement}
-                className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg active:scale-95 transition-all cursor-pointer"
-              >
-                <Minus className="w-3.5 h-3.5" />
-              </button>
-              <span className="w-8 text-center font-bold text-gray-800 text-sm">{quantity}</span>
-              <button
-                onClick={handleIncrement}
-                className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg active:scale-95 transition-all cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-              </button>
-            </div>
+          {(() => {
+            const isOutOfStock = item?.is_available === false || (item?.stock_quantity !== undefined && item?.stock_quantity <= 0);
+            return (
+              <div className="p-6 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-4 shrink-0">
+                {/* Quantity selector */}
+                <div className={`flex items-center bg-white border border-gray-200 rounded-xl px-1 h-12 ${isOutOfStock ? 'opacity-50 pointer-events-none' : ''}`}>
+                  <button
+                    onClick={handleDecrement}
+                    disabled={isOutOfStock}
+                    className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="w-8 text-center font-bold text-gray-800 text-sm">{quantity}</span>
+                  <button
+                    onClick={handleIncrement}
+                    disabled={isOutOfStock}
+                    className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
 
-            {/* Add action */}
-            <button
-              onClick={handleAdd}
-              className="flex-1 bg-[#691F1A] hover:bg-[#551915] active:scale-[0.99] text-[#F8A324] font-black h-12 px-5 rounded-xl transition-all duration-200 flex justify-between items-center shadow-lg shadow-black/10 cursor-pointer text-xs sm:text-sm whitespace-nowrap min-w-0"
-            >
-              <span className="truncate mr-2 uppercase tracking-wider">Add to Cart</span>
-              <span>{restaurantConfig.currency}{(unitPrice * quantity).toFixed(0)}</span>
-            </button>
-          </div>
+                {/* Add action */}
+                <button
+                  onClick={handleAdd}
+                  disabled={isOutOfStock}
+                  className={`flex-1 font-black h-12 px-5 rounded-xl transition-all duration-200 flex justify-between items-center shadow-lg shadow-black/10 text-xs sm:text-sm whitespace-nowrap min-w-0 ${
+                    isOutOfStock 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none' 
+                      : 'bg-[#691F1A] hover:bg-[#551915] active:scale-[0.99] text-[#F8A324] cursor-pointer'
+                  }`}
+                >
+                  <span className="truncate mr-2 uppercase tracking-wider">
+                    {isOutOfStock ? 'Currently Unavailable' : 'Add to Cart'}
+                  </span>
+                  <span>{restaurantConfig.currency}{(unitPrice * quantity).toFixed(0)}</span>
+                </button>
+              </div>
+            );
+          })()}
         </div>
 
       </div>

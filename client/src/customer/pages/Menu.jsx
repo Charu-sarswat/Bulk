@@ -113,8 +113,7 @@ export default function Menu() {
     const matchesCat = selectedCategory === 'all' || 
       (item.category_id && item.category_id.toString() === selectedCategory.toString()) ||
       (item.category_ids && item.category_ids.some(id => id && id.toString() === selectedCategory.toString()));
-    const matchesAvailable = item.is_available !== false;
-    return matchesSearch && matchesCat && matchesAvailable;
+    return matchesSearch && matchesCat;
   }).sort((a, b) => {
     if (priceSort === 'low-to-high') return parseFloat(a.price) - parseFloat(b.price);
     if (priceSort === 'high-to-low') return parseFloat(b.price) - parseFloat(a.price);
@@ -214,22 +213,34 @@ export default function Menu() {
                     item.description?.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                   .slice(0, 6)
-                  .map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => { setSearchQuery(item.name); setIsSearchOpen(false); }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#FFF9EE] transition-colors text-left border-b border-gray-50 last:border-0 cursor-pointer"
-                    >
-                      <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                        <img src={item.image_url || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=100'} alt={item.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-gray-800 truncate">{item.name}</p>
-                        <p className="text-[10px] text-gray-400 truncate">{item.description}</p>
-                      </div>
-                      <span className="text-xs font-black text-[#691F1A] flex-shrink-0">₹{parseFloat(item.price).toFixed(0)}</span>
-                    </button>
-                  ))}
+                  .map(item => {
+                    const isOutOfStock = item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0);
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => { setSearchQuery(item.name); setIsSearchOpen(false); }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#FFF9EE] transition-colors text-left border-b border-gray-50 last:border-0 cursor-pointer ${
+                          isOutOfStock ? 'opacity-60' : ''
+                        }`}
+                      >
+                        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                          <img src={item.image_url || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=100'} alt={item.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs font-bold text-gray-800 truncate">{item.name}</p>
+                            {isOutOfStock && (
+                              <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.2 rounded shrink-0">
+                                Out of stock
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-gray-400 truncate">{item.description}</p>
+                        </div>
+                        <span className="text-xs font-black text-[#691F1A] flex-shrink-0">₹{parseFloat(item.price).toFixed(0)}</span>
+                      </button>
+                    );
+                  })}
                 {menuItems.filter(item =>
                   item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   item.description?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -260,25 +271,41 @@ export default function Menu() {
           {filteredItems.map(item => {
             const inCart = cart.find(c => c.menu_item_id === item.id);
             const cartQty = inCart ? inCart.quantity : 0;
+            const isOutOfStock = item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0);
 
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col group border border-gray-100 hover:border-[#F8A324]/40"
+                className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-300 flex flex-col group border ${
+                  isOutOfStock 
+                    ? 'border-gray-200 opacity-80' 
+                    : 'border-gray-100 hover:shadow-lg hover:border-[#F8A324]/40'
+                }`}
               >
                 {/* Card Top: Opens details/customization sheet */}
                 <div 
                   onClick={() => setCustomizationItem(item)}
-                  className="cursor-pointer flex-1 flex flex-col justify-start"
+                  className="cursor-pointer flex-1 flex flex-col justify-start relative"
                 >
                   {/* Image */}
                   <div className="relative w-full bg-gray-50 overflow-hidden" style={{ paddingBottom: '62%' }}>
                     <img
                       src={item.image_url || 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600'}
                       alt={item.name}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${
+                        isOutOfStock ? 'grayscale contrast-75 brightness-95' : 'group-hover:scale-105'
+                      }`}
                     />
-                    {/* Veg dot */}
+                    {/* Out of Stock Overlay / Badge */}
+                    {isOutOfStock ? (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-2">
+                        <span className="bg-red-600/90 text-white font-extrabold text-[10px] sm:text-xs px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md backdrop-blur-xs">
+                          Out of Stock
+                        </span>
+                      </div>
+                    ) : null}
+
+                    {/* Veg dot & Tags */}
                     <div className="absolute top-2 left-2 flex items-center gap-1">
                       <div className="w-5 h-5 rounded-md bg-white/95 shadow-sm border border-emerald-500/40 flex items-center justify-center">
                         <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
@@ -305,7 +332,9 @@ export default function Menu() {
                   {/* Content */}
                   <div className="p-3 flex-1 flex flex-col justify-between gap-1">
                     <div>
-                      <h3 className="font-serif font-black text-sm text-gray-900 leading-tight group-hover:text-[#691F1A] transition-colors line-clamp-2">
+                      <h3 className={`font-serif font-black text-sm leading-tight transition-colors line-clamp-2 ${
+                        isOutOfStock ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#691F1A]'
+                      }`}>
                         {item.name}
                       </h3>
                       {item.description && (
@@ -319,11 +348,15 @@ export default function Menu() {
 
                 {/* Price + Action Row (Kept outside click wrapper) */}
                 <div className="p-3 pt-0 flex items-center justify-between gap-2 border-t border-gray-50">
-                  <span className="font-black text-sm text-[#691F1A]">
+                  <span className={`font-black text-sm ${isOutOfStock ? 'text-gray-400 line-through' : 'text-[#691F1A]'}`}>
                     {restaurantConfig.currency}{parseFloat(item.price).toFixed(0)}
                   </span>
 
-                  {cartQty > 0 ? (
+                  {isOutOfStock ? (
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200/60 px-2.5 py-1 rounded-lg uppercase tracking-wider select-none">
+                      Unavailable
+                    </span>
+                  ) : cartQty > 0 ? (
                     <div className="flex items-center gap-1 bg-[#691F1A] text-white rounded-xl px-1.5 py-1 shadow-sm">
                       <button
                         onClick={() => updateCartQuantity(item.id, inCart.notes, cartQty - 1)}
