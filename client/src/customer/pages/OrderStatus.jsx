@@ -56,14 +56,17 @@ export default function OrderStatus() {
       joinOrderRoom(orderId);
       
       socket.on('order_status_change', (updatedOrder) => {
-        if (updatedOrder.id === orderId || updatedOrder.order_number === orderId) {
+        if (orderId && (updatedOrder.order_number === orderId || updatedOrder.id === orderId || updatedOrder._id === orderId)) {
           setOrder((prevOrder) => ({
             ...prevOrder,
             status: updatedOrder.status,
             payment_status: updatedOrder.payment_status,
-            delivery_status: updatedOrder.delivery_status,
-            delivery_rider_name: updatedOrder.delivery_rider_name,
-            delivery_rider_phone: updatedOrder.delivery_rider_phone,
+            delivery_job_id: updatedOrder.delivery_job_id || prevOrder.delivery_job_id,
+            delivery_status: updatedOrder.delivery_status || prevOrder.delivery_status,
+            delivery_rider_name: updatedOrder.delivery_rider_name || prevOrder.delivery_rider_name,
+            delivery_rider_phone: updatedOrder.delivery_rider_phone || prevOrder.delivery_rider_phone,
+            delivery_otp: updatedOrder.delivery_otp || prevOrder.delivery_otp,
+            delivery_tracking_url: updatedOrder.delivery_tracking_url || prevOrder.delivery_tracking_url,
             updated_at: updatedOrder.updated_at
           }));
           
@@ -155,30 +158,13 @@ export default function OrderStatus() {
     const message = `Hello, I placed a ${tableInfo} order. I need assistance regarding my Order #${order.order_number || order.id} (Total: ${restaurantConfig.currency}${parseFloat(order.total_amount).toFixed(2)}). Thank you!`;
     return `https://wa.me/${restaurantConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
-
   const handlePrintInvoice = () => {
-    const itemsHtml = order.items.map(item => `
-      <tr>
-        <td style="padding: 6px 0; font-size: 13px;">${item.name} x ${item.quantity}</td>
-        <td style="text-align: right; padding: 6px 0; font-size: 13px;">${restaurantConfig.currency}${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
-      </tr>
-    `).join('');
-
     const subtotal = order.items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
-    const totalAmount = parseFloat(order.total_amount);
+    const totalAmount = parseFloat(order.total_amount || 0);
     const deliveryFee = totalAmount > subtotal ? (totalAmount - subtotal) : 0;
 
-    const printFrame = document.createElement('iframe');
-    printFrame.style.position = 'fixed';
-    printFrame.style.right = '0';
-    printFrame.style.bottom = '0';
-    printFrame.style.width = '0';
-    printFrame.style.height = '0';
-    printFrame.style.border = '0';
-    document.body.appendChild(printFrame);
-
-    const frameDoc = printFrame.contentWindow.document || printFrame.contentDocument;
-    frameDoc.write(`
+    const printWindow = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+    printWindow.document.write(`
       <html>
         <head>
           <title>Order #${order.order_number || order.id} Invoice</title>
@@ -191,9 +177,9 @@ export default function OrderStatus() {
             body {
               font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
               color: #000;
-              width: 280px;
+              max-width: 320px;
               margin: 5px auto;
-              padding: 2px;
+              padding: 10px;
               font-size: 11px;
               line-height: 1.3;
             }
@@ -203,13 +189,15 @@ export default function OrderStatus() {
             }
             .text-center { text-align: center; }
             .text-right { text-align: right; }
+            .text-left { text-align: left; }
             .header-title { font-size: 18px; margin: 0 0 1px 0; text-transform: uppercase; letter-spacing: 0.5px; }
             .subtitle { font-size: 10px; margin: 0 0 1px 0; line-height: 1.2; }
+            .site-link { font-size: 10px; text-decoration: underline !important; color: #0000ee !important; margin-bottom: 2px; display: inline-block; cursor: pointer !important; -webkit-user-select: text; user-select: text; }
             .divider { border-top: 2px solid #000; margin: 6px 0; }
             .double-divider { border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 2px 0; margin: 6px 0; }
             .meta-table, .items-table, .summary-table { width: 100%; border-collapse: collapse; }
             .meta-table td { padding: 1px 0; font-size: 11px; vertical-align: top; }
-            .items-table th { border-bottom: 2px solid #000; padding: 3px 0; font-size: 11px; }
+            .items-table th { border-bottom: 2px solid #000; padding: 3px 0; font-size: 10px; }
             .items-table td { padding: 3px 0; font-size: 11px; vertical-align: top; }
             .summary-table td { padding: 2px 0; font-size: 11px; }
           </style>
@@ -218,7 +206,10 @@ export default function OrderStatus() {
           <div class="text-center">
             <h2 class="header-title">${restaurantConfig.name}</h2>
             <p class="subtitle">${restaurantConfig.gmbAddress}</p>
-            <p class="subtitle">Phone: ${restaurantConfig.formattedPhone}</p>
+            <p class="subtitle">Phone: ${restaurantConfig.formattedPhone || restaurantConfig.supportPhone}</p>
+            <div>
+              <a href="https://bombaychowpati.com" class="site-link" target="_blank" rel="noopener noreferrer" onclick="window.open('https://bombaychowpati.com', '_blank'); return true;">https://bombaychowpati.com</a>
+            </div>
             <p class="bold" style="font-size: 12px; margin: 5px 0 1px 0; letter-spacing: 1px; text-transform: uppercase; border: 1.5px solid #000; padding: 2px 0; display: block;">RECEIPT</p>
           </div>
 
@@ -230,8 +221,8 @@ export default function OrderStatus() {
               <td class="text-right">#${order.order_number || order.id}</td>
             </tr>
             <tr>
-              <td class="bold" style="text-align: left;">Date:</td>
-              <td class="text-right">${new Date(order.created_at).toLocaleString()}</td>
+              <td class="bold" style="text-align: left;">Date & Time:</td>
+              <td class="text-right">${new Date(order.created_at).toLocaleString('en-IN')}</td>
             </tr>
             <tr>
               <td class="bold" style="text-align: left;">Service Mode:</td>
@@ -246,20 +237,22 @@ export default function OrderStatus() {
           <table class="items-table">
             <thead>
               <tr>
-                <th style="width: 70%; text-align: left;">ITEM</th>
-                <th class="text-right" style="width: 30%;">AMOUNT</th>
+                <th class="text-left" style="width: 46%;">ITEM</th>
+                <th class="text-right" style="width: 16%;">QTY</th>
+                <th class="text-right" style="width: 18%;">RATE</th>
+                <th class="text-right" style="width: 20%;">AMT</th>
               </tr>
             </thead>
             <tbody>
               ${order.items.map(item => `
                 <tr>
-                  <td style="text-align: left; padding: 3px 0;">
-                    <div>${item.quantity} x ${item.name}</div>
+                  <td class="text-left" style="padding: 3px 0;">
+                    <div>${item.name?.toUpperCase()}</div>
                     ${item.notes ? `<div style="font-size: 9px; font-style: italic; color: #444; margin-top: 1px;">Note: ${item.notes}</div>` : ''}
                   </td>
-                  <td class="text-right" style="vertical-align: top; padding: 3px 0;">
-                    ${restaurantConfig.currency}${(parseFloat(item.price) * item.quantity).toFixed(2)}
-                  </td>
+                  <td class="text-right" style="padding: 3px 0;">${item.quantity}</td>
+                  <td class="text-right" style="padding: 3px 0;">${Number(item.price).toFixed(2)}</td>
+                  <td class="text-right" style="padding: 3px 0;">${(Number(item.price) * Number(item.quantity)).toFixed(2)}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -290,18 +283,15 @@ export default function OrderStatus() {
             <p style="margin: 0 0 2px 0;">Thank you for dining with us!</p>
             <p style="font-size: 9px; margin: 0; color: #333;">Please visit us again</p>
           </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
         </body>
       </html>
     `);
-    frameDoc.close();
-
-    setTimeout(() => {
-      printFrame.contentWindow.focus();
-      printFrame.contentWindow.print();
-      setTimeout(() => {
-        document.body.removeChild(printFrame);
-      }, 1000);
-    }, 500);
+    printWindow.document.close();
   };
 
   const finalTotal = parseFloat(order.total_amount);
@@ -348,76 +338,137 @@ export default function OrderStatus() {
         )}
 
         {/* Live Delivery Valet Card */}
-        {order.order_channel === 'delivery' && order.delivery_job_id && (
-          <div className="bg-white border border-[#F8A324]/30 rounded-2xl p-5 shadow-sm space-y-4">
+        {order.order_channel === 'delivery' && (order.delivery_job_id || order.delivery_rider_name || order.status === 'out_for_delivery') && (
+          <div className="bg-white border border-amber-200/70 rounded-3xl p-5 shadow-sm space-y-4 relative overflow-hidden">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-extrabold shrink-0 border ${
-                  order.delivery_job_id.toString().startsWith('SFX')
-                    ? 'bg-indigo-50 border-indigo-100 text-indigo-650'
-                    : 'bg-orange-50 border-orange-100 text-orange-650'
-                }`}>
-                  🚚
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl flex items-center justify-center font-extrabold shrink-0 border bg-amber-50 border-amber-200 text-amber-900 text-lg shadow-2xs">
+                  🛵
                 </div>
                 <div>
-                  <h4 className="font-serif font-black text-sm text-gray-900">
-                    {order.delivery_job_id.toString().startsWith('SFX') ? 'Shadowfax Delivery' : 'Shiprocket Delivery'}
+                  <h4 className="font-serif font-black text-sm text-gray-900 flex items-center gap-1.5">
+                    <span>{order.delivery_rider_name || 'Delivery Partner'}</span>
+                    {order.status === 'out_for_delivery' && (
+                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    )}
                   </h4>
-                  <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mt-0.5">ID: {order.delivery_job_id}</span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] text-amber-900 font-extrabold font-mono bg-amber-100/70 px-2 py-0.5 rounded-md">
+                      {order.delivery_job_id && !order.delivery_job_id.startsWith('PORTER-DIR') ? `ID: ${order.delivery_job_id}` : 'Express 2-Wheeler'}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border ${
-                order.delivery_job_id.toString().startsWith('SFX')
-                  ? 'bg-indigo-50 border-indigo-100 text-indigo-700'
-                  : 'bg-orange-50 border-orange-100 text-orange-700'
-              }`}>
-                {order.delivery_status.replace(/_/g, ' ')}
-              </span>
+              {(() => {
+                const raw = (order.delivery_status || '').toLowerCase();
+                let label = 'RIDER ASSIGNED';
+                let style = 'bg-blue-50 border-blue-200 text-blue-800 font-bold';
+                if (order.status === 'out_for_delivery' || raw === 'active' || raw === 'out_for_delivery') {
+                  label = 'ON THE WAY 🛵';
+                  style = 'bg-amber-500 text-white font-black animate-pulse';
+                } else if (order.status === 'delivered' || raw === 'completed' || raw === 'delivered') {
+                  label = 'DELIVERED ✅';
+                  style = 'bg-emerald-50 border-emerald-200 text-emerald-800 font-black';
+                }
+                return (
+                  <span className={`text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider border ${style}`}>
+                    {label}
+                  </span>
+                );
+              })()}
             </div>
 
             <div className="flex items-center justify-between gap-4 text-xs">
               <div>
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Assigned Rider</span>
-                <span className="font-bold text-gray-900 text-sm mt-0.5 block">{order.delivery_rider_name || 'Assigning nearest rider...'}</span>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Assigned Partner</span>
+                <span className="font-bold text-gray-900 text-sm mt-0.5 block">{order.delivery_rider_name || 'Porter Express Rider'}</span>
               </div>
               
-              {order.delivery_rider_phone && (
-                <a
-                  href={`tel:${order.delivery_rider_phone}`}
-                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-extrabold py-2 px-4 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <PhoneCall className="w-3.5 h-3.5" />
-                  <span>Call Rider</span>
-                </a>
-              )}
+              <div className="flex items-center gap-2">
+                {order.delivery_rider_phone ? (
+                  <a
+                    href={`tel:${order.delivery_rider_phone}`}
+                    className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-2 px-3.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer text-xs shadow-xs"
+                  >
+                    <PhoneCall className="w-3.5 h-3.5" />
+                    <span>Call Rider</span>
+                  </a>
+                ) : (
+                  <span className="text-[11px] text-gray-400 font-medium">Contact via Restaurant</span>
+                )}
+                {order.delivery_job_id && order.delivery_job_id.startsWith('BRZ-') && (
+                  <a
+                    href={`https://borzodelivery.com/in/track/${order.delivery_job_id.replace(/^BRZ-/, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2 px-3.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer text-xs"
+                  >
+                    <span>📍 Live Map</span>
+                  </a>
+                )}
+              </div>
             </div>
+
+            {/* Secure Delivery OTP Box */}
+            {order.delivery_otp && (
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl p-3.5 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-emerald-800 tracking-wider block">
+                    🔒 Delivery Verification Code
+                  </span>
+                  <p className="text-[11px] text-emerald-700 font-medium mt-0.5">
+                    Share this 4-digit OTP with your delivery partner:
+                  </p>
+                </div>
+                <div className="font-mono font-black text-lg text-emerald-900 bg-white border-2 border-emerald-400/80 px-3 py-1 rounded-xl shadow-xs tracking-widest">
+                  {order.delivery_otp}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* Google Review Prompt Card (Visible when order is served/delivered) */}
         {(order.status === 'served' || order.status === 'delivered') && (
-          <div className="bg-gradient-to-br from-[#FFF9EE] to-white border border-[#F8A324]/40 rounded-2xl p-6 shadow-sm text-center space-y-4 animate-fade-in">
-            <div className="flex justify-center text-amber-500 gap-1 animate-bounce">
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
+          <div className="bg-gradient-to-br from-[#FFF9EE] via-amber-50/40 to-white border border-[#F8A324]/50 rounded-2xl p-5 sm:p-6 shadow-sm text-center space-y-4 animate-fade-in">
+            <div className="flex justify-center text-amber-500 gap-1.5 animate-bounce">
+              <Star className="w-6 h-6 fill-current text-amber-400" />
+              <Star className="w-6 h-6 fill-current text-amber-400" />
+              <Star className="w-6 h-6 fill-current text-amber-400" />
+              <Star className="w-6 h-6 fill-current text-amber-400" />
+              <Star className="w-6 h-6 fill-current text-amber-400" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif font-black text-lg text-gray-900">Enjoyed Your Meal? 😋</h3>
-              <p className="text-xs text-gray-650 font-light leading-relaxed">
-                Your feedback helps us grow! Please share your dining experience and rate us on Google.
+              <h3 className="font-serif font-black text-lg text-gray-900">Loved Your Bombay Chowpati Food? 🌟</h3>
+              <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                Your 5-star review means the world to our team! Tap below to open Google Maps directly and rate us.
               </p>
             </div>
+
+            <div className="bg-white/80 border border-amber-200/70 rounded-xl p-3 text-left flex items-center justify-between gap-2 shadow-2xs">
+              <div className="text-[11px] text-gray-700 italic truncate font-semibold">
+                "Amazing authentic Bombay street food, prompt service and great taste! 5/5 ⭐"
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText("Amazing authentic Bombay street food, prompt service and great taste! Highly recommend Bombay Chowpati MPM Mall Abids.");
+                  addToast("Sample review copied to clipboard! Ready to paste on Google.", "success");
+                }}
+                className="shrink-0 text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 transition-colors cursor-pointer"
+              >
+                Copy Review 📋
+              </button>
+            </div>
+
             <a
               href="https://g.page/r/CYziHBfS7U_wEAE/review"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-md w-full"
+              className="inline-flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg w-full active:scale-[0.99]"
             >
-              <span>Write a Review</span>
-              <ExternalLink className="w-4 h-4 text-white" />
+              <span>Rate 5 Stars on Google ↗</span>
+              <ExternalLink className="w-4 h-4 text-[#F8A324]" />
             </a>
           </div>
         )}

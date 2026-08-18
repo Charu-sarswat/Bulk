@@ -346,6 +346,12 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
       total_amount: o.total_amount,
       notes: o.notes,
       delivery_address: o.delivery_address || '',
+      delivery_job_id: o.delivery_job_id || null,
+      delivery_status: o.delivery_status || null,
+      delivery_rider_name: o.delivery_rider_name || null,
+      delivery_rider_phone: o.delivery_rider_phone || null,
+      delivery_otp: o.delivery_otp || null,
+      delivery_tracking_url: o.delivery_tracking_url || null,
       items: o.items.map(item => ({
         id: item._id,
         menu_item_id: item.menu_item_id,
@@ -396,6 +402,12 @@ router.get('/:id', async (req, res) => {
       total_amount: o.total_amount,
       notes: o.notes,
       delivery_address: o.delivery_address || '',
+      delivery_job_id: o.delivery_job_id || null,
+      delivery_status: o.delivery_status || null,
+      delivery_rider_name: o.delivery_rider_name || null,
+      delivery_rider_phone: o.delivery_rider_phone || null,
+      delivery_otp: o.delivery_otp || null,
+      delivery_tracking_url: o.delivery_tracking_url || null,
       items: o.items.map(item => ({
         id: item._id,
         menu_item_id: item.menu_item_id,
@@ -422,25 +434,94 @@ router.post('/', async (req, res) => {
     admin_created, latitude, longitude
   } = req.body;
 
-  const isDineInAdmin = admin_created && order_channel === 'dine_in';
+  // Check Store Open/Closed & Operating Hours Restriction (for non-admin orders)
+  if (!admin_created) {
+    // 1. Home Delivery Enabled Check
+    if (order_channel === 'delivery') {
+      const deliveryStatusSetting = await Setting.findOne({ key: 'is_delivery_enabled' });
+      const deliveryDisabledNotice = await Setting.findOne({ key: 'delivery_disabled_notice' });
+      if (deliveryStatusSetting && (deliveryStatusSetting.value === false || deliveryStatusSetting.value === 'false')) {
+        const msg = (deliveryDisabledNotice && deliveryDisabledNotice.value) || 'Home Delivery is temporarily paused. Please choose Takeaway or Dine-In.';
+        return res.status(403).json({ message: msg, delivery_disabled: true });
+      }
+    }
 
-  if (order_channel === 'delivery') {
-    return res.status(400).json({ 
-      message: 'Home delivery is temporarily unavailable at this moment. Please choose Dine-In or Takeaway.' 
-    });
+    const storeStatusSetting = await Setting.findOne({ key: 'is_store_open' });
+    const storeClosedMsgSetting = await Setting.findOne({ key: 'store_closed_message' });
+    const storeOpenTimeSetting = await Setting.findOne({ key: 'store_opening_time' });
+    const storeCloseTimeSetting = await Setting.findOne({ key: 'store_closing_time' });
+
+    if (storeStatusSetting && (storeStatusSetting.value === false || storeStatusSetting.value === 'false')) {
+      const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 'We are currently closed for orders. Please check back later!';
+      return res.status(403).json({ message: closedMsg, store_closed: true });
+    }
+
+    const openTimeStr = (storeOpenTimeSetting && storeOpenTimeSetting.value) || '11:30';
+    const closeTimeStr = (storeCloseTimeSetting && storeCloseTimeSetting.value) || '23:30';
+
+    const [openH, openM] = openTimeStr.split(':').map(Number);
+    const [closeH, closeM] = closeTimeStr.split(':').map(Number);
+    const openMinutes = (openH * 60) + openM;
+    const closeMinutes = (closeH * 60) + closeM;
+
+    if (scheduled_time) {
+      // Validate scheduled date/time falls within operating hours
+      const schedDate = new Date(scheduled_time);
+      const schedTimeStr = schedDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
+      const [sH, sM] = schedTimeStr.split(':').map(Number);
+      const schedMinutes = (sH * 60) + sM;
+
+      const isWithinHours = closeMinutes > openMinutes
+        ? (schedMinutes >= openMinutes && schedMinutes <= closeMinutes)
+        : (schedMinutes >= openMinutes || schedMinutes <= closeMinutes);
+
+      if (!isWithinHours) {
+        return res.status(400).json({ 
+          message: `Scheduled time (${schedTimeStr}) must be between operating hours (${openTimeStr} to ${closeTimeStr}).` 
+        });
+      }
+    } else {
+      // Immediate order: validate current IST time falls within operating hours
+      const nowIST = new Date();
+      const currentISTTimeStr = nowIST.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
+      const [curH, curM] = currentISTTimeStr.split(':').map(Number);
+      const currentMinutes = (curH * 60) + curM;
+
+      const isWithinHours = closeMinutes > openMinutes
+        ? (currentMinutes >= openMinutes && currentMinutes <= closeMinutes)
+        : (currentMinutes >= openMinutes || currentMinutes <= closeMinutes);
+
+      if (!isWithinHours) {
+        const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 
+          `We are currently closed. Our ordering hours are ${openTimeStr} to ${closeTimeStr}. You may schedule an order for later!`;
+        return res.status(403).json({ message: closedMsg, store_closed: true });
+      }
+    }
   }
 
-  if (!isDineInAdmin) {
+  // Mandatory Customer Name and 10-digit Phone Validation for customer orders
+  if (!admin_created) {
     if (!customer_name || !customer_name.trim()) {
       return res.status(400).json({ message: 'Customer name is compulsory' });
     }
 
-    if (!customer_phone || customer_phone.trim().length < 10) {
+    if (!customer_phone || customer_phone.trim().replace(/\D/g, '').length < 10) {
       return res.status(400).json({ message: 'Customer phone number is compulsory and must be at least 10 digits' });
     }
   } else {
-    if (customer_phone && customer_phone.trim().length > 0 && customer_phone.trim().length < 10) {
-      return res.status(400).json({ message: 'Customer phone number must be at least 10 digits if provided' });
+    const isDineInAdmin = admin_created && order_channel === 'dine_in';
+    if (!isDineInAdmin) {
+      if (!customer_name || !customer_name.trim()) {
+        return res.status(400).json({ message: 'Customer name is compulsory' });
+      }
+
+      if (!customer_phone || customer_phone.trim().length < 10) {
+        return res.status(400).json({ message: 'Customer phone number is compulsory and must be at least 10 digits' });
+      }
+    } else {
+      if (customer_phone && customer_phone.trim().length > 0 && customer_phone.trim().length < 10) {
+        return res.status(400).json({ message: 'Customer phone number must be at least 10 digits if provided' });
+      }
     }
   }
 
@@ -476,25 +557,27 @@ router.post('/', async (req, res) => {
             itemPrice = menuItem.price;
           }
 
-          // Deduct stock quantity automatically
-          const prevStock = menuItem.stock_quantity;
-          const newStock = Math.max(0, prevStock - item.quantity);
-          menuItem.stock_quantity = newStock;
-          if (menuItem.auto_out_of_stock && newStock === 0) {
-            menuItem.is_available = false;
-          }
-          await menuItem.save();
+          // Deduct stock quantity automatically only if not unlimited stock
+          if (!menuItem.is_unlimited_stock) {
+            const prevStock = menuItem.stock_quantity;
+            const newStock = Math.max(0, prevStock - item.quantity);
+            menuItem.stock_quantity = newStock;
+            if (menuItem.auto_out_of_stock && newStock === 0) {
+              menuItem.is_available = false;
+            }
+            await menuItem.save();
 
-          // Log inventory audit
-          await InventoryLog.create({
-            menu_item_id: menuItem._id,
-            change_type: 'ORDER_DEDUCT',
-            quantity_change: -item.quantity,
-            previous_stock: prevStock,
-            new_stock: newStock,
-            reason: `Auto deduction for new order`,
-            recorded_by: customer_name || 'System'
-          });
+            // Log inventory audit
+            await InventoryLog.create({
+              menu_item_id: menuItem._id,
+              change_type: 'ORDER_DEDUCT',
+              quantity_change: -item.quantity,
+              previous_stock: prevStock,
+              new_stock: newStock,
+              reason: `Auto deduction for new order`,
+              recorded_by: customer_name || 'System'
+            });
+          }
 
           // Process raw materials recipe deduction
           if (menuItem.recipe && menuItem.recipe.length > 0) {
@@ -564,6 +647,8 @@ router.post('/', async (req, res) => {
       }
     }
 
+    const deliveryOtp = order_channel === 'delivery' ? Math.floor(1000 + Math.random() * 9000).toString() : '';
+
     const newOrder = new Order({
       order_number,
       table_id: table_id || null,
@@ -582,6 +667,7 @@ router.post('/', async (req, res) => {
       notes: notes || '',
       items: orderItems,
       delivery_address: delivery_address || '',
+      delivery_otp: deliveryOtp,
       latitude: latitude || null,
       longitude: longitude || null
     });
@@ -604,6 +690,7 @@ router.post('/', async (req, res) => {
         status: newOrder.status,
         payment_status: newOrder.payment_status,
         payment_method: newOrder.payment_method,
+        notes: newOrder.notes || '',
         delivery_address: newOrder.delivery_address,
         items: newOrder.items.map(item => ({
           id: item._id,
@@ -659,7 +746,7 @@ router.post('/', async (req, res) => {
 // @route   PUT /api/orders/:id/items
 // @desc    Update order items and adjust raw materials inventory (Admin/Staff only)
 router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
-  const { items } = req.body;
+  const { items, payment_status, payment_method, customer_name, customer_phone, notes, status, delivery_address } = req.body;
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: 'Order must contain at least one item' });
   }
@@ -770,6 +857,13 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
 
     order.items = newOrderItems;
     order.total_amount = total_amount;
+    if (payment_status !== undefined) order.payment_status = payment_status;
+    if (payment_method !== undefined) order.payment_method = payment_method;
+    if (customer_name !== undefined) order.customer_name = customer_name;
+    if (customer_phone !== undefined) order.customer_phone = customer_phone;
+    if (notes !== undefined) order.notes = notes;
+    if (status !== undefined) order.status = status;
+    if (delivery_address !== undefined) order.delivery_address = delivery_address;
     await order.save();
 
     // Broadcast socket event for real-time kitchen & admin screens
@@ -823,7 +917,7 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
 // @route   PUT /api/orders/:id/status
 // @desc    Update order status / payment status (Admin/Staff/Kitchen)
 router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, res) => {
-  const { status, payment_status, payment_utr } = req.body;
+  const { status, payment_status, payment_utr, delivery_job_id, delivery_status, delivery_rider_name, delivery_rider_phone, delivery_tracking_url, delivery_otp } = req.body;
 
   try {
     let order = null;
@@ -836,6 +930,21 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
     }
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
+    if (delivery_job_id !== undefined) {
+      order.delivery_job_id = delivery_job_id;
+      order.delivery_status = delivery_status || (order.delivery_status || 'assigned');
+    }
+    if (delivery_status !== undefined) order.delivery_status = delivery_status;
+    if (delivery_rider_name !== undefined) order.delivery_rider_name = delivery_rider_name;
+    if (delivery_rider_phone !== undefined) order.delivery_rider_phone = delivery_rider_phone;
+    if (delivery_tracking_url !== undefined) order.delivery_tracking_url = delivery_tracking_url;
+    if (delivery_otp !== undefined) order.delivery_otp = delivery_otp;
+
+    // Generate delivery OTP if missing for delivery order
+    if (order.order_channel === 'delivery' && !order.delivery_otp) {
+      order.delivery_otp = Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
     if (status) {
       order.status = status;
       
@@ -844,20 +953,28 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       // 1. Preparing State: Auto-assign rider 5-10 minutes before food is ready (remaining prep time <= 7 minutes)
       // Assume average preparation time is 20 minutes. Auto-book after 13 minutes (7 mins remaining).
       // 1. Preparing State: Schedule rider booking after preparation threshold
-      // For development/testing, we use a 15-second delay to make it easily testable in real-time.
       if (status === 'preparing' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         const delayMs = process.env.NODE_ENV === 'development' ? 15000 : 13 * 60 * 1000;
-        console.log(`[Shadowfax Hyperlocal] Scheduled auto-rider booking for order ${order.order_number} in ${delayMs / 1000}s`);
+        console.log(`[Hyperlocal Delivery] Scheduled auto-rider booking for order ${order.order_number} in ${delayMs / 1000}s`);
         
         setTimeout(async () => {
           try {
             const Order = require('../models/Order');
             const currentOrder = await Order.findById(order._id);
             if (currentOrder && currentOrder.status === 'preparing' && !currentOrder.delivery_job_id) {
-              console.log(`[Shadowfax Hyperlocal] Prep timer reached threshold. Auto-assigning rider for order ${currentOrder.order_number}...`);
-              const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
-              const job = await createShadowfaxDeliveryJob(currentOrder);
-              if (job.success) {
+              const provider = process.env.DELIVERY_PROVIDER || 'borzo';
+              console.log(`[Hyperlocal Delivery] Auto-assigning rider via ${provider.toUpperCase()} for order ${currentOrder.order_number}...`);
+              
+              let job = null;
+              if (provider === 'borzo') {
+                const { createBorzoDeliveryJob } = require('../config/borzo');
+                job = await createBorzoDeliveryJob(currentOrder);
+              } else {
+                const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
+                job = await createShadowfaxDeliveryJob(currentOrder);
+              }
+
+              if (job && job.success) {
                 currentOrder.delivery_job_id = job.delivery_id;
                 currentOrder.delivery_status = job.status;
                 currentOrder.delivery_rider_name = job.rider_name;
@@ -874,7 +991,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
               }
             }
           } catch (err) {
-            console.error('[Shadowfax Hyperlocal] Delayed booking error:', err.message);
+            console.error('[Hyperlocal Delivery] Delayed booking error:', err.message);
           }
         }, delayMs);
       }
@@ -882,21 +999,44 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       // 2. Ready State: Immediate rider booking if not already booked
       if (status === 'ready' && order.order_channel === 'delivery' && !order.delivery_job_id) {
         try {
-          const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
-          const job = await createShadowfaxDeliveryJob(order);
-          if (job.success) {
+          const provider = process.env.DELIVERY_PROVIDER || 'borzo';
+          let job = null;
+          if (provider === 'borzo') {
+            const { createBorzoDeliveryJob } = require('../config/borzo');
+            job = await createBorzoDeliveryJob(order);
+          } else {
+            const { createShadowfaxDeliveryJob } = require('../config/shadowfax');
+            job = await createShadowfaxDeliveryJob(order);
+          }
+
+          if (job && job.success) {
             order.delivery_job_id = job.delivery_id;
             order.delivery_status = job.status;
             order.delivery_rider_name = job.rider_name;
             order.delivery_rider_phone = job.rider_phone;
             
             if (job.simulated) {
-              // Start simulation
               startSimulatedDeliveryJourney(order._id.toString(), io);
             }
           }
         } catch (deliveryErr) {
-          console.error('[Shadowfax Hyperlocal] Immediate scheduling error:', deliveryErr.message);
+          console.error('[Hyperlocal Delivery] Immediate scheduling error:', deliveryErr.message);
+        }
+      }
+
+      // 3. Cancelled State: Automatically cancel delivery
+      if (status === 'cancelled' && order.order_channel === 'delivery' && order.delivery_job_id) {
+        try {
+          if (order.delivery_job_id.startsWith('BRZ-')) {
+            const { cancelBorzoDeliveryJob } = require('../config/borzo');
+            await cancelBorzoDeliveryJob(order.delivery_job_id);
+          } else {
+            const { cancelShadowfaxDeliveryOrder } = require('../config/shadowfax');
+            await cancelShadowfaxDeliveryOrder(order.delivery_job_id, 'Order cancelled by restaurant/customer');
+          }
+          order.delivery_status = 'cancelled';
+        } catch (cancelErr) {
+          console.error('[Hyperlocal Delivery] Cancellation hook error:', cancelErr.message);
         }
       }
     }
@@ -918,6 +1058,8 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
         delivery_status: order.delivery_status,
         delivery_rider_name: order.delivery_rider_name,
         delivery_rider_phone: order.delivery_rider_phone,
+        delivery_otp: order.delivery_otp,
+        delivery_tracking_url: order.delivery_tracking_url,
         updated_at: order.updated_at
       };
       io.emit('order_status_updated', payload);
@@ -935,6 +1077,8 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
       delivery_status: order.delivery_status,
       delivery_rider_name: order.delivery_rider_name,
       delivery_rider_phone: order.delivery_rider_phone,
+      delivery_otp: order.delivery_otp,
+      delivery_tracking_url: order.delivery_tracking_url,
       message: 'Order updated'
     });
   } catch (err) {
@@ -1140,9 +1284,12 @@ function broadcastOrderStatus(order, io) {
     order_number: order.order_number,
     status: order.status,
     payment_status: order.payment_status,
+    delivery_job_id: order.delivery_job_id,
     delivery_status: order.delivery_status,
     delivery_rider_name: order.delivery_rider_name,
     delivery_rider_phone: order.delivery_rider_phone,
+    delivery_otp: order.delivery_otp,
+    delivery_tracking_url: order.delivery_tracking_url,
     updated_at: order.updated_at
   };
   io.emit('order_status_updated', payload);
@@ -1224,5 +1371,136 @@ function startSimulatedDeliveryJourney(orderId, io) {
     }
   }, 45000);
 }
+
+// @route   POST /api/orders/webhook/borzo
+// @desc    Receive real-time delivery callbacks & rider status updates from Borzo
+router.post('/webhook/borzo', async (req, res) => {
+  try {
+    const data = req.body || {};
+    console.log('[Borzo Webhook] Received callback event:', JSON.stringify(data));
+
+    const orderData = data.order || data;
+    const borzoOrderId = orderData.order_id;
+    const clientOrderId = orderData.client_order_id || (orderData.points && orderData.points[0]?.client_order_id);
+    const status = (orderData.status || '').toLowerCase();
+    const courier = orderData.courier || {};
+
+    const query = [];
+    if (borzoOrderId) {
+      query.push({ delivery_job_id: `BRZ-${borzoOrderId}` });
+      query.push({ delivery_job_id: String(borzoOrderId) });
+    }
+    if (clientOrderId) {
+      query.push({ order_number: clientOrderId });
+    }
+
+    if (query.length === 0) {
+      return res.status(200).json({ is_successful: true, message: 'No match criteria found' });
+    }
+
+    const order = await Order.findOne({ $or: query });
+    if (!order) {
+      console.warn('[Borzo Webhook] Order not matched for:', borzoOrderId || clientOrderId);
+      return res.status(200).json({ is_successful: true, message: 'Order not found' });
+    }
+
+    // Map Borzo order statuses to application status model
+    // Borzo statuses: new, available, active, completed, canceled, delayed
+    if (status) {
+      order.delivery_status = status;
+
+      if (['active'].includes(status)) {
+        if (order.status !== 'out_for_delivery') {
+          order.status = 'out_for_delivery';
+        }
+      } else if (['completed'].includes(status)) {
+        order.status = 'delivered';
+        order.payment_status = 'paid';
+      } else if (['canceled'].includes(status)) {
+        order.delivery_status = 'cancelled';
+      }
+    }
+
+    if (courier.name) {
+      const courierFullName = [courier.name, courier.surname].filter(Boolean).join(' ');
+      order.delivery_rider_name = courierFullName || 'Borzo Rider';
+    }
+    if (courier.phone) {
+      order.delivery_rider_phone = courier.phone;
+    }
+
+    await order.save();
+
+    const io = req.app.get('socketio');
+    if (io) {
+      broadcastOrderStatus(order, io);
+    }
+
+    res.status(200).json({ is_successful: true });
+  } catch (err) {
+    console.error('[Borzo Webhook Error]:', err.message);
+    res.status(200).json({ is_successful: false, error: err.message });
+  }
+});
+
+// @route   POST /api/orders/webhook/shadowfax
+// @desc    Receive real-time delivery status updates from Shadowfax Webhook / Push Callback API
+router.post('/webhook/shadowfax', async (req, res) => {
+  try {
+    const { 
+      awb_number, order_id, request_id, client_order_id, 
+      status, event, rider_name, rider_contact, rider_details, location 
+    } = req.body;
+    console.log('[Shadowfax Webhook] Received update payload:', req.body);
+
+    const targetOrderNumber = order_id || client_order_id;
+    const targetAwb = awb_number || request_id;
+
+    const lookupConditions = [];
+    if (targetOrderNumber) lookupConditions.push({ order_number: targetOrderNumber });
+    if (targetAwb) lookupConditions.push({ delivery_job_id: targetAwb });
+
+    if (lookupConditions.length === 0) {
+      return res.status(200).json({ message: 'No identifier found, acknowledged' });
+    }
+
+    const order = await Order.findOne({ $or: lookupConditions });
+    if (!order) {
+      console.warn('[Shadowfax Webhook] Order not found for:', req.body);
+      return res.status(200).json({ message: 'Order not found, acknowledged' });
+    }
+
+    const currentStatus = (event || status || '').toLowerCase();
+    if (currentStatus) {
+      order.delivery_status = currentStatus;
+      if (['picked', 'ofp', 'ofd', 'out_for_delivery', 'assigned_for_delivery'].includes(currentStatus)) {
+        order.status = 'out_for_delivery';
+      } else if (currentStatus === 'delivered') {
+        order.status = 'delivered';
+        order.payment_status = 'paid';
+      } else if (['cancelled', 'cancelled_by_customer'].includes(currentStatus)) {
+        order.delivery_status = 'cancelled';
+      }
+    }
+
+    // Map Rider Details
+    const name = rider_name || rider_details?.name;
+    const phone = rider_contact || rider_details?.phone;
+    if (name) order.delivery_rider_name = name;
+    if (phone) order.delivery_rider_phone = phone;
+
+    await order.save();
+
+    const io = req.app.get('socketio');
+    if (io) {
+      broadcastOrderStatus(order, io);
+    }
+
+    res.status(200).json({ message: 'Webhook processed successfully' });
+  } catch (err) {
+    console.error('[Shadowfax Webhook] Processing error:', err.message);
+    res.status(200).json({ message: 'Error acknowledged' });
+  }
+});
 
 module.exports = router;

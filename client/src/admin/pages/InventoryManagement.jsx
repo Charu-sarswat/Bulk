@@ -481,8 +481,9 @@ export default function InventoryManagement() {
                       (m.category_name && m.category_name.toLowerCase().includes(searchQuery.toLowerCase()))
                     )
                     .map(item => {
-                      const isLow = item.stock_quantity <= item.min_stock_level && item.stock_quantity > 0;
-                      const isOut = item.stock_quantity === 0 || !item.is_available;
+                      const isUnlimited = Boolean(item.is_unlimited_stock);
+                      const isLow = !isUnlimited && item.stock_quantity <= item.min_stock_level && item.stock_quantity > 0;
+                      const isOut = !isUnlimited && (item.stock_quantity === 0 || !item.is_available);
                       return (
                         <tr key={item.id} className="hover:bg-[#FFF9EE]/20 transition-colors">
                           <td className="py-4 px-4 sm:px-6 font-bold text-gray-900 flex items-center gap-2.5">
@@ -491,7 +492,12 @@ export default function InventoryManagement() {
                             )}
                             <div>
                               <span>{item.name}</span>
-                              {!item.is_available && (
+                              {isUnlimited && (
+                                <span className="ml-2 text-[10px] text-blue-700 font-black bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                                  ♾️ Unlimited Stock
+                                </span>
+                              )}
+                              {!item.is_available && !isUnlimited && (
                                 <span className="ml-2 text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
                                   Disabled in Menu
                                 </span>
@@ -504,18 +510,23 @@ export default function InventoryManagement() {
                             </span>
                           </td>
                           <td className="py-4 px-4 sm:px-6 text-center font-serif text-base font-bold text-gray-800">
-                            {item.stock_quantity} <span className="text-xs text-gray-400 font-normal">{item.unit || 'portions'}</span>
+                            {isUnlimited ? (
+                              <span className="text-blue-700 font-black text-xs">Always In Stock</span>
+                            ) : (
+                              <>{item.stock_quantity} <span className="text-xs text-gray-400 font-normal">{item.unit || 'portions'}</span></>
+                            )}
                           </td>
                           <td className="py-4 px-4 sm:px-6 text-center text-gray-500">
-                            {item.min_stock_level} {item.unit || 'portions'}
+                            {isUnlimited ? 'N/A' : `${item.min_stock_level} ${item.unit || 'portions'}`}
                           </td>
                           <td className="py-4 px-4 sm:px-6 text-center">
                             <span className={`text-[10px] uppercase font-extrabold px-2.5 py-1 rounded-full flex items-center justify-center gap-1 w-max mx-auto ${
+                              isUnlimited ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                               isOut ? 'bg-rose-50 text-rose-700 border border-rose-200' :
                               isLow ? 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse' :
                               'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             }`}>
-                              {isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
+                              {isUnlimited ? '♾️ Unlimited' : isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
                             </span>
                           </td>
                           <td className="py-4 px-4 sm:px-6">

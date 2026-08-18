@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const menuItemSchema = new mongoose.Schema({
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
-  name: { type: String, required: true, trim: true },
+  name: { type: String, required: true, trim: true, set: v => typeof v === 'string' ? v.toUpperCase() : v },
   description: { type: String, default: '' },
   price: { type: Number, required: true, min: 0 },
   delivery_price: { type: Number, default: 0 },
@@ -11,6 +11,7 @@ const menuItemSchema = new mongoose.Schema({
   is_veg: { type: Boolean, default: true },
   is_featured: { type: Boolean, default: false },
   is_available: { type: Boolean, default: true },
+  is_unlimited_stock: { type: Boolean, default: false },
   stock_quantity: { type: Number, default: 50, min: 0 },
   min_stock_level: { type: Number, default: 10, min: 0 },
   daily_prepared_quantity: { type: Number, default: 25, min: 0 },

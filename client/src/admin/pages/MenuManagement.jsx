@@ -63,6 +63,7 @@ export default function MenuManagement() {
   const [itemAvailable, setItemAvailable] = useState(true);
   const [itemIsVeg, setItemIsVeg] = useState(true);
   const [itemIsFeatured, setItemIsFeatured] = useState(false);
+  const [isUnlimitedStock, setIsUnlimitedStock] = useState(false);
 
   // Industry-Grade Combo & Multi-Category States
   const [isCombo, setIsCombo] = useState(false);
@@ -250,12 +251,13 @@ export default function MenuManagement() {
 
     const payload = {
       category_id: itemCatId,
-      name: itemName,
+      name: itemName.trim().toUpperCase(),
       description: itemDesc,
       price: parseFloat(itemPrice),
       image_url: itemImgUrls[0] || '',
       image_urls: itemImgUrls,
       is_available: itemAvailable,
+      is_unlimited_stock: isUnlimitedStock,
       is_veg: itemIsVeg,
       is_featured: itemIsFeatured,
       is_combo: isCombo,
@@ -293,7 +295,7 @@ export default function MenuManagement() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Error saving item');
 
-      addToast(`Dish "${itemName}" saved successfully!`, 'success');
+      addToast(`Dish "${itemName.toUpperCase()}" saved successfully!`, 'success');
       resetItemForm();
       fetchData();
     } catch (err) {
@@ -305,13 +307,14 @@ export default function MenuManagement() {
 
   const handleEditClick = (item) => {
     setEditingItem(item);
-    setItemName(item.name);
+    setItemName((item.name || '').toUpperCase());
     setItemDesc(item.description || '');
     setItemPrice(item.price);
     setItemImg(item.image_url || '');
     setItemImgUrls(item.image_urls || (item.image_url ? [item.image_url] : []));
     setItemCatId(item.category_id ? item.category_id.toString() : '');
     setItemAvailable(item.is_available);
+    setIsUnlimitedStock(item.is_unlimited_stock || false);
     setItemIsVeg(item.is_veg !== undefined ? item.is_veg : true);
     setItemIsFeatured(item.is_featured || false);
     setIsCombo(item.is_combo || false);
@@ -333,6 +336,7 @@ export default function MenuManagement() {
     setNewImgUrl('');
     setItemCatId('');
     setItemAvailable(true);
+    setIsUnlimitedStock(false);
     setItemIsVeg(true);
     setItemIsFeatured(false);
     setIsCombo(false);
@@ -770,14 +774,14 @@ export default function MenuManagement() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Dish Name *</label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Dish Name (Auto Uppercase) *</label>
                     <input
                       type="text"
                       required
                       value={itemName}
-                      onChange={(e) => setItemName(e.target.value)}
-                      placeholder="E.g., Ribeye Filet, Matcha Tea"
-                      className="w-full text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500"
+                      onChange={(e) => setItemName(e.target.value.toUpperCase())}
+                      placeholder="E.g., BOMBAY SPECIAL PAV BHAJI"
+                      className="w-full text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-gold-500 font-bold uppercase"
                     />
                   </div>
 
@@ -1119,6 +1123,18 @@ export default function MenuManagement() {
                       <span className="text-xs text-gray-700 font-bold">In Stock / Available</span>
                     </label>
 
+                    <label className="flex items-center gap-2 cursor-pointer select-none bg-blue-50/70 border border-blue-200/80 px-2.5 py-1 rounded-xl">
+                      <input
+                        type="checkbox"
+                        checked={isUnlimitedStock}
+                        onChange={(e) => setIsUnlimitedStock(e.target.checked)}
+                        className="w-4.5 h-4.5 border-blue-300 rounded focus:ring-blue-500 text-blue-600"
+                      />
+                      <span className="text-xs text-blue-900 font-bold flex items-center gap-1">
+                        ♾️ Unlimited Stock (e.g. Water, Beverages)
+                      </span>
+                    </label>
+
                     <label className="flex items-center gap-2 cursor-pointer select-none">
                       <input
                         type="checkbox"
@@ -1188,6 +1204,11 @@ export default function MenuManagement() {
                                   <span className={`w-1.5 h-1.5 rounded-full ${item.is_veg ? 'bg-emerald-600' : 'bg-red-600'}`}></span>
                                 </span>
                                 <span className="font-serif font-black text-sm text-gray-900 truncate block">{item.name}</span>
+                                {item.is_unlimited_stock && (
+                                  <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[8px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 flex items-center gap-0.5">
+                                    ♾️ Unlimited
+                                  </span>
+                                )}
                                 {item.is_combo && (
                                   <span className="bg-amber-100 text-amber-800 text-[8px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 flex items-center gap-0.5">
                                     <Gift className="w-2.5 h-2.5" />

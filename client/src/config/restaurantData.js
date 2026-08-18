@@ -20,7 +20,7 @@ export const restaurantData = {
   developerUrl: "https://company.notelia.com",
 
   // GMB & Store Contact Information
-  gmbAddress: "MPM Mall, Abids Road, Hanuman Tekdi, Abids, Hyderabad, Telangana 500001",
+  gmbAddress: "4-1-833, MPM Mall, abids, hyderabad, telengana, 500001",
   gmbLandmark: "Opposite GPO, Abids Commercial Hub",
   gmbLink: "https://share.google/UTb6BYgRPk9UBTQPX",
   googleMapsEmbedUrl: "https://maps.google.com/maps?q=Bombay+Chowpati+MPM+Mall+Abids+Road+Hyderabad&t=&z=16&ie=UTF8&iwloc=&output=embed",

@@ -12,6 +12,12 @@ export default function Settings() {
 
   const [deliveryFee, setDeliveryFee] = useState(45);
   const [freeThreshold, setFreeThreshold] = useState(399);
+  const [isDeliveryEnabled, setIsDeliveryEnabled] = useState(true);
+  const [deliveryDisabledNotice, setDeliveryDisabledNotice] = useState('Home Delivery is temporarily paused. Please choose Takeaway (Self Pickup) or Dine-In!');
+  const [isStoreOpen, setIsStoreOpen] = useState(true);
+  const [storeOpeningTime, setStoreOpeningTime] = useState('11:30');
+  const [storeClosingTime, setStoreClosingTime] = useState('23:30');
+  const [storeClosedMessage, setStoreClosedMessage] = useState('We are currently closed for orders. Please visit during regular hours (11:30 AM - 11:30 PM)!');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +30,12 @@ export default function Settings() {
           const data = await res.json();
           if (data.delivery_fee !== undefined) setDeliveryFee(data.delivery_fee);
           if (data.free_delivery_threshold !== undefined) setFreeThreshold(data.free_delivery_threshold);
+          if (data.is_delivery_enabled !== undefined) setIsDeliveryEnabled(Boolean(data.is_delivery_enabled));
+          if (data.delivery_disabled_notice !== undefined) setDeliveryDisabledNotice(data.delivery_disabled_notice);
+          if (data.is_store_open !== undefined) setIsStoreOpen(Boolean(data.is_store_open));
+          if (data.store_opening_time !== undefined) setStoreOpeningTime(data.store_opening_time);
+          if (data.store_closing_time !== undefined) setStoreClosingTime(data.store_closing_time);
+          if (data.store_closed_message !== undefined) setStoreClosedMessage(data.store_closed_message);
         }
       } catch (err) {
         console.error('Failed to load settings:', err);
@@ -48,7 +60,13 @@ export default function Settings() {
         },
         body: JSON.stringify({
           delivery_fee: Number(deliveryFee),
-          free_delivery_threshold: Number(freeThreshold)
+          free_delivery_threshold: Number(freeThreshold),
+          is_delivery_enabled: isDeliveryEnabled,
+          delivery_disabled_notice: deliveryDisabledNotice,
+          is_store_open: isStoreOpen,
+          store_opening_time: storeOpeningTime,
+          store_closing_time: storeClosingTime,
+          store_closed_message: storeClosedMessage
         })
       });
 
@@ -83,17 +101,56 @@ export default function Settings() {
         {/* Main Settings Card */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0">
-                <Truck className="w-5 h-5" />
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0">
+                  <Truck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-sm text-gray-800 tracking-wide">Home Delivery & Shipping Configuration</h3>
+                  <p className="text-[10px] text-gray-400 font-medium">Toggle home delivery on/off and define pricing guidelines</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-serif font-black text-sm text-gray-800 tracking-wide">Delivery & Shipping Fees</h3>
-                <p className="text-[10px] text-gray-400 font-medium">Define customer-facing delivery pricing guidelines</p>
-              </div>
+              <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                isDeliveryEnabled ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+              }`}>
+                {isDeliveryEnabled ? '🟢 Delivery Active' : '🔴 Delivery Paused'}
+              </span>
             </div>
 
             <div className="space-y-5">
+              {/* Home Delivery Active Toggle */}
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[#FFF9EE] border border-gray-200/80">
+                <div>
+                  <label className="block text-xs font-bold text-gray-800">Home Delivery Service</label>
+                  <p className="text-[10px] text-gray-500 mt-0.5">When disabled, customers can only choose Dine-In or Takeaway (Self Pickup).</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDeliveryEnabled(!isDeliveryEnabled)}
+                  className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
+                    isDeliveryEnabled ? 'bg-emerald-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${
+                    isDeliveryEnabled ? 'translate-x-6' : 'translate-x-0'
+                  }`} />
+                </button>
+              </div>
+
+              {!isDeliveryEnabled && (
+                <div className="space-y-1.5 animate-fadeIn">
+                  <label className="block text-xs font-bold text-gray-600">Delivery Disabled Announcement Notice</label>
+                  <textarea
+                    rows="2"
+                    value={deliveryDisabledNotice}
+                    onChange={(e) => setDeliveryDisabledNotice(e.target.value)}
+                    className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-semibold"
+                    placeholder="Notice shown to customers when Home Delivery is paused..."
+                  />
+                  <span className="text-[10px] text-gray-400 block font-medium">Customers selecting delivery will see this explanation banner.</span>
+                </div>
+              )}
               {/* Delivery Fee Input */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold text-gray-600">Flat Delivery Fee (₹)</label>
@@ -142,6 +199,97 @@ export default function Settings() {
             </div>
           </div>
 
+          {/* Store Operation & Orders Restriction Card */}
+          <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm relative overflow-hidden">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-sm text-gray-800 tracking-wide">Store Status & Order Acceptance</h3>
+                  <p className="text-[10px] text-gray-400 font-medium">Control whether customer side ordering is active or locked</p>
+                </div>
+              </div>
+              <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                isStoreOpen ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+              }`}>
+                {isStoreOpen ? '🟢 Accepting Orders' : '🔴 Closed / Restricted'}
+              </span>
+            </div>
+
+            <div className="space-y-5">
+              {/* Store Open Toggle */}
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[#FFF9EE] border border-gray-200/80">
+                <div>
+                  <label className="block text-xs font-bold text-gray-800">Store Ordering Active</label>
+                  <p className="text-[10px] text-gray-500 mt-0.5">When disabled, customer online orders are blocked with your custom notice.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsStoreOpen(!isStoreOpen)}
+                  className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
+                    isStoreOpen ? 'bg-emerald-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${
+                    isStoreOpen ? 'translate-x-6' : 'translate-x-0'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Store Opening & Closing Hours */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-[#FFF9EE] border border-gray-200/80">
+                <div>
+                  <label className="block text-xs font-bold text-gray-800 mb-1">Store Opening Time (24h)</label>
+                  <input
+                    type="time"
+                    required
+                    value={storeOpeningTime}
+                    onChange={(e) => setStoreOpeningTime(e.target.value)}
+                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#691F1A] font-bold"
+                  />
+                  <span className="text-[10px] text-gray-500 mt-1 block">Default: 11:30 (11:30 AM)</span>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-800 mb-1">Store Closing Time (24h)</label>
+                  <input
+                    type="time"
+                    required
+                    value={storeClosingTime}
+                    onChange={(e) => setStoreClosingTime(e.target.value)}
+                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#691F1A] font-bold"
+                  />
+                  <span className="text-[10px] text-gray-500 mt-1 block">Default: 23:30 (11:30 PM)</span>
+                </div>
+              </div>
+
+              {/* Store Closed Message */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-gray-600">Store Closed Announcement Notice</label>
+                <textarea
+                  rows="2"
+                  value={storeClosedMessage}
+                  onChange={(e) => setStoreClosedMessage(e.target.value)}
+                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-semibold"
+                  placeholder="Message shown to customers when ordering is disabled..."
+                />
+                <span className="text-[10px] text-gray-400 block font-medium">This banner will appear in the customer cart when the store is closed or outside operating hours.</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="submit"
+                disabled={saving}
+                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>Update Store Status</span>
+              </button>
+            </div>
+          </div>
+
           {/* Pricing Preview / Simulator Card */}
           <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm space-y-3">
             <h4 className="text-xs font-bold text-gray-800 tracking-wide uppercase flex items-center gap-1.5">
@@ -170,30 +318,30 @@ export default function Settings() {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-orange-50 border border-orange-100 rounded-2xl space-y-1.5">
+              <div className="p-4 bg-white border border-emerald-100 rounded-2xl space-y-2.5 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[11px] text-orange-850">Shiprocket</span>
-                  <span className="bg-emerald-100 text-emerald-800 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    Active
+                  <span className="font-extrabold text-xs text-gray-800">🛵 Borzo Express 2-Wheeler</span>
+                  <span className="bg-emerald-100 text-emerald-700 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Active & Connected
                   </span>
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 font-medium leading-none">Registered Email</p>
-                  <p className="text-[10px] text-gray-700 font-mono mt-1 font-bold truncate">shoebalimohammed03@gmail.com</p>
+                  <p className="text-[10px] text-gray-400 font-medium leading-none">Pickup Hub</p>
+                  <p className="text-[10px] text-gray-700 font-mono mt-1 font-bold truncate">Shop 36, MPM Mall, Abids Road, Hyderabad</p>
                 </div>
                 <p className="text-[9px] text-gray-500 leading-normal font-medium pt-1">
-                  API integration is live. Delivery rides are automatically created when kitchen tickets transition to the "Ready" stage.
+                  Borzo Business API v1.8 is active. Fast point-to-point bike dispatches are automatically triggered when kitchen prepares the order.
                 </p>
               </div>
 
               <div className="p-4 bg-gray-50 border border-gray-200/60 rounded-2xl space-y-1.5 opacity-70">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[11px] text-gray-700">Shadowfax</span>
+                  <span className="font-bold text-[11px] text-gray-700">Shadowfax Hyperlocal</span>
                   <span className="bg-gray-200 text-gray-600 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    Inactive
+                    Backup Provider
                   </span>
                 </div>
-                <p className="text-[9px] text-gray-400 font-medium">Integration configured as backup.</p>
+                <p className="text-[9px] text-gray-400 font-medium">Configured as alternate fallback provider.</p>
               </div>
             </div>
           </div>

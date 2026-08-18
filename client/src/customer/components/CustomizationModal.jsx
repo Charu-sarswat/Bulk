@@ -272,7 +272,8 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
 
           {/* Footer actions */}
           {(() => {
-            const isOutOfStock = item?.is_available === false || (item?.stock_quantity !== undefined && item?.stock_quantity <= 0);
+            const isUnlimited = Boolean(item?.is_unlimited_stock);
+            const isOutOfStock = !isUnlimited && (item?.is_available === false || (item?.stock_quantity !== undefined && item?.stock_quantity <= 0));
             return (
               <div className="p-6 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-4 shrink-0">
                 {/* Quantity selector */}

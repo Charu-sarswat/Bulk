@@ -70,6 +70,7 @@ router.get('/categories', async (req, res) => {
           is_veg: i.is_veg,
           is_featured: i.is_featured || false,
           is_available: i.is_available,
+          is_unlimited_stock: Boolean(i.is_unlimited_stock),
           stock_quantity: i.stock_quantity,
           min_stock_level: i.min_stock_level,
           daily_prepared_quantity: i.daily_prepared_quantity,
@@ -119,6 +120,7 @@ router.get('/items', async (req, res) => {
       is_veg: i.is_veg,
       is_featured: i.is_featured || false,
       is_available: i.is_available,
+      is_unlimited_stock: Boolean(i.is_unlimited_stock),
       stock_quantity: i.stock_quantity,
       min_stock_level: i.min_stock_level,
       daily_prepared_quantity: i.daily_prepared_quantity,
@@ -144,7 +146,7 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
   try {
     const { 
       category_id, name, description, price, delivery_price,
-      image_url, image_urls, is_veg, is_featured, is_available, stock_quantity, variants, addons,
+      image_url, image_urls, is_veg, is_featured, is_available, is_unlimited_stock, stock_quantity, variants, addons,
       is_combo, combo_items, category_ids, recipe
     } = req.body;
 
@@ -154,7 +156,7 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
 
     const newItem = new MenuItem({
       category_id: category_id || null,
-      name,
+      name: typeof name === 'string' ? name.toUpperCase() : name,
       description: description || '',
       price: Number(price),
       delivery_price: delivery_price ? Number(delivery_price) : Number(price),
@@ -163,6 +165,7 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
       is_veg: is_veg !== undefined ? Boolean(is_veg) : true,
       is_featured: is_featured !== undefined ? Boolean(is_featured) : false,
       is_available: is_available !== undefined ? Boolean(is_available) : true,
+      is_unlimited_stock: is_unlimited_stock !== undefined ? Boolean(is_unlimited_stock) : false,
       stock_quantity: stock_quantity !== undefined ? Number(stock_quantity) : 50,
       variants: variants || [],
       addons: addons || [],

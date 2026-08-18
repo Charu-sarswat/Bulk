@@ -30,6 +30,18 @@ export default function CartDrawer({
   
   const [deliveryFee, setDeliveryFee] = useState(45);
   const [freeThreshold, setFreeThreshold] = useState(399);
+  const [isDeliveryEnabled, setIsDeliveryEnabled] = useState(true);
+  const [deliveryDisabledNotice, setDeliveryDisabledNotice] = useState('');
+  const [isStoreOpen, setIsStoreOpen] = useState(true);
+  const [storeOpeningTime, setStoreOpeningTime] = useState('11:30');
+  const [storeClosingTime, setStoreClosingTime] = useState('23:30');
+  const [storeClosedMessage, setStoreClosedMessage] = useState('');
+
+  // Dining and Channels
+  const [orderChannel, setOrderChannel] = useState('dine_in');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [coordinates, setCoordinates] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,27 +50,22 @@ export default function CartDrawer({
         .then(data => {
           if (data.delivery_fee !== undefined) setDeliveryFee(data.delivery_fee);
           if (data.free_delivery_threshold !== undefined) setFreeThreshold(data.free_delivery_threshold);
+          if (data.is_delivery_enabled !== undefined) {
+            const enabled = Boolean(data.is_delivery_enabled);
+            setIsDeliveryEnabled(enabled);
+            if (!enabled) {
+              setOrderChannel(prev => (prev === 'delivery' ? 'takeaway' : prev));
+            }
+          }
+          if (data.delivery_disabled_notice !== undefined) setDeliveryDisabledNotice(data.delivery_disabled_notice);
+          if (data.is_store_open !== undefined) setIsStoreOpen(Boolean(data.is_store_open));
+          if (data.store_opening_time !== undefined) setStoreOpeningTime(data.store_opening_time);
+          if (data.store_closing_time !== undefined) setStoreClosingTime(data.store_closing_time);
+          if (data.store_closed_message !== undefined) setStoreClosedMessage(data.store_closed_message);
         })
         .catch(err => console.error('Failed to load settings:', err));
     }
   }, [isOpen, apiUrl]);
-  
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  // Dining and Channels
-  const [orderChannel, setOrderChannel] = useState('dine_in');
-  const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [detectingLocation, setDetectingLocation] = useState(false);
-  const [coordinates, setCoordinates] = useState(null);
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
@@ -211,31 +218,70 @@ export default function CartDrawer({
   };
 
   const handleCheckout = () => {
+    if (!isStoreOpen) {
+      addToast(storeClosedMessage || 'We are currently closed for orders. Please visit during regular hours!', 'error');
+      return;
+    }
+
+    const openTimeStr = storeOpeningTime || '11:30';
+    const closeTimeStr = storeClosingTime || '23:30';
+    const [openH, openM] = openTimeStr.split(':').map(Number);
+    const [closeH, closeM] = closeTimeStr.split(':').map(Number);
+    const openMinutes = (openH * 60) + openM;
+    const closeMinutes = (closeH * 60) + closeM;
+
+    if (orderTimeType === 'scheduled') {
+      if (!scheduledDate || !scheduledTime) {
+        addToast('Please pick a valid Date and Time for scheduled order', 'warning');
+        return;
+      }
+      const [sH, sM] = scheduledTime.split(':').map(Number);
+      const schedMinutes = (sH * 60) + sM;
+      const isWithinHours = closeMinutes > openMinutes
+        ? (schedMinutes >= openMinutes && schedMinutes <= closeMinutes)
+        : (schedMinutes >= openMinutes || schedMinutes <= closeMinutes);
+
+      if (!isWithinHours) {
+        addToast(`Scheduled time (${scheduledTime}) must be between operating hours (${openTimeStr} to ${closeTimeStr}).`, 'warning');
+        return;
+      }
+    } else {
+      // Immediate order: check if current time is within operating hours
+      const now = new Date();
+      const curH = now.getHours();
+      const curM = now.getMinutes();
+      const currentMinutes = (curH * 60) + curM;
+      const isWithinHours = closeMinutes > openMinutes
+        ? (currentMinutes >= openMinutes && currentMinutes <= closeMinutes)
+        : (currentMinutes >= openMinutes || currentMinutes <= closeMinutes);
+
+      if (!isWithinHours) {
+        addToast(`We are currently closed. Our ordering hours are ${openTimeStr} to ${closeTimeStr}. You can schedule an order for later!`, 'warning');
+        return;
+      }
+    }
+
     if (cart.length === 0) {
       addToast('Your cart is empty', 'warning');
       return;
     }
 
-    const activePhone = customerUser ? customerUser.phone : guestPhone.trim();
-    const activeName = customerUser ? customerUser.name : guestName.trim();
+    const activePhone = customerUser ? (customerUser.phone || '') : guestPhone.trim();
+    const activeName = customerUser ? (customerUser.name || '') : guestName.trim();
 
-    if (!activeName) {
-      addToast('Please enter your name', 'warning');
+    if (!activeName || activeName.length < 2) {
+      addToast('Customer Name is compulsory for ordering', 'warning');
       return;
     }
 
-    if (!activePhone || activePhone.length < 10) {
-      addToast('Customer phone number is compulsory for checkout', 'warning');
+    const cleanPhone = activePhone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      addToast('Customer phone number is compulsory and must be at least 10 digits', 'warning');
       return;
     }
 
     if (orderChannel === 'delivery' && !deliveryAddress.trim()) {
       addToast('Please enter your delivery address', 'warning');
-      return;
-    }
-
-    if (orderTimeType === 'scheduled' && (!scheduledDate || !scheduledTime)) {
-      addToast('Please pick a valid Date and Time for scheduled order', 'warning');
       return;
     }
 
@@ -279,6 +325,19 @@ export default function CartDrawer({
               </button>
             </div>
           </div>
+
+          {/* Store Closed Warning Banner */}
+          {!isStoreOpen && (
+            <div className="bg-rose-50 border-b border-rose-200 p-3.5 flex items-start gap-2.5 text-rose-800 text-xs">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-rose-900">Store Currently Closed</p>
+                <p className="text-[11px] text-rose-700 mt-0.5 font-medium">
+                  {storeClosedMessage || `We are currently not accepting new orders. Please check back during operating hours (${storeOpeningTime} - ${storeClosingTime}).`}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Cart items list */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
@@ -475,26 +534,31 @@ export default function CartDrawer({
                   </div>
 
                   {orderTimeType === 'scheduled' && (
-                    <div className="grid grid-cols-2 gap-2 pt-1 animate-fade-in">
-                      <div>
-                        <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Pick Date *</span>
-                        <input
-                          type="date"
-                          required
-                          value={scheduledDate}
-                          onChange={(e) => setScheduledDate(e.target.value)}
-                          className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
-                        />
+                    <div className="space-y-2 pt-1 animate-fade-in">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Pick Date *</span>
+                          <input
+                            type="date"
+                            required
+                            value={scheduledDate}
+                            onChange={(e) => setScheduledDate(e.target.value)}
+                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Pick Time Slot *</span>
+                          <input
+                            type="time"
+                            required
+                            value={scheduledTime}
+                            onChange={(e) => setScheduledTime(e.target.value)}
+                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1">Pick Time Slot *</span>
-                        <input
-                          type="time"
-                          required
-                          value={scheduledTime}
-                          onChange={(e) => setScheduledTime(e.target.value)}
-                          className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
-                        />
+                      <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200/60 rounded-lg p-2 font-medium">
+                        ⏰ Allowed ordering hours: <strong className="font-bold">{storeOpeningTime} to {storeClosingTime}</strong>
                       </div>
                     </div>
                   )}
@@ -504,32 +568,35 @@ export default function CartDrawer({
 
                 {/* Order Channel Selector */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">
-                    Order Channel & Dining Type
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">
+                      Order Channel & Dining Type
+                    </label>
+                    {!isDeliveryEnabled && (
+                      <span className="text-[9px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+                        🛵 Delivery Paused
+                      </span>
+                    )}
+                  </div>
                   <select
                     value={orderChannel}
-                    onChange={(e) => {
-                      if (e.target.value === 'delivery') {
-                        addToast('Home delivery is temporarily unavailable. Please choose Dine-In or Takeaway.', 'warning');
-                        return;
-                      }
-                      setOrderChannel(e.target.value);
-                    }}
+                    onChange={(e) => setOrderChannel(e.target.value)}
                     className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#691F1A]"
                   >
                     <option value="dine_in">🍽️ Dine-In</option>
                     <option value="takeaway">🛍️ Takeaway (Self Pickup)</option>
-                    <option value="delivery" disabled className="text-gray-400 bg-gray-50">
-                      🚫 Home Delivery (Temporarily Unavailable)
-                    </option>
+                    {isDeliveryEnabled ? (
+                      <option value="delivery">🛵 Home Delivery</option>
+                    ) : (
+                      <option value="delivery" disabled>🛵 Home Delivery (Currently Unavailable)</option>
+                    )}
                   </select>
 
-                  {/* Notice for Home Delivery */}
-                  <div className="flex items-center gap-1.5 p-2 bg-amber-50/80 border border-amber-200/60 rounded-lg text-[10px] text-amber-800">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                    <span>Home delivery is temporarily unavailable at this moment. You can place <strong>Dine-In</strong> or <strong>Takeaway</strong> orders.</span>
-                  </div>
+                  {!isDeliveryEnabled && (
+                    <div className="p-2.5 bg-amber-50/80 border border-amber-200/80 rounded-xl text-[10px] text-amber-900 font-medium">
+                      ℹ️ {deliveryDisabledNotice || 'Home Delivery is temporarily paused. Please choose Takeaway (Self Pickup) or Dine-In!'}
+                    </div>
+                  )}
 
                   {orderChannel === 'delivery' && (
                     <div className="pt-1 animate-fade-in space-y-1.5">

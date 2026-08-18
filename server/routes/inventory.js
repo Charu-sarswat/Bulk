@@ -19,6 +19,7 @@ router.get('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =>
       daily_prepared_quantity: i.daily_prepared_quantity,
       unit: i.unit,
       is_available: i.is_available,
+      is_unlimited_stock: Boolean(i.is_unlimited_stock),
       auto_out_of_stock: i.auto_out_of_stock
     }));
     res.json(formatted);
@@ -114,7 +115,9 @@ router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
     const items = await MenuItem.find().populate('category_id', 'name').sort({ name: 1 });
     const formattedItems = items.map(i => {
       let stockStatus = 'IN_STOCK';
-      if (i.stock_quantity === 0) {
+      if (i.is_unlimited_stock) {
+        stockStatus = 'UNLIMITED';
+      } else if (i.stock_quantity === 0) {
         stockStatus = 'OUT_OF_STOCK';
       } else if (i.stock_quantity <= i.min_stock_level) {
         stockStatus = 'LOW_STOCK';
@@ -129,6 +132,7 @@ router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
         daily_prepared_quantity: i.daily_prepared_quantity,
         unit: i.unit,
         is_available: i.is_available,
+        is_unlimited_stock: Boolean(i.is_unlimited_stock),
         auto_out_of_stock: i.auto_out_of_stock,
         stock_status: stockStatus,
         price: i.price,

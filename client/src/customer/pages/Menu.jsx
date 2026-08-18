@@ -214,7 +214,8 @@ export default function Menu() {
                   )
                   .slice(0, 6)
                   .map(item => {
-                    const isOutOfStock = item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0);
+                    const isUnlimited = Boolean(item.is_unlimited_stock);
+                    const isOutOfStock = !isUnlimited && (item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0));
                     return (
                       <button
                         key={item.id}
@@ -271,7 +272,8 @@ export default function Menu() {
           {filteredItems.map(item => {
             const inCart = cart.find(c => c.menu_item_id === item.id);
             const cartQty = inCart ? inCart.quantity : 0;
-            const isOutOfStock = item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0);
+            const isUnlimited = Boolean(item.is_unlimited_stock);
+            const isOutOfStock = !isUnlimited && (item.is_available === false || (item.stock_quantity !== undefined && item.stock_quantity <= 0));
 
             return (
               <div

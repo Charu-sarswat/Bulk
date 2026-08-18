@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { useToast } from '../../context/ToastContext';
-import { Clock, Play, CheckCircle2, ChevronRight, XCircle, Volume2, AlertCircle, Search } from 'lucide-react';
+import { Clock, Play, CheckCircle2, ChevronRight, XCircle, Volume2, AlertCircle, Search, Bike, Copy, ExternalLink, Phone, ShieldCheck, UserCheck, X } from 'lucide-react';
 import SkeletonLoader from '../components/SkeletonLoader';
 import PageHeader from '../components/PageHeader';
+import { restaurantData } from '../../config/restaurantData';
 
 export default function LiveOrders() {
   const { token } = useAuth();
@@ -21,44 +22,15 @@ export default function LiveOrders() {
   const [channelFilter, setChannelFilter] = useState('ALL');
   const [expandedAddresses, setExpandedAddresses] = useState({});
 
+  // Porter & Delivery Dispatch Modal State
+  const [dispatchModalOrder, setDispatchModalOrder] = useState(null);
+  const [dispatchRiderName, setDispatchRiderName] = useState('');
+  const [dispatchRiderPhone, setDispatchRiderPhone] = useState('');
+  const [dispatchSubmitting, setDispatchSubmitting] = useState(false);
+
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-  const audioContextRef = useRef(null);
-
-  // HTML5 audio synthesis for sound notifications
-  const playNewOrderSound = () => {
-    try {
-      const audioCtx = audioContextRef.current || new (window.AudioContext || window.webkitAudioContext)();
-      if (!audioContextRef.current) audioContextRef.current = audioCtx;
-
-      // Note 1 (C5)
-      const osc1 = audioCtx.createOscillator();
-      const gain1 = audioCtx.createGain();
-      osc1.connect(gain1);
-      gain1.connect(audioCtx.destination);
-      osc1.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-      gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc1.start();
-      osc1.stop(audioCtx.currentTime + 0.25);
-
-      // Note 2 (E5) after brief delay
-      setTimeout(() => {
-        if (audioCtx.state === 'suspended') return;
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        osc2.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
-        gain2.gain.setValueAtTime(0.12, audioCtx.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-        osc2.start();
-        osc2.stop(audioCtx.currentTime + 0.35);
-      }, 120);
-
-    } catch (e) {
-      console.warn('Audio synthesis failed:', e);
-    }
-  };
+  const unhandledOrders = orders.filter(o => o.status === 'received');
+  const hasUnhandledOrders = unhandledOrders.length > 0;
 
   useEffect(() => {
     const fetchActiveOrders = async () => {
@@ -71,12 +43,10 @@ export default function LiveOrders() {
         const data = await response.json();
         
         if (response.ok && Array.isArray(data)) {
-          // Filter active kitchen orders from today
-          const todayStr = new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-          const active = data.filter(order => {
-            const orderDate = new Date(order.created_at).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
-            return order.status !== 'served' && order.status !== 'delivered' && order.status !== 'cancelled' && orderDate === todayStr;
-          });
+          // Show all active kitchen orders that need action
+          const active = data.filter(order => 
+            order.status !== 'served' && order.status !== 'delivered' && order.status !== 'cancelled'
+          );
           setOrders(active);
         } else {
           setOrders([]);
@@ -104,66 +74,127 @@ export default function LiveOrders() {
   useEffect(() => {
     if (socket) {
       // 1. Listen for new orders
-      socket.on('order_created', (newOrder) => {
-        // format fields mapping
-        const formatted = {
-          id: newOrder.id,
-          order_number: newOrder.order_number,
-          table_number: newOrder.table_number,
-          customer_name: newOrder.customer_name,
-          customer_phone: newOrder.customer_phone,
-          order_channel: newOrder.order_channel,
-          scheduled_time: newOrder.scheduled_time,
-          total_amount: newOrder.total_amount,
-          status: newOrder.status,
-          created_at: newOrder.created_at,
-          items: newOrder.items || [],
-          delivery_address: newOrder.delivery_address
-        };
-        setOrders((prevOrders) => [formatted, ...prevOrders]);
-        playNewOrderSound();
-        addToast(`New order #${newOrder.order_number || newOrder.id} placed!`, 'warning');
-      });
+      const handleOrderCreated = (newOrder) => {
+        const orderId = newOrder.order_number || newOrder.id || newOrder._id;
+        
+        setOrders((prevOrders) => {
+          // Prevent duplicates if already received or fetched
+          const exists = prevOrders.some(
+            (o) => (o.order_number && o.order_number === newOrder.order_number) || (o.id && (o.id === newOrder.id || o.id === newOrder._id)) || (o._id && o._id === newOrder._id)
+          );
+          if (exists) {
+            return prevOrders;
+          }
+
+          const formatted = {
+            id: orderId,
+            _id: newOrder._id || newOrder.id,
+            order_number: newOrder.order_number || orderId,
+            table_id: newOrder.table_id,
+            table_number: newOrder.table_number || newOrder.table_snapshot || 'Takeaway',
+            customer_name: newOrder.customer_name || 'Guest',
+            customer_phone: newOrder.customer_phone || '',
+            order_channel: newOrder.order_channel || 'dine_in',
+            scheduled_time: newOrder.scheduled_time,
+            total_amount: newOrder.total_amount,
+            status: newOrder.status || 'received',
+            payment_status: newOrder.payment_status || 'pending',
+            payment_method: newOrder.payment_method || 'upi',
+            notes: newOrder.notes || '',
+            created_at: newOrder.created_at || new Date().toISOString(),
+            items: newOrder.items || [],
+            delivery_address: newOrder.delivery_address || '',
+            delivery_job_id: newOrder.delivery_job_id,
+            delivery_status: newOrder.delivery_status,
+            delivery_rider_name: newOrder.delivery_rider_name,
+            delivery_rider_phone: newOrder.delivery_rider_phone,
+            delivery_otp: newOrder.delivery_otp,
+            delivery_tracking_url: newOrder.delivery_tracking_url
+          };
+
+          addToast(`New order #${formatted.order_number} placed!`, 'warning');
+          return [formatted, ...prevOrders];
+        });
+      };
 
       // 2. Sync order status updates from server/other staff
       const handleOrderStatusChange = (updatedOrder) => {
         setOrders((prevOrders) => {
+          const updateId = updatedOrder.order_number || updatedOrder.id || updatedOrder._id;
+
           // If status is changed to served, delivered, or cancelled, remove from kitchen view
           if (updatedOrder.status === 'served' || updatedOrder.status === 'delivered' || updatedOrder.status === 'cancelled') {
-            return prevOrders.filter(order => order.id !== updatedOrder.id);
+            return prevOrders.filter(
+              (order) => order.order_number !== updateId && order.id !== updateId && order._id !== updateId
+            );
           }
           
-          const exists = prevOrders.some(order => order.id === updatedOrder.id);
+          const exists = prevOrders.some(
+            (order) => (order.order_number && order.order_number === updateId) || order.id === updateId || order._id === updateId
+          );
+
           if (!exists) {
-            // It's a new order being synced! Add it to the list
-            playNewOrderSound();
-            return [updatedOrder, ...prevOrders];
+            // It's a new active order being synced! Add it to the list
+            const formatted = {
+              id: updateId,
+              _id: updatedOrder._id || updateId,
+              order_number: updatedOrder.order_number || updateId,
+              table_number: updatedOrder.table_number || updatedOrder.table_snapshot || 'Takeaway',
+              customer_name: updatedOrder.customer_name || 'Guest',
+              customer_phone: updatedOrder.customer_phone || '',
+              order_channel: updatedOrder.order_channel || 'dine_in',
+              scheduled_time: updatedOrder.scheduled_time,
+              total_amount: updatedOrder.total_amount,
+              status: updatedOrder.status || 'received',
+              payment_status: updatedOrder.payment_status || 'pending',
+              payment_method: updatedOrder.payment_method || 'upi',
+              notes: updatedOrder.notes || '',
+              created_at: updatedOrder.created_at || new Date().toISOString(),
+              items: updatedOrder.items || [],
+              delivery_address: updatedOrder.delivery_address || '',
+              delivery_job_id: updatedOrder.delivery_job_id,
+              delivery_status: updatedOrder.delivery_status,
+              delivery_rider_name: updatedOrder.delivery_rider_name,
+              delivery_rider_phone: updatedOrder.delivery_rider_phone,
+              delivery_otp: updatedOrder.delivery_otp,
+              delivery_tracking_url: updatedOrder.delivery_tracking_url
+            };
+            return [formatted, ...prevOrders];
           }
 
           // Otherwise, update properties
-          return prevOrders.map(order => order.id === updatedOrder.id ? { 
-            ...order, 
-            status: updatedOrder.status, 
-            payment_status: updatedOrder.payment_status,
-            delivery_job_id: updatedOrder.delivery_job_id || order.delivery_job_id,
-            delivery_status: updatedOrder.delivery_status || order.delivery_status,
-            delivery_rider_name: updatedOrder.delivery_rider_name || order.delivery_rider_name,
-            delivery_rider_phone: updatedOrder.delivery_rider_phone || order.delivery_rider_phone
-          } : order);
+          return prevOrders.map((order) => {
+            const isMatch = (order.order_number && order.order_number === updateId) || order.id === updateId || order._id === updateId;
+            if (!isMatch) return order;
+
+            return { 
+              ...order, 
+              status: updatedOrder.status || order.status, 
+              payment_status: updatedOrder.payment_status || order.payment_status,
+              payment_method: updatedOrder.payment_method || order.payment_method,
+              notes: updatedOrder.notes !== undefined ? updatedOrder.notes : order.notes,
+              items: updatedOrder.items && updatedOrder.items.length > 0 ? updatedOrder.items : order.items,
+              delivery_job_id: updatedOrder.delivery_job_id || order.delivery_job_id,
+              delivery_status: updatedOrder.delivery_status || order.delivery_status,
+              delivery_rider_name: updatedOrder.delivery_rider_name || order.delivery_rider_name,
+              delivery_rider_phone: updatedOrder.delivery_rider_phone || order.delivery_rider_phone,
+              delivery_otp: updatedOrder.delivery_otp || order.delivery_otp,
+              delivery_tracking_url: updatedOrder.delivery_tracking_url || order.delivery_tracking_url
+            };
+          });
         });
       };
 
+      socket.on('order_created', handleOrderCreated);
       socket.on('order_list_update', handleOrderStatusChange);
       socket.on('order_status_change', handleOrderStatusChange);
-    }
 
-    return () => {
-      if (socket) {
-        socket.off('new_order');
-        socket.off('order_list_update');
-        socket.off('order_status_change');
-      }
-    };
+      return () => {
+        socket.off('order_created', handleOrderCreated);
+        socket.off('order_list_update', handleOrderStatusChange);
+        socket.off('order_status_change', handleOrderStatusChange);
+      };
+    }
   }, [socket, addToast]);
 
   const updateOrderStatus = async (orderId, nextStatus) => {
@@ -197,7 +228,9 @@ export default function LiveOrders() {
                 delivery_job_id: updatedOrder.delivery_job_id || order.delivery_job_id,
                 delivery_status: updatedOrder.delivery_status || order.delivery_status,
                 delivery_rider_name: updatedOrder.delivery_rider_name || order.delivery_rider_name,
-                delivery_rider_phone: updatedOrder.delivery_rider_phone || order.delivery_rider_phone
+                delivery_rider_phone: updatedOrder.delivery_rider_phone || order.delivery_rider_phone,
+                delivery_otp: updatedOrder.delivery_otp || order.delivery_otp,
+                delivery_tracking_url: updatedOrder.delivery_tracking_url || order.delivery_tracking_url
               } 
             : order
         );
@@ -207,6 +240,83 @@ export default function LiveOrders() {
     } catch (err) {
       console.error(err);
       addToast('Error updating order state.', 'error');
+    }
+  };
+
+  const openPorterBooking = (order) => {
+    const dropAddr = order.delivery_address || 'Hyderabad';
+    const text = `Drop: ${dropAddr} | Phone: ${order.customer_phone || ''} | Name: ${order.customer_name || 'Customer'}`;
+    
+    // Copy clean drop address for instant paste in Porter/Rapido app
+    navigator.clipboard.writeText(dropAddr).then(() => {
+      addToast(`📋 Drop address copied: "${dropAddr.slice(0, 32)}..."`, 'success');
+    }).catch(() => {
+      addToast('Opening Porter...', 'info');
+    });
+
+    // Try opening Porter mobile app if on mobile, or main site
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = 'porter://';
+      setTimeout(() => {
+        window.open('https://porter.in/', '_blank');
+      }, 1000);
+    } else {
+      window.open('https://porter.in/', '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleOpenDispatchModal = (order) => {
+    setDispatchModalOrder(order);
+    setDispatchRiderName(order.delivery_rider_name || 'Porter 2-Wheeler');
+    setDispatchRiderPhone(order.delivery_rider_phone || '');
+  };
+
+  const handleConfirmDispatch = async () => {
+    if (!dispatchModalOrder) return;
+    setDispatchSubmitting(true);
+    try {
+      const orderId = dispatchModalOrder.id || dispatchModalOrder.order_number;
+      const response = await fetch(`${apiUrl}/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          status: 'out_for_delivery',
+          delivery_status: 'out_for_delivery',
+          delivery_rider_name: dispatchRiderName || 'Porter Rider',
+          delivery_rider_phone: dispatchRiderPhone || '',
+          delivery_job_id: dispatchModalOrder.delivery_job_id || 'PORTER-DIR'
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to dispatch order');
+      const updatedOrder = await response.json();
+
+      setOrders(prev => prev.map(o => {
+        if (o.id === orderId || o.order_number === orderId) {
+          return {
+            ...o,
+            status: 'out_for_delivery',
+            delivery_status: 'out_for_delivery',
+            delivery_rider_name: dispatchRiderName || 'Porter Rider',
+            delivery_rider_phone: dispatchRiderPhone || '',
+            delivery_job_id: updatedOrder.delivery_job_id || o.delivery_job_id || 'PORTER-DIR',
+            delivery_otp: updatedOrder.delivery_otp || o.delivery_otp
+          };
+        }
+        return o;
+      }));
+
+      addToast(`🛵 Order #${orderId} marked Out for Delivery!`, 'success');
+      setDispatchModalOrder(null);
+    } catch (err) {
+      console.error(err);
+      addToast('Failed to dispatch order.', 'error');
+    } finally {
+      setDispatchSubmitting(false);
     }
   };
 
@@ -409,29 +519,59 @@ export default function LiveOrders() {
                           👤 {order.customer_name || 'Guest'}
                           {order.customer_phone && <span className="text-gray-400 block font-normal">{order.customer_phone}</span>}
                         </span>
-                        {/* Delivery Partner Info */}
-                        {order.order_channel === 'delivery' && order.delivery_job_id && (
-                          <div className={`border text-[9px] font-black rounded-lg p-1.5 mt-1.5 max-w-[200px] ${
-                            order.delivery_job_id.startsWith('SFX')
-                              ? 'bg-indigo-50 border-indigo-100 text-indigo-700'
-                              : 'bg-orange-50 border-orange-100 text-orange-700'
-                          }`}>
-                            <div>🚚 {order.delivery_job_id.startsWith('SFX') ? 'Shadowfax' : 'Shiprocket'} Details:</div>
-                            <div className="text-gray-700 font-bold mt-0.5">{order.delivery_rider_name || 'Assigning...'}</div>
-                            {order.delivery_rider_phone && <div className="text-gray-500 font-normal">{order.delivery_rider_phone}</div>}
-                            <div className={`font-black uppercase tracking-wider text-[8px] mt-0.5 ${
-                              order.delivery_job_id.startsWith('SFX') ? 'text-indigo-655' : 'text-orange-655'
-                            }`}>Status: {order.delivery_status || 'scheduled'}</div>
-                            {!order.delivery_job_id.startsWith('SFX') && (
-                              <a
-                                href={`https://shiprocket.co/tracking/${order.delivery_job_id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block mt-1.5 text-[8px] bg-orange-600 hover:bg-orange-700 text-white font-bold py-0.5 px-1.5 rounded transition-colors"
-                              >
-                                🔗 Track on Shiprocket
+                        {/* Delivery Partner / Porter Info */}
+                        {order.order_channel === 'delivery' && (
+                          <div className="border text-[9px] font-black rounded-xl p-2.5 mt-2 max-w-[240px] bg-gradient-to-br from-amber-50/70 to-orange-50/40 border-amber-200/80 text-amber-900 shadow-2xs">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-black text-[#691F1A] flex items-center gap-1">
+                                <Bike className="w-3.5 h-3.5 text-[#F8A324]" />
+                                <span>{order.delivery_rider_name || 'Delivery Partner'}</span>
+                              </span>
+                              <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-wider ${
+                                order.status === 'out_for_delivery'
+                                  ? 'bg-amber-500 text-white animate-pulse'
+                                  : 'bg-amber-200/70 text-amber-900'
+                              }`}>
+                                {order.delivery_status || (order.status === 'out_for_delivery' ? 'On The Way' : 'Pending Rider')}
+                              </span>
+                            </div>
+
+                            {order.delivery_rider_phone ? (
+                              <a href={`tel:${order.delivery_rider_phone}`} className="text-[#691F1A] font-bold block mt-1 hover:underline flex items-center gap-1">
+                                📞 {order.delivery_rider_phone}
                               </a>
+                            ) : (
+                              <span className="text-gray-400 block mt-0.5 font-normal">No rider phone assigned yet</span>
                             )}
+
+                            {order.delivery_otp && (
+                              <div className="mt-1.5 bg-white/90 border border-amber-200/80 rounded-lg px-2 py-1 flex items-center justify-between text-[9px]">
+                                <span className="text-gray-500 font-bold">Delivery OTP:</span>
+                                <span className="font-mono font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                                  {order.delivery_otp}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* 1-Click Quick Porter & Assign Buttons */}
+                            <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-amber-200/60">
+                              <button
+                                onClick={() => openPorterBooking(order)}
+                                className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-1 px-2 rounded-lg text-[8px] uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                                title="Open Porter with pre-filled address & phone"
+                              >
+                                <span>🏍️ Porter 1-Click</span>
+                                <ExternalLink className="w-2.5 h-2.5" />
+                              </button>
+
+                              <button
+                                onClick={() => handleOpenDispatchModal(order)}
+                                className="bg-white hover:bg-amber-100/60 text-amber-900 border border-amber-300/80 font-bold py-1 px-2 rounded-lg text-[8px] uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                                title="Assign Rider & Dispatch"
+                              >
+                                <span>Assign Rider</span>
+                              </button>
+                            </div>
                           </div>
                         )}
                         {/* Payment Info */}
@@ -496,7 +636,7 @@ export default function LiveOrders() {
 
                       {/* Actions */}
                       <td className="py-4 px-4 sm:px-6 text-center">
-                        <div className="flex flex-row gap-2 items-center justify-center">
+                        <div className="flex flex-row gap-2 items-center justify-center flex-wrap">
                           {order.status === 'hold' && (
                             <button
                               onClick={() => updateOrderStatus(order.id, 'preparing')}
@@ -524,10 +664,11 @@ export default function LiveOrders() {
                           {order.status === 'ready' && (
                             order.order_channel === 'delivery' ? (
                               <button
-                                onClick={() => updateOrderStatus(order.id, 'out_for_delivery')}
-                                className="w-max bg-[#F8A324] hover:bg-[#d97a10] text-[#3C110D] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0"
+                                onClick={() => handleOpenDispatchModal(order)}
+                                className="w-max bg-[#F8A324] hover:bg-[#d97a10] text-[#3C110D] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0 flex items-center gap-1"
                               >
-                                Out for Delivery
+                                <Bike className="w-3.5 h-3.5" />
+                                <span>Dispatch Rider</span>
                               </button>
                             ) : (
                               <button
@@ -567,6 +708,189 @@ export default function LiveOrders() {
           </div>
         )}
       </div>
+
+      {/* Porter 1-Click Booking & Rider Dispatch Modal */}
+      {dispatchModalOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-150 space-y-5 relative">
+            <button
+              onClick={() => setDispatchModalOrder(null)}
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+                <Bike className="w-6 h-6 text-[#F8A324]" />
+              </div>
+              <div>
+                <h3 className="font-serif font-black text-lg text-gray-900">
+                  Dispatch Delivery #{dispatchModalOrder.order_number || dispatchModalOrder.id}
+                </h3>
+                <p className="text-xs text-gray-500 font-medium">
+                  Book via Porter 2-Wheeler or assign in-house rider
+                </p>
+              </div>
+            </div>
+
+            {/* Quick 1-Click Porter Box */}
+            <div className="bg-gradient-to-br from-[#FFF9EE] to-amber-50/50 border border-amber-200/80 rounded-2xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase tracking-wider text-[#691F1A] flex items-center gap-1.5">
+                  <span>🏍️ Porter 1-Click Launcher</span>
+                </span>
+                <span className="text-[10px] bg-amber-200/80 text-amber-900 font-black px-2 py-0.5 rounded-md uppercase">
+                  Hyderabad 2-Wheeler
+                </span>
+              </div>
+
+              <div className="text-xs space-y-1.5 text-gray-700 bg-white/80 p-3 rounded-xl border border-amber-200/40">
+                <div>
+                  <span className="font-bold text-gray-500">Pickup: </span>
+                  <span className="font-semibold text-gray-900">{restaurantData.name}, {restaurantData.gmbAddress}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-gray-500">Drop Address: </span>
+                  <span className="font-semibold text-[#691F1A]">{dispatchModalOrder.delivery_address || 'Abids, Hyderabad'}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-gray-500">Customer: </span>
+                  <span className="font-semibold text-gray-900">{dispatchModalOrder.customer_name} ({dispatchModalOrder.customer_phone})</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openPorterBooking(dispatchModalOrder)}
+                  className="w-full sm:flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
+                >
+                  <span>Open Porter (Bike Booking)</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(restaurantData.gmbAddress)}&destination=${encodeURIComponent(dispatchModalOrder.delivery_address || 'Hyderabad')}&travelmode=two_wheeler`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-initial bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    title="View Distance & Route"
+                  >
+                    <span>🗺️ Route</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = dispatchModalOrder.delivery_address || 'Hyderabad';
+                      navigator.clipboard.writeText(text);
+                      addToast(`📋 Address copied: "${text.slice(0, 30)}..."`, 'success');
+                    }}
+                    className="flex-1 sm:flex-initial bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    title="Copy Drop Address for Porter/Rapido"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-gray-500" />
+                    <span>Copy Address</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Preset Buttons */}
+            <div>
+              <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-2">
+                Quick Rider Preset
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { name: 'Porter 2-Wheeler', phone: '' },
+                  { name: 'In-House Staff (Ramesh)', phone: '9876543210' },
+                  { name: 'Rapido Bike Rider', phone: '' },
+                  { name: 'Uber Moto Partner', phone: '' }
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setDispatchRiderName(preset.name);
+                      if (preset.phone) setDispatchRiderPhone(preset.phone);
+                    }}
+                    className="bg-gray-50 hover:bg-amber-50 hover:border-amber-200 border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Rider Form Inputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-gray-700 block mb-1">
+                  Rider Name / Partner
+                </label>
+                <input
+                  type="text"
+                  value={dispatchRiderName}
+                  onChange={(e) => setDispatchRiderName(e.target.value)}
+                  placeholder="e.g. Porter Bike Rider"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-[#F8A324] font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-gray-700 block mb-1">
+                  Rider Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={dispatchRiderPhone}
+                  onChange={(e) => setDispatchRiderPhone(e.target.value)}
+                  placeholder="e.g. 9876543210"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-[#F8A324] font-semibold"
+                />
+              </div>
+            </div>
+
+            {/* Delivery OTP Notice */}
+            {dispatchModalOrder.delivery_otp && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span className="text-emerald-900 font-bold">Secure Delivery OTP:</span>
+                </div>
+                <span className="font-mono font-black text-sm text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-300">
+                  {dispatchModalOrder.delivery_otp}
+                </span>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDispatchModalOrder(null)}
+                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl text-xs transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmDispatch}
+                disabled={dispatchSubmitting}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-extrabold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Bike className="w-4 h-4" />
+                <span>{dispatchSubmitting ? 'Dispatching...' : 'Confirm & Dispatch'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
