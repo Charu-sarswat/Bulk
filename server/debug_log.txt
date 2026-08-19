@@ -6468,3 +6468,15 @@
 [ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
 [TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
 [ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
