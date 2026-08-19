@@ -7,7 +7,7 @@ import {
   BarChart3, CookingPot, Layers, 
   IndianRupee, LogOut, Menu, User, Shield, FileText,
   ChevronLeft, ChevronRight, Boxes, X, QrCode, Settings,
-  Volume2, VolumeX, BellRing
+  Volume2, VolumeX, BellRing, CreditCard
 } from 'lucide-react';
 
 // Brand Logos
@@ -19,11 +19,11 @@ function SidebarContent({ user, navLinks, location, isCollapsed, handleLogout, o
   return (
     <>
       {/* Brand Banner */}
-      <div className="h-16 border-b border-[#F8A324]/20 flex items-center justify-center px-4 shrink-0 overflow-hidden bg-[#260907]">
+      <div className="h-16 border-b border-gray-200 flex items-center justify-center px-4 shrink-0 overflow-hidden bg-white">
         {isCollapsed ? (
           <img src={logoIcon} alt="BC Icon" className="h-9 w-auto object-contain" />
         ) : (
-          <img src={logoBanner} alt="Bombay Chowpati Logo" className="h-10 w-auto object-contain drop-shadow-md" />
+          <img src={logoBanner} alt="Bombay Chowpati Logo" className="h-10 w-auto object-contain drop-shadow-sm" />
         )}
       </div>
 
@@ -39,8 +39,8 @@ function SidebarContent({ user, navLinks, location, isCollapsed, handleLogout, o
               onClick={onLinkClick}
               className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-extrabold transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#F8A324] via-[#FFB74D] to-[#F8A324] text-[#3C110D]'
-                  : 'text-amber-100/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-[#83560E] text-white shadow-md shadow-[#83560E]/20'
+                  : 'text-gray-600 hover:text-[#83560E] hover:bg-amber-50/70'
               } ${isCollapsed ? 'justify-center' : ''}`}
               title={isCollapsed ? link.name : ''}
             >
@@ -52,15 +52,15 @@ function SidebarContent({ user, navLinks, location, isCollapsed, handleLogout, o
       </nav>
 
       {/* User Card & Logout */}
-      <div className="p-4 border-t border-[#F8A324]/20 bg-[#260907] shrink-0 space-y-3">
+      <div className="p-4 border-t border-gray-200 bg-white shrink-0 space-y-3">
         <div className={`flex items-center gap-3 px-1 ${isCollapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-xl bg-[#F8A324]/20 border border-[#F8A324]/40 flex items-center justify-center text-[#F8A324] font-black shrink-0 uppercase">
+          <div className="w-8 h-8 rounded-xl bg-amber-50 border border-[#CCA96A]/40 flex items-center justify-center text-[#83560E] font-black shrink-0 uppercase">
             {user.username[0]}
           </div>
           {!isCollapsed && (
             <div className="min-w-0">
-              <p className="text-xs font-extrabold text-white truncate">{user.username}</p>
-              <span className="flex items-center gap-1 text-[9px] text-emerald-400 font-extrabold uppercase tracking-wider">
+              <p className="text-xs font-extrabold text-gray-900 truncate">{user.username}</p>
+              <span className="flex items-center gap-1 text-[9px] text-emerald-600 font-extrabold uppercase tracking-wider">
                 <Shield className="w-2.5 h-2.5" />
                 {user.role}
               </span>
@@ -69,18 +69,18 @@ function SidebarContent({ user, navLinks, location, isCollapsed, handleLogout, o
         </div>
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-rose-500/20 text-amber-200 hover:text-rose-300 py-2.5 rounded-xl text-xs font-bold transition-all border border-white/10 hover:border-rose-500/30 cursor-pointer ${
+          className={`w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-rose-50 hover:text-rose-600 text-gray-600 py-2.5 rounded-xl text-xs font-bold transition-all border border-gray-200 hover:border-rose-200 cursor-pointer ${
             isCollapsed ? 'px-0' : ''
           }`}
           title={isCollapsed ? 'Sign Out' : ''}
         >
-          <LogOut className="w-4 h-4 shrink-0 text-rose-400" />
+          <LogOut className="w-4 h-4 shrink-0 text-rose-500" />
           {!isCollapsed && <span>Sign Out</span>}
         </button>
 
         {!isCollapsed && (
-          <div className="text-center pt-1 border-t border-white/5">
-            <span className="text-[9px] text-[#F8A324] font-black uppercase tracking-widest block">
+          <div className="text-center pt-1 border-t border-gray-100">
+            <span className="text-[9px] text-[#83560E] font-black uppercase tracking-widest block">
               Chat Bhandar Control
             </span>
           </div>
@@ -347,7 +347,7 @@ export default function AdminLayout() {
 
   // RBAC Navigation Links Definition
   let navLinks = [];
-  if (user.role === 'admin') {
+  if (user.role === 'admin' || user.role === 'super_admin') {
     navLinks = [
       { path: '/admin', name: 'Dashboard', icon: BarChart3 },
       { path: '/admin/live-orders', name: 'Kitchen Screen', icon: CookingPot },
@@ -358,7 +358,9 @@ export default function AdminLayout() {
       { path: '/admin/customers', name: 'Customer Directory', icon: User },
       { path: '/admin/users', name: 'System Users', icon: Shield },
       { path: '/admin/qr', name: 'Table QR Codes', icon: QrCode },
-      { path: '/admin/settings', name: 'Settings', icon: Settings }
+      { path: '/admin/student-plans', name: 'Subscription Audit', icon: CreditCard },
+      { path: '/admin/settings', name: 'Settings', icon: Settings },
+      ...(user.role === 'super_admin' ? [{ path: '/superadmin/dashboard', name: '⚡ Super Admin Portal', icon: Shield }] : [])
     ];
   } else if (user.role === 'staff') {
     navLinks = [
@@ -387,7 +389,7 @@ export default function AdminLayout() {
 
       {/* ─── Mobile Sidebar Drawer ──────────────────────────────────────── */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-64 bg-[#3C110D] text-white flex flex-col transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed top-0 left-0 z-50 h-screen w-64 bg-[#080604] text-white flex flex-col transition-transform duration-300 ease-in-out md:hidden ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -412,14 +414,14 @@ export default function AdminLayout() {
 
       {/* ─── Desktop Sidebar ─────────────────────────────────────────────── */}
       <aside
-        className={`hidden md:flex flex-col h-screen bg-[#3C110D] text-white shrink-0 border-r border-[#F8A324]/20 transition-all duration-300 relative ${
+        className={`hidden md:flex flex-col h-screen bg-white text-gray-900 shrink-0 border-r border-gray-200 transition-all duration-300 relative ${
           isCollapsed ? 'w-16' : 'w-64'
         }`}
       >
         {/* Toggle Collapse Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute -right-3 top-20 z-25 bg-[#260907] border border-[#F8A324]/40 text-[#F8A324] rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-white/10 transition-colors cursor-pointer"
+          className="absolute -right-3 top-20 z-25 bg-white border border-gray-200 text-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors cursor-pointer"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
@@ -438,18 +440,18 @@ export default function AdminLayout() {
       {/* ─── Main Content Area ───────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Top Navbar with Global Buzzer Controls */}
-        <header className="bg-[#260907] border-b border-[#F8A324]/20 h-16 px-3 sm:px-6 flex items-center justify-between shrink-0 z-10 text-white gap-2">
+        <header className="bg-white border-b border-gray-200 h-16 px-3 sm:px-6 flex items-center justify-between shrink-0 z-10 text-gray-900 gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             {/* Hamburger - mobile only */}
             <button
               onClick={() => setIsMobileOpen(true)}
-              className="p-2 -ml-1 rounded-lg text-amber-100 hover:text-white hover:bg-white/10 md:hidden cursor-pointer shrink-0"
+              className="p-2 -ml-1 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 md:hidden cursor-pointer shrink-0"
               aria-label="Open navigation menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
-            <h2 className="font-serif font-extrabold text-white text-xs sm:text-base tracking-wide truncate">
+            <h2 className="font-serif font-extrabold text-gray-900 text-xs sm:text-base tracking-wide truncate">
               {navLinks.find(link => link.path === location.pathname)?.name || 'Bombay Chowpati Control'}
             </h2>
           </div>
@@ -459,10 +461,10 @@ export default function AdminLayout() {
             {unhandledCount > 0 && (
               <button
                 onClick={() => navigate('/admin/live-orders')}
-                className="bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 sm:gap-1.5 animate-pulse cursor-pointer shrink-0"
+                className="bg-rose-50 border border-rose-300 text-rose-700 hover:bg-rose-100 px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 sm:gap-1.5 animate-pulse cursor-pointer shrink-0"
                 title="Click to view unhandled incoming orders"
               >
-                <BellRing className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <BellRing className="w-3.5 h-3.5 text-rose-600 shrink-0" />
                 <span className="hidden xs:inline sm:inline">{unhandledCount} New Order{unhandledCount > 1 ? 's' : ''}</span>
                 <span className="inline xs:hidden sm:hidden font-bold">{unhandledCount}</span>
               </button>
@@ -472,7 +474,7 @@ export default function AdminLayout() {
             <div className="relative">
               <button
                 onClick={() => setShowSoundPicker(!showSoundPicker)}
-                className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 transition-all flex items-center gap-1 sm:gap-1.5 cursor-pointer shrink-0"
+                className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 transition-all flex items-center gap-1 sm:gap-1.5 cursor-pointer shrink-0"
                 title="Change Alert Tone"
               >
                 <span>🎵</span>
@@ -485,12 +487,12 @@ export default function AdminLayout() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowSoundPicker(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-60 sm:w-64 bg-[#260907] border border-[#F8A324]/40 rounded-2xl shadow-2xl p-2 z-50 divide-y divide-white/10 animate-fadeIn">
-                    <div className="px-3 py-2 text-[10px] font-black uppercase text-[#F8A324] tracking-wider flex justify-between items-center">
+                  <div className="absolute right-0 mt-2 w-60 sm:w-64 bg-white border border-gray-200 rounded-2xl shadow-2xl p-2 z-50 divide-y divide-gray-100 animate-fadeIn text-gray-900">
+                    <div className="px-3 py-2 text-[10px] font-black uppercase text-[#83560E] tracking-wider flex justify-between items-center">
                       <span>Order Alert Tone</span>
                       <button 
                         onClick={() => setShowSoundPicker(false)}
-                        className="text-gray-400 hover:text-white p-0.5"
+                        className="text-gray-400 hover:text-gray-700 p-0.5"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -505,12 +507,12 @@ export default function AdminLayout() {
                           }}
                           className={`w-full text-left p-2 sm:p-2.5 rounded-xl transition-all flex flex-col cursor-pointer ${
                             buzzerTone === t.id
-                              ? 'bg-[#F8A324] text-[#3C110D]'
-                              : 'hover:bg-white/10 text-white'
+                              ? 'bg-[#83560E] text-white'
+                              : 'hover:bg-gray-50 text-gray-800'
                           }`}
                         >
                           <span className="text-xs font-black truncate">{t.label}</span>
-                          <span className={`text-[9px] sm:text-[10px] line-clamp-1 ${buzzerTone === t.id ? 'text-[#3C110D]/80' : 'text-gray-400'}`}>
+                          <span className={`text-[9px] sm:text-[10px] line-clamp-1 ${buzzerTone === t.id ? 'text-white/80' : 'text-gray-500'}`}>
                             {t.desc}
                           </span>
                         </button>
@@ -535,10 +537,10 @@ export default function AdminLayout() {
               }}
               className={`px-2 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5 border transition-all cursor-pointer shrink-0 ${
                 buzzerMuted
-                  ? 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                  ? 'bg-gray-100 border-gray-200 text-gray-500 hover:text-gray-700'
                   : unhandledCount > 0
-                  ? 'bg-[#F8A324] text-[#3C110D] border-[#F8A324] font-black shadow-md animate-bounce'
-                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
+                  ? 'bg-[#83560E] text-white border-[#83560E] font-black shadow-md animate-bounce'
+                  : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100'
               }`}
               title={buzzerMuted ? "Unmute Order Alert Sound" : "Mute Order Alert Sound"}
             >
@@ -557,8 +559,46 @@ export default function AdminLayout() {
           </div>
         </header>
 
+        {/* Subscription Expiry / Warning Sticky Banner */}
+        {(() => {
+          const sub = user?.subscription;
+          if (!sub || user.role === 'super_admin') return null;
+          const isExpired = sub.status === 'expired' || new Date(sub.endDate) <= new Date();
+          const isNearExpiry = !isExpired && (new Date(sub.endDate) - new Date() < 7 * 24 * 60 * 60 * 1000);
+
+          if (isExpired) {
+            return (
+              <div className="bg-rose-500 text-white px-4 py-3 flex items-center justify-between text-xs font-bold border-b border-rose-600 gap-4 shrink-0">
+                <div className="flex items-center gap-2">
+                  <BellRing className="w-4 h-4 animate-bounce shrink-0" />
+                  <span>Subscription Expired! Business features are locked. Please renew to resume operations.</span>
+                </div>
+                <Link to="/admin/billing" className="bg-white text-rose-600 hover:bg-gray-100 px-4.5 py-2 rounded-xl uppercase tracking-wider text-[10px] font-black transition-all shrink-0">
+                  Renew Plan
+                </Link>
+              </div>
+            );
+          }
+
+          if (isNearExpiry) {
+            return (
+              <div className="bg-[#83560E] text-white px-4 py-3 flex items-center justify-between text-xs font-black border-b border-amber-600 gap-4 shrink-0">
+                <div className="flex items-center gap-2">
+                  <BellRing className="w-4 h-4 shrink-0" />
+                  <span>Plan Expiring Soon! Your subscription ends on {new Date(sub.endDate).toLocaleDateString('en-IN')}. Please renew to prevent downtime.</span>
+                </div>
+                <Link to="/admin/billing" className="bg-white text-[#83560E] hover:bg-amber-50 px-4.5 py-2 rounded-xl uppercase tracking-wider text-[10px] font-black transition-all shrink-0">
+                  Renew Now
+                </Link>
+              </div>
+            );
+          }
+
+          return null;
+        })()}
+
         {/* Content Outlet */}
-        <main className="flex-1 p-4 sm:p-6 md:p-8 bg-[#FFF9EE] overflow-y-auto max-w-full">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 bg-[#FBFBFA] overflow-y-auto max-w-full">
           <Outlet />
         </main>
       </div>

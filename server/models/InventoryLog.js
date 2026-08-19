@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const inventoryLogSchema = new mongoose.Schema({
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   menu_item_id: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', default: null },
   raw_material_id: { type: mongoose.Schema.Types.ObjectId, ref: 'RawMaterial', default: null },
   change_type: { 
@@ -15,5 +16,7 @@ const inventoryLogSchema = new mongoose.Schema({
   recorded_by: { type: String, default: 'Admin' },
   created_at: { type: Date, default: Date.now }
 });
+
+inventoryLogSchema.index({ restaurantId: 1, created_at: -1 });
 
 module.exports = mongoose.model('InventoryLog', inventoryLogSchema);

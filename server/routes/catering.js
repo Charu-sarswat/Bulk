@@ -14,7 +14,12 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'Name, phone, event date, and guest count are required' });
     }
 
+    if (!req.restaurantId) {
+      return res.status(400).json({ message: 'Restaurant ID is required' });
+    }
+
     const newEnquiry = new CateringEnquiry({
+      restaurantId: req.restaurantId,
       name,
       phone,
       event_date,
@@ -38,7 +43,7 @@ router.post('/', async (req, res) => {
 // @desc    Get all catering inquiries (Admin/Staff)
 router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const enquiries = await CateringEnquiry.find().sort({ created_at: -1 });
+    const enquiries = await CateringEnquiry.find({ restaurantId: req.restaurantId }).sort({ created_at: -1 });
     res.json(enquiries);
   } catch (err) {
     console.error('Catering list error:', err.message);

@@ -6,10 +6,10 @@ const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
 
 // @route   GET /api/inventory/raw
-// @desc    Get all raw materials
+// @desc    Get all raw materials for current restaurant
 router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const materials = await RawMaterial.find().sort({ name: 1 });
+    const materials = await RawMaterial.find({ restaurantId: req.restaurantId }).sort({ name: 1 });
     res.json(materials);
   } catch (err) {
     console.error('Get raw materials error:', err.message);
@@ -27,12 +27,13 @@ router.post('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   }
 
   try {
-    const existing = await RawMaterial.findOne({ name: name.trim() });
+    const existing = await RawMaterial.findOne({ name: name.trim(), restaurantId: req.restaurantId });
     if (existing) {
       return res.status(400).json({ message: 'Raw material with this name already exists' });
     }
 
     const material = new RawMaterial({
+      restaurantId: req.restaurantId,
       name: name.trim(),
       stock_quantity: stock_quantity !== undefined ? Number(stock_quantity) : 0,
       unit: unit || 'units',
@@ -44,6 +45,7 @@ router.post('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
     // Log the initial creation stock
     if (material.stock_quantity > 0) {
       const log = new InventoryLog({
+        restaurantId: req.restaurantId,
         raw_material_id: material._id,
         change_type: 'STOCK_SET',
         quantity_change: material.stock_quantity,
@@ -68,9 +70,9 @@ router.put('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   const { name, unit, min_stock_level, change_type, quantity, reason } = req.body;
 
   try {
-    const material = await RawMaterial.findById(req.params.id);
+    const material = await RawMaterial.findOne({ _id: req.params.id, restaurantId: req.restaurantId });
     if (!material) {
-      return res.status(404).json({ message: 'Raw material not found' });
+      return res.status(404).json({ message: 'Raw material not found or unauthorized' });
     }
 
     const prevStock = material.stock_quantity;
@@ -103,7 +105,7 @@ router.put('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
     if (newStock > 0) {
       try {
         const MenuItem = require('../models/MenuItem');
-        const linkedItems = await MenuItem.find({ 'recipe.raw_material_id': material._id });
+        const linkedItems = await MenuItem.find({ 'recipe.raw_material_id': material._id, restaurantId: req.restaurantId });
         for (const item of linkedItems) {
           if (item.auto_out_of_stock && !item.is_available && item.stock_quantity > 0) {
             item.is_available = true;
@@ -118,6 +120,7 @@ router.put('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
     // Log the stock update if any change occurred
     if (change_type) {
       const log = new InventoryLog({
+        restaurantId: req.restaurantId,
         raw_material_id: material._id,
         change_type: change_type || 'STOCK_SET',
         quantity_change: Number(quantity),
@@ -140,9 +143,9 @@ router.put('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
 // @desc    Delete raw material
 router.delete('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const deleted = await RawMaterial.findByIdAndDelete(req.params.id);
+    const deleted = await RawMaterial.findOneAndDelete({ _id: req.params.id, restaurantId: req.restaurantId });
     if (!deleted) {
-      return res.status(404).json({ message: 'Raw material not found' });
+      return res.status(404).json({ message: 'Raw material not found or unauthorized' });
     }
     res.json({ message: 'Raw material deleted successfully' });
   } catch (err) {
@@ -155,7 +158,7 @@ router.delete('/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) =
 // @desc    Get audit trail history for specific raw material
 router.get('/:id/logs', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const logs = await InventoryLog.find({ raw_material_id: req.params.id }).sort({ created_at: -1 }).limit(50);
+    const logs = await InventoryLog.find({ raw_material_id: req.params.id, restaurantId: req.restaurantId }).sort({ created_at: -1 }).limit(50);
     const formatted = logs.map(l => ({
       id: l._id,
       change_type: l.change_type,

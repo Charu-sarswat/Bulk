@@ -15,9 +15,9 @@ export default function Footer({ onOpenCatering }) {
   };
 
   return (
-    <footer className="bg-[#1D0604] text-white border-t border-[#F8A324]/20 relative overflow-hidden font-sans">
+    <footer className="bg-[#080604] text-white border-t border-[#CCA96A]/20 relative overflow-hidden font-sans">
       {/* Top Gold Border Highlight */}
-      <div className="h-1 w-full bg-gradient-to-r from-[#691F1A] via-[#F8A324] to-[#691F1A]" />
+      <div className="h-1 w-full bg-gradient-to-r from-[#83560E] via-[#CCA96A] to-[#83560E]" />
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-12">
@@ -49,7 +49,7 @@ export default function Footer({ onOpenCatering }) {
                 href={restaurantData.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-[#691F1A] hover:bg-[#F8A324] hover:text-[#3C110D] text-white border border-[#F8A324]/30 flex items-center justify-center transition-all shadow-md"
+                className="w-10 h-10 rounded-xl bg-[#83560E] hover:bg-[#CCA96A] hover:text-[#080604] text-white border border-[#CCA96A]/30 flex items-center justify-center transition-all shadow-md"
                 title="Follow us on Instagram"
               >
                 <Instagram className="w-5 h-5" />
@@ -57,7 +57,7 @@ export default function Footer({ onOpenCatering }) {
 
               <button
                 onClick={handleWhatsAppChat}
-                className="w-10 h-10 rounded-xl bg-[#691F1A] hover:bg-[#F8A324] hover:text-[#3C110D] text-white border border-[#F8A324]/30 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                className="w-10 h-10 rounded-xl bg-[#83560E] hover:bg-[#CCA96A] hover:text-[#080604] text-white border border-[#CCA96A]/30 flex items-center justify-center transition-all shadow-md cursor-pointer"
                 title="Chat on WhatsApp"
               >
                 <WhatsAppIcon className="w-5 h-5" color="currentColor" />
@@ -67,7 +67,7 @@ export default function Footer({ onOpenCatering }) {
                 href={restaurantData.gmbLink}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-[#691F1A] hover:bg-[#F8A324] hover:text-[#3C110D] text-white border border-[#F8A324]/30 flex items-center justify-center transition-all shadow-md"
+                className="w-10 h-10 rounded-xl bg-[#83560E] hover:bg-[#CCA96A] hover:text-[#080604] text-white border border-[#CCA96A]/30 flex items-center justify-center transition-all shadow-md"
                 title="View on Google Maps"
               >
                 <MapPin className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function Footer({ onOpenCatering }) {
 
           {/* Column 2: Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-serif font-black text-sm text-[#F8A324] uppercase tracking-widest border-b border-[#F8A324]/20 pb-2">
+            <h4 className="font-serif font-black text-sm text-[#CCA96A] uppercase tracking-widest border-b border-[#CCA96A]/20 pb-2">
               Quick Navigation
             </h4>
             <ul className="space-y-2.5 text-xs text-amber-100/80">
@@ -86,13 +86,13 @@ export default function Footer({ onOpenCatering }) {
                   {link.path.startsWith('/#') ? (
                     <button 
                       onClick={onOpenCatering} 
-                      className="hover:text-[#F8A324] transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="hover:text-[#CCA96A] transition-colors cursor-pointer flex items-center gap-1.5"
                     >
-                      <span className="text-[#F8A324]">›</span> {link.name}
+                      <span className="text-[#CCA96A]">›</span> {link.name}
                     </button>
                   ) : (
-                    <Link to={link.path} className="hover:text-[#F8A324] transition-colors flex items-center gap-1.5">
-                      <span className="text-[#F8A324]">›</span> {link.name}
+                    <Link to={link.path} className="hover:text-[#CCA96A] transition-colors flex items-center gap-1.5">
+                      <span className="text-[#CCA96A]">›</span> {link.name}
                     </Link>
                   )}
                 </li>
@@ -102,14 +102,14 @@ export default function Footer({ onOpenCatering }) {
 
           {/* Column 3: Popular Specialties */}
           <div className="space-y-4">
-            <h4 className="font-serif font-black text-sm text-[#F8A324] uppercase tracking-widest border-b border-[#F8A324]/20 pb-2">
+            <h4 className="font-serif font-black text-sm text-[#CCA96A] uppercase tracking-widest border-b border-[#CCA96A]/20 pb-2">
               Signature Dishes
             </h4>
             <ul className="space-y-2.5 text-xs text-amber-100/80">
               {restaurantData.footerSections.topSpecialties.map((item, idx) => (
                 <li key={idx}>
-                  <Link to={item.path} className="hover:text-[#F8A324] transition-colors flex items-center gap-1.5">
-                    <span className="text-[#F8A324]">›</span> {item.name}
+                  <Link to={item.path} className="hover:text-[#CCA96A] transition-colors flex items-center gap-1.5">
+                    <span className="text-[#CCA96A]">›</span> {item.name}
                   </Link>
                 </li>
               ))}
@@ -118,17 +118,17 @@ export default function Footer({ onOpenCatering }) {
 
           {/* Column 4: Contact & Operating Hours */}
           <div className="space-y-4">
-            <h4 className="font-serif font-black text-sm text-[#F8A324] uppercase tracking-widest border-b border-[#F8A324]/20 pb-2">
+            <h4 className="font-serif font-black text-sm text-[#CCA96A] uppercase tracking-widest border-b border-[#CCA96A]/20 pb-2">
               Store Location
             </h4>
             <div className="space-y-3 text-xs text-amber-100/80">
               <p className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-[#F8A324] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#CCA96A] shrink-0 mt-0.5" />
                 <a 
                   href={restaurantData.gmbLink} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="hover:text-[#F8A324] hover:underline transition-colors"
+                  className="hover:text-[#CCA96A] hover:underline transition-colors"
                 >
                   {restaurantData.gmbAddress}
                 </a>
@@ -140,8 +140,8 @@ export default function Footer({ onOpenCatering }) {
               </p>
 
               <p className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#F8A324] shrink-0" />
-                <a href={`tel:${restaurantData.supportPhone}`} className="hover:text-[#F8A324]">
+                <Phone className="w-4 h-4 text-[#CCA96A] shrink-0" />
+                <a href={`tel:${restaurantData.supportPhone}`} className="hover:text-[#CCA96A]">
                   {restaurantData.formattedPhone}
                 </a>
               </p>

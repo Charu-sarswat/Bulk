@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const menuItemSchema = new mongoose.Schema({
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
   name: { type: String, required: true, trim: true, set: v => typeof v === 'string' ? v.toUpperCase() : v },
   description: { type: String, default: '' },
@@ -34,5 +35,7 @@ const menuItemSchema = new mongoose.Schema({
   }],
   created_at: { type: Date, default: Date.now }
 });
+
+menuItemSchema.index({ restaurantId: 1, category_id: 1 });
 
 module.exports = mongoose.model('MenuItem', menuItemSchema);

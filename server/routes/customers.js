@@ -7,12 +7,12 @@ const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
 
 // @route   GET /api/customers
-// @desc    Get all aggregated customer directory records (Registered + Guests)
+// @desc    Get all aggregated customer directory records (Registered + Guests) for current restaurant
 // @access  Private (Admin / Staff)
 router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const registeredCustomers = await Customer.find().lean();
-    const orders = await Order.find().lean();
+    const registeredCustomers = await Customer.find({ restaurantId: req.restaurantId }).lean();
+    const orders = await Order.find({ restaurantId: req.restaurantId }).lean();
 
     // Map by phone to aggregate metrics
     const customerMap = new Map();
@@ -89,20 +89,20 @@ router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
 router.get('/:id/orders', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
     const { id } = req.params;
-    let filter = {};
+    const orderFilter = { restaurantId: req.restaurantId };
 
     if (mongoose.Types.ObjectId.isValid(id)) {
-      const customer = await Customer.findById(id);
+      const customer = await Customer.findOne({ _id: id, restaurantId: req.restaurantId });
       if (customer) {
-        filter = { $or: [{ customer_id: id }, { customer_phone: customer.phone }] };
+        orderFilter.$or = [{ customer_id: id }, { customer_phone: customer.phone }];
       } else {
-        filter = { customer_id: id };
+        orderFilter.customer_id = id;
       }
     } else {
-      filter = { customer_phone: id };
+      orderFilter.customer_phone = id;
     }
 
-    const orders = await Order.find(filter).sort({ created_at: -1 }).lean();
+    const orders = await Order.find(orderFilter).sort({ created_at: -1 }).lean();
     res.json(orders);
   } catch (err) {
     console.error('Error fetching customer orders:', err);

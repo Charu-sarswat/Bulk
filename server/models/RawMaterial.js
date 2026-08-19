@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 
 const rawMaterialSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true, trim: true },
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
+  name: { type: String, required: true, trim: true },
   stock_quantity: { type: Number, default: 0, min: 0 },
   unit: { type: String, default: 'units' },
   min_stock_level: { type: Number, default: 10, min: 0 },
   created_at: { type: Date, default: Date.now }
 });
+
+rawMaterialSchema.index({ restaurantId: 1, name: 1 }, { unique: true });
 
 module.exports = mongoose.model('RawMaterial', rawMaterialSchema);

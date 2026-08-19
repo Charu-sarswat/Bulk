@@ -1,0 +1,66 @@
+{
+  "users": [
+    {
+      "id": "6a84af9004cc84b08b07195c",
+      "username": "admin",
+      "role": "admin",
+      "restaurantId": null
+    },
+    {
+      "id": "6a84af9004cc84b08b07195e",
+      "username": "kitchen",
+      "role": "kitchen",
+      "restaurantId": null
+    },
+    {
+      "id": "6a84af9004cc84b08b07195d",
+      "username": "staff",
+      "role": "staff",
+      "restaurantId": null
+    },
+    {
+      "id": "6a84b3587e36e8d57913730e",
+      "username": "superadmin",
+      "role": "super_admin",
+      "restaurantId": null
+    },
+    {
+      "id": "6a84b7817e5101582fd266ed",
+      "username": "charu",
+      "role": "admin",
+      "restaurantId": "6a84b7807e5101582fd266eb"
+    }
+  ],
+  "restaurants": [
+    {
+      "id": "6a84b3577e36e8d579137308",
+      "name": "Bombay Chowpati",
+      "slug": "bombay-chowpati",
+      "status": "active",
+      "isActive": true
+    },
+    {
+      "id": "6a84b7807e5101582fd266eb",
+      "name": "charu",
+      "slug": "charu",
+      "status": "active",
+      "isActive": true
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "6a84b3577e36e8d57913730b",
+      "restaurantId": "6a84b3577e36e8d579137308",
+      "planId": "6a84b3577e36e8d579137305",
+      "status": "active",
+      "endDate": "2036-08-18T19:32:39.870Z"
+    },
+    {
+      "id": "6a84b7817e5101582fd266ef",
+      "restaurantId": "6a84b7807e5101582fd266eb",
+      "planId": "6a84b3577e36e8d5791372fe",
+      "status": "active",
+      "endDate": "2026-09-18T00:00:00.000Z"
+    }
+  ]
+}

@@ -5,63 +5,107 @@
   --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
   --font-serif: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   
-  /* Brand Maroon Palette (#691F1A) */
-  --color-maroon-50: #fdf4f3;
-  --color-maroon-100: #fae5e3;
-  --color-maroon-200: #f6cfcb;
-  --color-maroon-300: #efa8a1;
-  --color-maroon-400: #e4776e;
-  --color-maroon-500: #d44d42;
-  --color-maroon-600: #af3228;
-  --color-maroon-700: #691f1a; /* Core Brand Primary Maroon */
-  --color-maroon-800: #551915;
-  --color-maroon-900: #3c110d;
-  --color-maroon-950: #260907;
+  /* Core 4-Color Brand System */
+  --color-brand-primary: #83560e;
+  --color-brand-secondary: #989083;
+  --color-brand-accent: #cca96a;
+  --color-brand-dark: #080604;
 
-  /* Brand Saffron Amber Palette (#F8A324) */
-  --color-saffron-50: #fff9ee;
-  --color-saffron-100: #ffeed5;
-  --color-saffron-200: #ffd9aa;
-  --color-saffron-300: #ffbd73;
-  --color-saffron-400: #fb9c3b;
-  --color-saffron-500: #f8a324; /* Core Brand Secondary Saffron */
-  --color-saffron-600: #d97a10;
-  --color-saffron-700: #b4580e;
-  --color-saffron-800: #904313;
-  --color-saffron-900: #763813;
-  --color-saffron-950: #441b06;
+  /* Primary Ochre Gold Palette (#83560E) */
+  --color-primary-50: #fbf7ef;
+  --color-primary-100: #f5eedb;
+  --color-primary-200: #ecdbb6;
+  --color-primary-300: #dfc288;
+  --color-primary-400: #cca96a;
+  --color-primary-500: #a37119;
+  --color-primary-600: #83560e;
+  --color-primary-700: #83560e;
+  --color-primary-800: #68410d;
+  --color-primary-900: #080604;
+  --color-primary-950: #080604;
 
-  /* Legacy aliases mapped to new brand colors */
-  --color-gold-50: #fff9ee;
-  --color-gold-100: #ffeed5;
-  --color-gold-200: #ffd9aa;
-  --color-gold-300: #ffbd73;
-  --color-gold-400: #fb9c3b;
-  --color-gold-500: #f8a324;
-  --color-gold-600: #d97a10;
-  --color-gold-700: #b4580e;
-  --color-gold-800: #904313;
-  --color-gold-900: #763813;
+  /* Accent Highlight Gold Palette (#CCA96A) */
+  --color-accent-50: #fdfbf7;
+  --color-accent-100: #f9f5eb;
+  --color-accent-200: #f2e8d1;
+  --color-accent-300: #e6d5ad;
+  --color-accent-400: #daba82;
+  --color-accent-500: #cca96a;
+  --color-accent-600: #b58d4a;
+  --color-accent-700: #83560e;
+  --color-accent-800: #68410d;
+  --color-accent-900: #080604;
 
-  --color-charcoal-50: #fbf9f7;
-  --color-charcoal-100: #f3efe9;
-  --color-charcoal-500: #57463f;
-  --color-charcoal-800: #261614;
-  --color-charcoal-900: #1a0a09;
+  /* Neutral Taupe Gray Palette (#989083) */
+  --color-neutral-50: #f7f6f5;
+  --color-neutral-100: #eceae7;
+  --color-neutral-200: #dad6d1;
+  --color-neutral-300: #c2bdb6;
+  --color-neutral-400: #aba39b;
+  --color-neutral-500: #989083;
+  --color-neutral-600: #81786c;
+  --color-neutral-700: #6a6157;
+  --color-neutral-800: #574f47;
+  --color-neutral-900: #080604;
+  --color-neutral-950: #080604;
+
+  /* Legacy & Semantic Color System Mapping */
+  --color-maroon-50: #fbf7ef;
+  --color-maroon-100: #f5eedb;
+  --color-maroon-200: #ecdbb6;
+  --color-maroon-300: #dfc288;
+  --color-maroon-400: #cca96a;
+  --color-maroon-500: #a37119;
+  --color-maroon-600: #83560e;
+  --color-maroon-700: #83560e;
+  --color-maroon-800: #68410d;
+  --color-maroon-900: #080604;
+  --color-maroon-950: #080604;
+
+  --color-saffron-50: #fdfbf7;
+  --color-saffron-100: #f9f5eb;
+  --color-saffron-200: #f2e8d1;
+  --color-saffron-300: #e6d5ad;
+  --color-saffron-400: #cca96a;
+  --color-saffron-500: #cca96a;
+  --color-saffron-600: #83560e;
+  --color-saffron-700: #83560e;
+  --color-saffron-800: #68410d;
+  --color-saffron-900: #080604;
+  --color-saffron-950: #080604;
+
+  --color-gold-50: #fdfbf7;
+  --color-gold-100: #f9f5eb;
+  --color-gold-200: #f2e8d1;
+  --color-gold-300: #e6d5ad;
+  --color-gold-400: #cca96a;
+  --color-gold-500: #cca96a;
+  --color-gold-600: #83560e;
+  --color-gold-700: #83560e;
+  --color-gold-800: #68410d;
+  --color-gold-900: #080604;
+
+  --color-charcoal-50: #f7f6f5;
+  --color-charcoal-100: #eceae7;
+  --color-charcoal-500: #989083;
+  --color-charcoal-800: #574f47;
+  --color-charcoal-900: #080604;
+  --color-charcoal-950: #080604;
 }
 
 /* Custom Base Styles */
 html, body {
   font-family: var(--font-sans);
-  background-color: #3c110d;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #080604;
   scroll-behavior: smooth;
   margin: 0;
   padding: 0;
 }
 
 input, select, textarea {
-  color: #1f2937; /* Default dark text for input fields to prevent white-on-white text bleed */
+  color: #080604;
+  background-color: #ffffff;
 }
 
 /* Custom Scrollbar */
@@ -70,14 +114,14 @@ input, select, textarea {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: #f7f6f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #f8a324;
+  background: #cca96a;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d97a10;
+  background: #83560e;
 }
 
 /* Global Root Reset */
@@ -94,24 +138,24 @@ input, select, textarea {
 
 /* Brand Glassmorphism Classes */
 .glass-maroon {
-  background: rgba(105, 31, 26, 0.85);
+  background: rgba(131, 86, 14, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(248, 163, 36, 0.2);
+  border: 1px solid rgba(204, 169, 106, 0.25);
 }
 
 .glass-maroon-dark {
-  background: rgba(38, 9, 7, 0.85);
+  background: rgba(8, 6, 4, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(248, 163, 36, 0.15);
+  border: 1px solid rgba(204, 169, 106, 0.2);
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(249, 246, 240, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(248, 163, 36, 0.2);
+  border: 1px solid rgba(204, 169, 106, 0.3);
 }
 
 /* Animations */

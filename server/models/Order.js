@@ -5,11 +5,17 @@ const orderItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   quantity: { type: Number, required: true, min: 1 },
   price: { type: Number, required: true, min: 0 },
+  subtotal: { type: Number, default: 0 },
+  discount_percentage: { type: Number, default: 0 },
+  discount_type: { type: String, enum: ['NONE', 'BULK', 'SUBSCRIPTION'], default: 'NONE' },
+  discount_amount: { type: Number, default: 0 },
+  final_price: { type: Number, default: 0 },
   notes: { type: String, default: '' }
 }, { _id: true });
 
 const orderSchema = new mongoose.Schema({
-  order_number: { type: String, required: true, unique: true },
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
+  order_number: { type: String, required: true },
   table_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Table', default: null },
   table_snapshot: { type: String, default: 'Takeaway' },
   customer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', default: null },
@@ -49,16 +55,28 @@ const orderSchema = new mongoose.Schema({
   },
   payment_method: { 
     type: String, 
-    enum: ['counter', 'online', 'upi', 'card', 'cod'], 
+    enum: ['counter', 'online', 'upi', 'card', 'cod', 'subscription', 'mixed', 'wallet'], 
     default: 'upi' 
   },
   payment_utr: { type: String, default: '' },
+  subtotal: { type: Number, default: 0 },
+  discount: { type: Number, default: 0 },
+  discount_amount: { type: Number, default: 0 },
+  finalAmount: { type: Number, default: 0 },
   total_amount: { type: Number, required: true, min: 0 },
+  subscriptionId: { type: mongoose.Schema.Types.ObjectId, ref: 'CustomerSubscription', default: null },
+  subscriptionAmount: { type: Number, default: 0 },
+  normalPaymentAmount: { type: Number, default: 0 },
+  walletAmount: { type: Number, default: 0 },
   notes: { type: String, default: '' },
   items: [orderItemSchema],
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });
+
+orderSchema.index({ restaurantId: 1, order_number: 1 }, { unique: true });
+orderSchema.index({ restaurantId: 1, created_at: -1 });
+orderSchema.index({ restaurantId: 1, status: 1 });
 
 orderSchema.pre('save', function(next) {
   this.updated_at = new Date();

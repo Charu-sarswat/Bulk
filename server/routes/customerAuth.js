@@ -3,9 +3,10 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Customer = require('../models/Customer');
+const auth = require('../middleware/auth');
 
 // @route   POST /api/auth/customer/register
-// @desc    Register a new customer (phone is compulsory)
+// @desc    Register a new customer (global, not restaurant-scoped)
 router.post('/register', async (req, res) => {
   const { name, phone, email, password } = req.body;
 
@@ -14,15 +15,16 @@ router.post('/register', async (req, res) => {
   }
 
   // Validate phone format
-  const cleanPhone = phone.trim();
+  const cleanPhone = phone.trim().replace(/\D/g, '');
   if (cleanPhone.length < 10) {
     return res.status(400).json({ message: 'Please enter a valid 10-digit phone number' });
   }
 
   try {
+    // Global uniqueness check — phone is platform-wide
     const existing = await Customer.findOne({ phone: cleanPhone });
     if (existing) {
-      return res.status(400).json({ message: 'A customer account with this phone number already exists' });
+      return res.status(400).json({ message: 'This phone number is already registered. Please log in.' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -56,23 +58,28 @@ router.post('/register', async (req, res) => {
 });
 
 // @route   POST /api/auth/customer/login
-// @desc    Customer login via phone & password
+// @desc    Customer login via phone & password (global account)
 router.post('/login', async (req, res) => {
-  const { phone, password } = req.body;
+  // Accept `phone` or legacy `loginId` field
+  const phone = req.body.phone || req.body.loginId;
+  const { password } = req.body;
 
   if (!phone || !password) {
     return res.status(400).json({ message: 'Phone number and password are required' });
   }
 
+  const cleanPhone = phone.trim().replace(/\D/g, '');
+
   try {
-    const customer = await Customer.findOne({ phone: phone.trim() });
+    // Global lookup — not scoped to any restaurant
+    const customer = await Customer.findOne({ phone: cleanPhone });
     if (!customer) {
-      return res.status(400).json({ message: 'No customer found with this phone number' });
+      return res.status(400).json({ message: 'No account found with this phone number. Please register first.' });
     }
 
     const isMatch = await bcrypt.compare(password, customer.password_hash);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid password. Please try again.' });
     }
 
     const payload = { customer: { id: customer._id, name: customer.name, phone: customer.phone } };
@@ -107,6 +114,7 @@ const customerAuthMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_for_development');
     req.customer = decoded.customer;
+    req.restaurantId = decoded.customer.restaurantId;
     next();
   } catch (err) {
     res.status(401).json({ message: 'Token is not valid or has expired' });
@@ -135,16 +143,24 @@ router.get('/me', customerAuthMiddleware, async (req, res) => {
 });
 
 // @route   GET /api/auth/customer/orders
-// @desc    Get order history for current customer using customer phone matching
+// @desc    Get order history for current customer across all restaurants
 router.get('/orders', customerAuthMiddleware, async (req, res) => {
   try {
     const Order = require('../models/Order');
-    // Fetch orders placed by this customer's phone
-    const orders = await Order.find({ customer_phone: req.customer.phone }).sort({ created_at: -1 });
+    // Fetch all orders matching this customer's phone globally
+    const orders = await Order.find({ customer_phone: req.customer.phone })
+      .populate('restaurantId', 'name slug logo')
+      .sort({ created_at: -1 });
     
     const formatted = orders.map(o => ({
       id: o._id,
       order_number: o.order_number,
+      restaurant: o.restaurantId ? {
+        id: o.restaurantId._id,
+        name: o.restaurantId.name,
+        slug: o.restaurantId.slug,
+        logo: o.restaurantId.logo
+      } : null,
       table_id: o.table_id,
       table_number: o.table_snapshot || 'Takeaway',
       customer_id: o.customer_id,
@@ -170,9 +186,9 @@ router.get('/orders', customerAuthMiddleware, async (req, res) => {
 
 // @route   GET /api/auth/customer/all
 // @desc    Get all registered customers (Admin/Staff)
-router.get('/all', async (req, res) => {
+router.get('/all', auth, async (req, res) => {
   try {
-    const customers = await Customer.find().select('-password_hash').sort({ created_at: -1 });
+    const customers = await Customer.find({ restaurantId: req.user.restaurantId }).select('-password_hash').sort({ created_at: -1 });
     res.json(customers);
   } catch (err) {
     console.error('Get customers error:', err.message);

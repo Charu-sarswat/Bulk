@@ -31,9 +31,13 @@ export const AuthProvider = ({ children }) => {
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
+          if (userData.restaurantId) {
+            localStorage.setItem('restaurantId', userData.restaurantId);
+          }
         } else {
           // Token expired or invalid
           localStorage.removeItem('token');
+          localStorage.removeItem('restaurantId');
           setToken(null);
           setUser(null);
         }
@@ -67,6 +71,11 @@ export const AuthProvider = ({ children }) => {
       }
 
       localStorage.setItem('token', data.token);
+      if (data.user.restaurantId) {
+        localStorage.setItem('restaurantId', data.user.restaurantId);
+      } else if (data.user.role !== 'super_admin') {
+        localStorage.removeItem('restaurantId');
+      }
       setToken(data.token);
       setUser(data.user);
       return data.user;
@@ -79,6 +88,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('restaurantId');
     setToken(null);
     setUser(null);
   };

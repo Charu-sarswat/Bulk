@@ -37,21 +37,38 @@ export const CustomerUIProvider = ({ children }) => {
 
     const fullNotes = noteParts.join(' | ');
 
+    // Enforce that cart belongs to only one restaurant at a time
+    if (cart.length > 0) {
+      const activeRestaurantId = cart[0].restaurantId;
+      if (activeRestaurantId && item.restaurantId && activeRestaurantId !== item.restaurantId) {
+        const confirmSwitch = window.confirm("Your cart contains items from another restaurant. Clear your cart and continue?");
+        if (confirmSwitch) {
+          // Clear cart synchronously by passing updater function or emptying array directly
+          setCart([]);
+        } else {
+          return;
+        }
+      }
+    }
+
     setCart(prev => {
-      const existingIndex = prev.findIndex(c => c.menu_item_id === item.id && c.notes === fullNotes);
+      // If cleared, prev is empty
+      const currentCart = prev.length > 0 && prev[0].restaurantId !== item.restaurantId ? [] : prev;
+      const existingIndex = currentCart.findIndex(c => c.menu_item_id === item.id && c.notes === fullNotes);
       if (existingIndex > -1) {
-        const updated = [...prev];
+        const updated = [...currentCart];
         updated[existingIndex].quantity += quantity;
         return updated;
       }
-      return [...prev, {
+      return [...currentCart, {
         menu_item_id: item.id,
         id: item.id,
         name: item.name,
         price: finalPrice,
         quantity,
         notes: fullNotes,
-        image_url: item.image_url
+        image_url: item.image_url,
+        restaurantId: item.restaurantId
       }];
     });
 

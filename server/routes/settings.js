@@ -4,10 +4,13 @@ const Setting = require('../models/Setting');
 const auth = require('../middleware/auth');
 
 // @route   GET /api/settings
-// @desc    Get all settings
+// @desc    Get all settings for current restaurant
 router.get('/', async (req, res) => {
   try {
-    const settings = await Setting.find();
+    if (!req.restaurantId) {
+      return res.status(400).json({ message: 'Restaurant ID is required' });
+    }
+    const settings = await Setting.find({ restaurantId: req.restaurantId });
     // Format as a simple key-value object for easy use
     const config = {};
     settings.forEach(s => {
@@ -22,6 +25,15 @@ router.get('/', async (req, res) => {
     if (config.store_opening_time === undefined) config.store_opening_time = '11:30';
     if (config.store_closing_time === undefined) config.store_closing_time = '23:30';
     if (config.store_closed_message === undefined) config.store_closed_message = 'We are currently closed for orders. Please visit during operating hours!';
+    if (config.upi_id === undefined) config.upi_id = '';
+    if (config.upi_name === undefined) config.upi_name = '';
+    if (config.upi_qr_url === undefined) config.upi_qr_url = '';
+    if (config.is_payment_enabled === undefined) config.is_payment_enabled = true;
+
+    // Dev override: Force is_store_open to true if RESTAURANT_ALWAYS_OPEN=true is configured
+    if (process.env.RESTAURANT_ALWAYS_OPEN === 'true') {
+      config.is_store_open = true;
+    }
 
     res.json(config);
   } catch (err) {
@@ -37,7 +49,7 @@ router.post('/', auth, async (req, res) => {
     const updates = req.body;
     for (const [key, value] of Object.entries(updates)) {
       await Setting.findOneAndUpdate(
-        { key },
+        { key, restaurantId: req.restaurantId },
         { value },
         { upsert: true, new: true }
       );

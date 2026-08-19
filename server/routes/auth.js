@@ -30,7 +30,8 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        role: user.role
+        role: user.role,
+        restaurantId: user.restaurantId
       }
     };
 
@@ -45,7 +46,8 @@ router.post('/login', async (req, res) => {
           user: {
             id: user._id,
             username: user.username,
-            role: user.role
+            role: user.role,
+            restaurantId: user.restaurantId
           }
         });
       }
@@ -65,10 +67,25 @@ router.get('/me', auth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    let restaurant = null;
+    let subscription = null;
+
+    if (user.restaurantId) {
+      const Restaurant = require('../models/Restaurant');
+      const Subscription = require('../models/Subscription');
+
+      restaurant = await Restaurant.findById(user.restaurantId);
+      subscription = await Subscription.findOne({ restaurantId: user.restaurantId, status: 'active' });
+    }
+
     res.json({
       id: user._id,
       username: user.username,
       role: user.role,
+      restaurantId: user.restaurantId,
+      restaurant,
+      subscription,
       created_at: user.created_at
     });
   } catch (err) {
@@ -84,7 +101,7 @@ router.get('/users', auth, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied: Admin only' });
     }
-    const users = await User.find().select('-password_hash').sort({ created_at: -1 });
+    const users = await User.find({ restaurantId: req.user.restaurantId }).select('-password_hash').sort({ created_at: -1 });
     const formatted = users.map(u => ({
       id: u._id,
       username: u.username,
@@ -111,6 +128,18 @@ router.post(['/users', '/register'], auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied: Admin only' });
     }
 
+    // Limit check for staff
+    const currentStaffCount = await User.countDocuments({ restaurantId: req.user.restaurantId });
+    const Subscription = require('../models/Subscription');
+    const SubscriptionPlan = require('../models/SubscriptionPlan');
+    const sub = await Subscription.findOne({ restaurantId: req.user.restaurantId, status: 'active' });
+    if (sub) {
+      const plan = await SubscriptionPlan.findById(sub.planId);
+      if (plan && plan.maxStaff !== -1 && currentStaffCount >= plan.maxStaff) {
+        return res.status(400).json({ message: `Your current subscription allows a maximum of ${plan.maxStaff} staff members. Upgrade your plan to add more.` });
+      }
+    }
+
     const existing = await User.findOne({ username: username.trim() });
     if (existing) {
       return res.status(400).json({ message: 'Username is already taken' });
@@ -120,6 +149,7 @@ router.post(['/users', '/register'], auth, async (req, res) => {
     const password_hash = await bcrypt.hash(password, salt);
 
     const newUser = new User({
+      restaurantId: req.user.restaurantId,
       username: username.trim(),
       password_hash,
       role
@@ -153,10 +183,10 @@ router.delete('/users/:id', auth, async (req, res) => {
       return res.status(400).json({ message: 'Self deletion is not allowed' });
     }
 
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({ _id: req.params.id, restaurantId: req.user.restaurantId });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    await User.findByIdAndDelete(req.params.id);
+    await User.findOneAndDelete({ _id: req.params.id, restaurantId: req.user.restaurantId });
     res.json({ message: 'User deleted successfully' });
   } catch (err) {
     console.error('Delete user error:', err.message);
@@ -178,7 +208,7 @@ router.put('/users/:id/password', auth, async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters long' });
     }
 
-    const userObj = await User.findById(req.params.id);
+    const userObj = await User.findOne({ _id: req.params.id, restaurantId: req.user.restaurantId });
     if (!userObj) return res.status(404).json({ message: 'User not found' });
 
     const salt = await bcrypt.genSalt(10);
@@ -206,7 +236,7 @@ router.put('/users/:id', auth, async (req, res) => {
       return res.status(400).json({ message: 'Username is required' });
     }
 
-    const userObj = await User.findById(req.params.id);
+    const userObj = await User.findOne({ _id: req.params.id, restaurantId: req.user.restaurantId });
     if (!userObj) return res.status(404).json({ message: 'User not found' });
 
     // Prevent role changes of self if it is the current logged in user (safety check)

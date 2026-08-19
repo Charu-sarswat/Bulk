@@ -9,7 +9,7 @@ const authorizeRoles = require('../middleware/role');
 // @desc    Get inventory items with stock levels
 router.get('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const items = await MenuItem.find().populate('category_id', 'name').sort({ name: 1 });
+    const items = await MenuItem.find({ restaurantId: req.restaurantId }).populate('category_id', 'name').sort({ name: 1 });
     const formatted = items.map(i => ({
       id: i._id,
       name: i.name,
@@ -39,8 +39,8 @@ router.post('/update', auth, authorizeRoles('admin', 'staff'), async (req, res) 
   }
 
   try {
-    const item = await MenuItem.findById(menu_item_id);
-    if (!item) return res.status(404).json({ message: 'Menu item not found' });
+    const item = await MenuItem.findOne({ _id: menu_item_id, restaurantId: req.restaurantId });
+    if (!item) return res.status(404).json({ message: 'Menu item not found or unauthorized' });
 
     const prevStock = item.stock_quantity;
     let newStock = prevStock;
@@ -60,6 +60,7 @@ router.post('/update', auth, authorizeRoles('admin', 'staff'), async (req, res) 
     await item.save();
 
     const log = new InventoryLog({
+      restaurantId: req.restaurantId,
       menu_item_id,
       change_type,
       quantity_change: Number(quantity_change),
@@ -85,7 +86,7 @@ router.post('/update', auth, authorizeRoles('admin', 'staff'), async (req, res) 
 // @desc    Get audit trail logs
 router.get('/logs', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const logs = await InventoryLog.find({ raw_material_id: { $ne: null } })
+    const logs = await InventoryLog.find({ restaurantId: req.restaurantId, raw_material_id: { $ne: null } })
       .populate('raw_material_id', 'name')
       .sort({ created_at: -1 })
       .limit(100);
@@ -112,7 +113,7 @@ router.get('/logs', auth, authorizeRoles('admin', 'staff'), async (req, res) => 
 // @desc    Get complete inventory summary statistics and lists (Dashboard-style API wrapper)
 router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const items = await MenuItem.find().populate('category_id', 'name').sort({ name: 1 });
+    const items = await MenuItem.find({ restaurantId: req.restaurantId }).populate('category_id', 'name').sort({ name: 1 });
     const formattedItems = items.map(i => {
       let stockStatus = 'IN_STOCK';
       if (i.is_unlimited_stock) {
@@ -164,7 +165,7 @@ router.get('/', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
 // @desc    Get audit trail history for specific menu item
 router.get('/items/:itemId/logs', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const logs = await InventoryLog.find({ menu_item_id: req.params.itemId }).sort({ created_at: -1 }).limit(50);
+    const logs = await InventoryLog.find({ menu_item_id: req.params.itemId, restaurantId: req.restaurantId }).sort({ created_at: -1 }).limit(50);
     const formatted = logs.map(l => ({
       id: l._id,
       change_type: l.change_type,
@@ -187,8 +188,8 @@ router.get('/items/:itemId/logs', auth, authorizeRoles('admin', 'staff'), async 
 router.put('/:itemId/stock', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   const { change_type, quantity, reason, min_stock_level } = req.body;
   try {
-    const item = await MenuItem.findById(req.params.itemId);
-    if (!item) return res.status(404).json({ message: 'Item not found' });
+    const item = await MenuItem.findOne({ _id: req.params.itemId, restaurantId: req.restaurantId });
+    if (!item) return res.status(404).json({ message: 'Item not found or unauthorized' });
 
     const prevStock = item.stock_quantity;
     let newStock = prevStock;
@@ -213,6 +214,7 @@ router.put('/:itemId/stock', auth, authorizeRoles('admin', 'staff'), async (req,
 
     // Log this change
     const log = new InventoryLog({
+      restaurantId: req.restaurantId,
       menu_item_id: item._id,
       change_type: change_type || 'STOCK_SET',
       quantity_change: Number(quantity),

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Truck, Sparkles, Settings as SettingsIcon, AlertCircle, Shield } from 'lucide-react';
+import { Save, Truck, Sparkles, Settings as SettingsIcon, AlertCircle, Shield, QrCode } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import PageHeader from '../components/PageHeader';
@@ -18,6 +18,13 @@ export default function Settings() {
   const [storeOpeningTime, setStoreOpeningTime] = useState('11:30');
   const [storeClosingTime, setStoreClosingTime] = useState('23:30');
   const [storeClosedMessage, setStoreClosedMessage] = useState('We are currently closed for orders. Please visit during regular hours (11:30 AM - 11:30 PM)!');
+  
+  // UPI Payment Settings
+  const [upiId, setUpiId] = useState('');
+  const [upiName, setUpiName] = useState('');
+  const [upiQrUrl, setUpiQrUrl] = useState('');
+  const [isPaymentEnabled, setIsPaymentEnabled] = useState(true);
+
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -36,6 +43,10 @@ export default function Settings() {
           if (data.store_opening_time !== undefined) setStoreOpeningTime(data.store_opening_time);
           if (data.store_closing_time !== undefined) setStoreClosingTime(data.store_closing_time);
           if (data.store_closed_message !== undefined) setStoreClosedMessage(data.store_closed_message);
+          if (data.upi_id !== undefined) setUpiId(data.upi_id);
+          if (data.upi_name !== undefined) setUpiName(data.upi_name);
+          if (data.upi_qr_url !== undefined) setUpiQrUrl(data.upi_qr_url);
+          if (data.is_payment_enabled !== undefined) setIsPaymentEnabled(Boolean(data.is_payment_enabled));
         }
       } catch (err) {
         console.error('Failed to load settings:', err);
@@ -66,7 +77,11 @@ export default function Settings() {
           is_store_open: isStoreOpen,
           store_opening_time: storeOpeningTime,
           store_closing_time: storeClosingTime,
-          store_closed_message: storeClosedMessage
+          store_closed_message: storeClosedMessage,
+          upi_id: upiId.trim(),
+          upi_name: upiName.trim(),
+          upi_qr_url: upiQrUrl.trim(),
+          is_payment_enabled: isPaymentEnabled
         })
       });
 
@@ -285,7 +300,84 @@ export default function Settings() {
                 className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>Update Store Status</span>
+                <span>Save All Settings</span>
+              </button>
+            </div>
+          </div>
+
+          {/* UPI & Mess Payment QR Settings */}
+          <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2">
+                <QrCode className="w-5 h-5 text-[#F8A324]" />
+                <div>
+                  <h3 className="font-extrabold text-xs text-gray-800 uppercase tracking-wider">UPI / QR Payment Settings</h3>
+                  <p className="text-[11px] text-gray-400 font-medium">Configure this Mess's UPI ID & QR Code for customer wallet top-ups.</p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPaymentEnabled}
+                  onChange={(e) => setIsPaymentEnabled(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
+                  Mess UPI ID (VPA) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={upiId}
+                  onChange={(e) => setUpiId(e.target.value)}
+                  placeholder="e.g. bombaychowpati@upi or 9876543210@paytm"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                />
+                <span className="text-[10px] text-gray-400 block font-medium">Customers will be asked to pay to this UPI ID.</span>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
+                  UPI Payee Name
+                </label>
+                <input
+                  type="text"
+                  value={upiName}
+                  onChange={(e) => setUpiName(e.target.value)}
+                  placeholder="e.g. Bombay Chowpati Food Mess"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all"
+                />
+                <span className="text-[10px] text-gray-400 block font-medium">Business / Account Name shown on UPI payment apps.</span>
+              </div>
+
+              <div className="md:col-span-2 space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
+                  QR Code Image URL (Optional / Cloudinary)
+                </label>
+                <input
+                  type="url"
+                  value={upiQrUrl}
+                  onChange={(e) => setUpiQrUrl(e.target.value)}
+                  placeholder="https://res.cloudinary.com/... or uploaded QR link"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                />
+                <span className="text-[10px] text-gray-400 block font-medium">If provided, this QR image will be displayed for customers to scan. If left empty, a dynamic UPI QR will be auto-rendered.</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="submit"
+                disabled={saving}
+                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>Save Payment Settings</span>
               </button>
             </div>
           </div>

@@ -7,8 +7,8 @@ const Setting = require('../models/Setting');
 const auth = require('../middleware/auth');
 const authorizeRoles = require('../middleware/role');
 
-// Helper to generate readable order numbers (e.g. ORD-20260731-001)
-const generateOrderNumber = async () => {
+// Helper to generate readable order numbers (e.g. ORD-20260731-001) per restaurant
+const generateOrderNumber = async (restaurantId) => {
   const now = new Date();
   const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
   const formatter = new Intl.DateTimeFormat('en-IN', options);
@@ -23,12 +23,24 @@ const generateOrderNumber = async () => {
   
   const dateStr = `${year}${month}${day}`;
 
-  // Count existing orders placed today matching prefix ORD-YYYYMMDD-
-  const todayCount = await Order.countDocuments({
+  // Find the highest sequence number order placed today for this restaurant
+  const latestOrder = await Order.findOne({
+    restaurantId,
     order_number: { $regex: `^ORD-${dateStr}-` }
-  });
+  }).sort({ order_number: -1 });
 
-  const seqNumber = String(todayCount + 1).padStart(3, '0');
+  let nextSeq = 1;
+  if (latestOrder && latestOrder.order_number) {
+    const parts = latestOrder.order_number.split('-');
+    if (parts.length >= 3) {
+      const parsedSeq = parseInt(parts[2], 10);
+      if (!isNaN(parsedSeq)) {
+        nextSeq = parsedSeq + 1;
+      }
+    }
+  }
+
+  const seqNumber = String(nextSeq).padStart(3, '0');
   return `ORD-${dateStr}-${seqNumber}`;
 };
 
@@ -77,7 +89,8 @@ router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen
     }
 
     // Fetch current period orders
-    const filter = { created_at: { $gte: startDate } };
+    // Initialize filters by restaurantId
+    const filter = { restaurantId: req.restaurantId, created_at: { $gte: startDate } };
     if (period === 'yesterday') {
       const yesterdayEnd = new Date();
       yesterdayEnd.setDate(yesterdayEnd.getDate() - 1);
@@ -90,6 +103,7 @@ router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen
     let prevOrders = [];
     if (period !== 'all') {
       prevOrders = await Order.find({
+        restaurantId: req.restaurantId,
         created_at: { $gte: prevStartDate, $lte: prevEndDate }
       });
     }
@@ -377,12 +391,16 @@ router.get('/:id', async (req, res) => {
   try {
     let o = null;
     const mongoose = require('mongoose');
+    const lookupFilter = {};
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-      o = await Order.findById(req.params.id);
+      lookupFilter._id = req.params.id;
+    } else {
+      lookupFilter.order_number = req.params.id;
     }
-    if (!o) {
-      o = await Order.findOne({ order_number: req.params.id });
+    if (req.restaurantId) {
+      lookupFilter.restaurantId = req.restaurantId;
     }
+    o = await Order.findOne(lookupFilter);
     if (!o) return res.status(404).json({ message: 'Order not found' });
 
     res.json({
@@ -436,65 +454,71 @@ router.post('/', async (req, res) => {
 
   // Check Store Open/Closed & Operating Hours Restriction (for non-admin orders)
   if (!admin_created) {
-    // 1. Home Delivery Enabled Check
-    if (order_channel === 'delivery') {
-      const deliveryStatusSetting = await Setting.findOne({ key: 'is_delivery_enabled' });
-      const deliveryDisabledNotice = await Setting.findOne({ key: 'delivery_disabled_notice' });
-      if (deliveryStatusSetting && (deliveryStatusSetting.value === false || deliveryStatusSetting.value === 'false')) {
-        const msg = (deliveryDisabledNotice && deliveryDisabledNotice.value) || 'Home Delivery is temporarily paused. Please choose Takeaway or Dine-In.';
-        return res.status(403).json({ message: msg, delivery_disabled: true });
-      }
-    }
-
-    const storeStatusSetting = await Setting.findOne({ key: 'is_store_open' });
-    const storeClosedMsgSetting = await Setting.findOne({ key: 'store_closed_message' });
-    const storeOpenTimeSetting = await Setting.findOne({ key: 'store_opening_time' });
-    const storeCloseTimeSetting = await Setting.findOne({ key: 'store_closing_time' });
-
-    if (storeStatusSetting && (storeStatusSetting.value === false || storeStatusSetting.value === 'false')) {
-      const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 'We are currently closed for orders. Please check back later!';
-      return res.status(403).json({ message: closedMsg, store_closed: true });
-    }
-
-    const openTimeStr = (storeOpenTimeSetting && storeOpenTimeSetting.value) || '11:30';
-    const closeTimeStr = (storeCloseTimeSetting && storeCloseTimeSetting.value) || '23:30';
-
-    const [openH, openM] = openTimeStr.split(':').map(Number);
-    const [closeH, closeM] = closeTimeStr.split(':').map(Number);
-    const openMinutes = (openH * 60) + openM;
-    const closeMinutes = (closeH * 60) + closeM;
-
-    if (scheduled_time) {
-      // Validate scheduled date/time falls within operating hours
-      const schedDate = new Date(scheduled_time);
-      const schedTimeStr = schedDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
-      const [sH, sM] = schedTimeStr.split(':').map(Number);
-      const schedMinutes = (sH * 60) + sM;
-
-      const isWithinHours = closeMinutes > openMinutes
-        ? (schedMinutes >= openMinutes && schedMinutes <= closeMinutes)
-        : (schedMinutes >= openMinutes || schedMinutes <= closeMinutes);
-
-      if (!isWithinHours) {
-        return res.status(400).json({ 
-          message: `Scheduled time (${schedTimeStr}) must be between operating hours (${openTimeStr} to ${closeTimeStr}).` 
-        });
-      }
+    if (process.env.RESTAURANT_ALWAYS_OPEN === 'true') {
+      // Dev override: Bypass all store closed & operating hours checks
     } else {
-      // Immediate order: validate current IST time falls within operating hours
-      const nowIST = new Date();
-      const currentISTTimeStr = nowIST.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
-      const [curH, curM] = currentISTTimeStr.split(':').map(Number);
-      const currentMinutes = (curH * 60) + curM;
+      const queryFilter = req.restaurantId ? { restaurantId: req.restaurantId } : {};
+      
+      // 1. Home Delivery Enabled Check
+      if (order_channel === 'delivery') {
+        const deliveryStatusSetting = await Setting.findOne({ key: 'is_delivery_enabled', ...queryFilter });
+        const deliveryDisabledNotice = await Setting.findOne({ key: 'delivery_disabled_notice', ...queryFilter });
+        if (deliveryStatusSetting && (deliveryStatusSetting.value === false || deliveryStatusSetting.value === 'false')) {
+          const msg = (deliveryDisabledNotice && deliveryDisabledNotice.value) || 'Home Delivery is temporarily paused. Please choose Takeaway or Dine-In.';
+          return res.status(403).json({ message: msg, delivery_disabled: true });
+        }
+      }
 
-      const isWithinHours = closeMinutes > openMinutes
-        ? (currentMinutes >= openMinutes && currentMinutes <= closeMinutes)
-        : (currentMinutes >= openMinutes || currentMinutes <= closeMinutes);
+      const storeStatusSetting = await Setting.findOne({ key: 'is_store_open', ...queryFilter });
+      const storeClosedMsgSetting = await Setting.findOne({ key: 'store_closed_message', ...queryFilter });
+      const storeOpenTimeSetting = await Setting.findOne({ key: 'store_opening_time', ...queryFilter });
+      const storeCloseTimeSetting = await Setting.findOne({ key: 'store_closing_time', ...queryFilter });
 
-      if (!isWithinHours) {
-        const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 
-          `We are currently closed. Our ordering hours are ${openTimeStr} to ${closeTimeStr}. You may schedule an order for later!`;
+      if (storeStatusSetting && (storeStatusSetting.value === false || storeStatusSetting.value === 'false')) {
+        const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 'We are currently closed for orders. Please check back later!';
         return res.status(403).json({ message: closedMsg, store_closed: true });
+      }
+
+      const openTimeStr = (storeOpenTimeSetting && storeOpenTimeSetting.value) || '11:30';
+      const closeTimeStr = (storeCloseTimeSetting && storeCloseTimeSetting.value) || '23:30';
+
+      const [openH, openM] = openTimeStr.split(':').map(Number);
+      const [closeH, closeM] = closeTimeStr.split(':').map(Number);
+      const openMinutes = (openH * 60) + openM;
+      const closeMinutes = (closeH * 60) + closeM;
+
+      if (scheduled_time) {
+        // Validate scheduled date/time falls within operating hours
+        const schedDate = new Date(scheduled_time);
+        const schedTimeStr = schedDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
+        const [sH, sM] = schedTimeStr.split(':').map(Number);
+        const schedMinutes = (sH * 60) + sM;
+
+        const isWithinHours = closeMinutes > openMinutes
+          ? (schedMinutes >= openMinutes && schedMinutes <= closeMinutes)
+          : (schedMinutes >= openMinutes || schedMinutes <= closeMinutes);
+
+        if (!isWithinHours) {
+          return res.status(400).json({ 
+            message: `Scheduled time (${schedTimeStr}) must be between operating hours (${openTimeStr} to ${closeTimeStr}).` 
+          });
+        }
+      } else {
+        // Immediate order: validate current IST time falls within operating hours
+        const nowIST = new Date();
+        const currentISTTimeStr = nowIST.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' });
+        const [curH, curM] = currentISTTimeStr.split(':').map(Number);
+        const currentMinutes = (curH * 60) + curM;
+
+        const isWithinHours = closeMinutes > openMinutes
+          ? (currentMinutes >= openMinutes && currentMinutes <= closeMinutes)
+          : (currentMinutes >= openMinutes || currentMinutes <= closeMinutes);
+
+        if (!isWithinHours) {
+          const closedMsg = (storeClosedMsgSetting && storeClosedMsgSetting.value) || 
+            `We are currently closed. Our ordering hours are ${openTimeStr} to ${closeTimeStr}. You may schedule an order for later!`;
+          return res.status(403).json({ message: closedMsg, store_closed: true });
+        }
       }
     }
   }
@@ -538,75 +562,81 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const order_number = await generateOrderNumber();
-    let total_amount = 0;
+    const activeRestaurantId = req.restaurantId || req.body.restaurantId;
+    const CustomerSubscription = require('../models/CustomerSubscription');
+    const SubscriptionUsage = require('../models/SubscriptionUsage');
+    const Wallet = require('../models/Wallet');
+    const WalletTransaction = require('../models/WalletTransaction');
+    const ItemDiscountRule = require('../models/ItemDiscountRule');
+
+    let activeSub = null;
+    let customerWallet = null;
+    let hasActiveSubscription = false;
+
+    if (customer_id) {
+      // Find ACTIVE Platform Subscription for customer (works across ALL restaurants)
+      activeSub = await CustomerSubscription.findOne({
+        customerId: customer_id,
+        status: 'ACTIVE',
+        endDate: { $gte: new Date() },
+        remainingBalance: { $gt: 0 }
+      });
+      if (activeSub) hasActiveSubscription = true;
+      customerWallet = await Wallet.findOne({ customerId: customer_id });
+    }
+
+    if (req.body.useSubscription) {
+      if (!activeSub) {
+        return res.status(400).json({ message: 'No active platform subscription found.' });
+      }
+
+      // Check dates
+      const now = new Date();
+      if (now < new Date(activeSub.startDate) || now > new Date(activeSub.endDate)) {
+        return res.status(400).json({ message: 'Subscription has expired or is outside validity dates.' });
+      }
+
+      const availableBal = activeSub.remainingBalance !== undefined ? activeSub.remainingBalance : (activeSub.initialBalance || 0);
+
+      // Check prepaid balance
+      if (availableBal <= 0) {
+        return res.status(400).json({ message: 'Your platform subscription prepaid balance is exhausted (₹0 remaining).' });
+      }
+    }
+
+    const order_number = await generateOrderNumber(activeRestaurantId);
+    let orderSubtotal = 0;
+    let orderDiscount = 0;
     const orderItems = [];
 
     for (const item of items) {
       let itemPrice = Number(item.price);
       let itemName = item.name;
+      let rule = null;
 
       if (item.menu_item_id) {
-        const menuItem = await MenuItem.findById(item.menu_item_id);
-        if (menuItem) {
-          itemName = menuItem.name;
-          // Apply pricing tier based on channel
-          if (order_channel === 'delivery' && menuItem.delivery_price > 0) {
-            itemPrice = menuItem.delivery_price;
-          } else {
-            itemPrice = menuItem.price;
+        const dbItem = await MenuItem.findOne({ _id: item.menu_item_id, restaurantId: activeRestaurantId });
+        if (dbItem) {
+          if (!dbItem.is_available) {
+            return res.status(400).json({ message: `Item "${dbItem.name}" is currently sold out.` });
           }
+          itemPrice = Number(dbItem.price);
+          itemName = dbItem.name;
+          rule = await ItemDiscountRule.findOne({ menuItemId: dbItem._id, isActive: true });
 
-          // Deduct stock quantity automatically only if not unlimited stock
-          if (!menuItem.is_unlimited_stock) {
-            const prevStock = menuItem.stock_quantity;
-            const newStock = Math.max(0, prevStock - item.quantity);
-            menuItem.stock_quantity = newStock;
-            if (menuItem.auto_out_of_stock && newStock === 0) {
-              menuItem.is_available = false;
-            }
-            await menuItem.save();
-
-            // Log inventory audit
-            await InventoryLog.create({
-              menu_item_id: menuItem._id,
-              change_type: 'ORDER_DEDUCT',
-              quantity_change: -item.quantity,
-              previous_stock: prevStock,
-              new_stock: newStock,
-              reason: `Auto deduction for new order`,
-              recorded_by: customer_name || 'System'
-            });
-          }
-
-          // Process raw materials recipe deduction
-          if (menuItem.recipe && menuItem.recipe.length > 0) {
-            const RawMaterial = require('../models/RawMaterial');
-            for (const ingredient of menuItem.recipe) {
-              if (ingredient.raw_material_id) {
-                const rawMat = await RawMaterial.findById(ingredient.raw_material_id);
+          // Auto inventory deduction logic based on recipe
+          if (dbItem.recipe && dbItem.recipe.length > 0) {
+            for (const r of dbItem.recipe) {
+              if (r.raw_material_id) {
+                const rawMat = await RawMaterial.findOne({ _id: r.raw_material_id, restaurantId: activeRestaurantId });
                 if (rawMat) {
-                  const requiredQty = Number(ingredient.quantity_required) * Number(item.quantity);
-                  const prevRawStock = rawMat.stock_quantity;
-                  const newRawStock = Math.max(0, prevRawStock - requiredQty);
-                  
-                  rawMat.stock_quantity = newRawStock;
+                  const requiredQty = Number(r.quantity) * Number(item.quantity);
+                  rawMat.current_stock = Math.max(0, rawMat.current_stock - requiredQty);
                   await rawMat.save();
-                  
-                  // Log raw material inventory audit
-                  await InventoryLog.create({
-                    raw_material_id: rawMat._id,
-                    change_type: 'ORDER_DEDUCT',
-                    quantity_change: -requiredQty,
-                    previous_stock: prevRawStock,
-                    new_stock: newRawStock,
-                    reason: `Auto deduction for Order #${order_number}`,
-                    recorded_by: customer_name || 'System'
-                  });
 
-                  // If this raw material ran out, auto mark any linked menu items as Sold Out
-                  if (newRawStock === 0) {
+                  if (rawMat.current_stock <= 0) {
                     const linkedItems = await MenuItem.find({ 
+                      restaurantId: activeRestaurantId,
                       'recipe.raw_material_id': rawMat._id 
                     });
                     for (const lItem of linkedItems) {
@@ -623,17 +653,57 @@ router.post('/', async (req, res) => {
         }
       }
 
-      const lineTotal = itemPrice * Number(item.quantity);
-      total_amount += lineTotal;
+      const itemQty = Math.max(1, parseInt(item.quantity, 10) || 1);
+      const itemSubtotal = Math.round((itemPrice * itemQty) * 100) / 100;
+      orderSubtotal += itemSubtotal;
+
+      // ─── NO-STACKING DISCOUNT ENGINE ───────────────────────────────────────
+      let bulkPercent = 0;
+      let subPercent = 0;
+
+      if (rule) {
+        // Bulk discount applies ONLY when MenuItem quantity reaches Super Admin's bulk threshold
+        if (rule.bulkMinQuantity > 0 && itemQty >= rule.bulkMinQuantity && rule.bulkDiscountPercentage > 0) {
+          bulkPercent = rule.bulkDiscountPercentage;
+        }
+        // Subscription discount applies ONLY when customer has active subscription AND selects "Use Platform Subscription Balance"
+        if (req.body.useSubscription && hasActiveSubscription && rule.subscriptionDiscountPercentage > 0) {
+          subPercent = rule.subscriptionDiscountPercentage;
+        }
+      }
+
+      let effectivePercent = 0;
+      let discountType = 'NONE';
+
+      if (subPercent > 0 && subPercent >= bulkPercent) {
+        effectivePercent = subPercent;
+        discountType = 'SUBSCRIPTION';
+      } else if (bulkPercent > 0) {
+        effectivePercent = bulkPercent;
+        discountType = 'BULK';
+      }
+
+      const itemDiscount = Math.round((itemSubtotal * (effectivePercent / 100)) * 100) / 100;
+      const itemFinal = Math.round((itemSubtotal - itemDiscount) * 100) / 100;
+      orderDiscount += itemDiscount;
 
       orderItems.push({
         menu_item_id: item.menu_item_id || null,
         name: itemName,
-        quantity: Number(item.quantity),
+        quantity: itemQty,
         price: itemPrice,
+        subtotal: itemSubtotal,
+        discount_percentage: effectivePercent,
+        discount_type: discountType,
+        discount_amount: itemDiscount,
+        final_price: itemFinal,
         notes: item.notes || ''
       });
     }
+
+    orderSubtotal = Math.round(orderSubtotal * 100) / 100;
+    orderDiscount = Math.round(orderDiscount * 100) / 100;
+    let finalAmount = Math.max(0, Math.round((orderSubtotal - orderDiscount) * 100) / 100);
 
     if (order_channel === 'delivery') {
       const deliveryFeeSetting = await Setting.findOne({ key: 'delivery_fee' });
@@ -642,14 +712,63 @@ router.post('/', async (req, res) => {
       const deliveryFee = deliveryFeeSetting ? Number(deliveryFeeSetting.value) : 45;
       const freeDeliveryThreshold = thresholdSetting ? Number(thresholdSetting.value) : 399;
 
-      if (total_amount < freeDeliveryThreshold) {
-        total_amount += deliveryFee;
+      if (finalAmount < freeDeliveryThreshold) {
+        finalAmount += deliveryFee;
       }
+    }
+
+    const total_amount = finalAmount;
+
+    let subscriptionAmount = 0;
+    let normalPaymentAmount = 0;
+    let walletAmount = 0;
+    let finalPaymentMethod = payment_method || 'upi';
+    let finalPaymentStatus = req.body.payment_status || 'pending';
+
+    const subBalance = activeSub ? Math.max(0, (activeSub.remainingBalance !== undefined ? activeSub.remainingBalance : (activeSub.initialBalance || 0))) : 0;
+
+    if (req.body.useSubscription && activeSub && subBalance > 0) {
+      // Tier 1: Deduct available amount from Subscription (never negative)
+      subscriptionAmount = Math.min(total_amount, subBalance);
+      const remainingAfterSub = Math.max(0, Math.round((total_amount - subscriptionAmount) * 100) / 100);
+
+      // Tier 2: Deduct remaining available amount from Customer Wallet (never negative)
+      const walletBal = customerWallet ? Math.max(0, customerWallet.balance || 0) : 0;
+      walletAmount = Math.min(remainingAfterSub, walletBal);
+
+      // Tier 3: Collect the rest via UPI / payment gateway
+      const remainingAfterWallet = Math.max(0, Math.round((remainingAfterSub - walletAmount) * 100) / 100);
+      normalPaymentAmount = remainingAfterWallet;
+
+      if (normalPaymentAmount === 0) {
+        // Fully paid via Subscription + Wallet
+        finalPaymentMethod = (walletAmount > 0 && subscriptionAmount > 0) ? 'mixed' : (subscriptionAmount > 0 ? 'subscription' : 'wallet');
+        finalPaymentStatus = 'paid';
+      } else {
+        // Remaining collected via UPI or chosen method
+        finalPaymentMethod = (subscriptionAmount > 0 || walletAmount > 0) ? 'mixed' : (payment_method || 'upi');
+        finalPaymentStatus = req.body.payment_status || (payment_utr ? 'paid' : 'pending');
+      }
+    } else if ((payment_method === 'wallet' || req.body.useWallet) && customerWallet && customerWallet.balance > 0) {
+      const walletBal = Math.max(0, customerWallet.balance || 0);
+      walletAmount = Math.min(total_amount, walletBal);
+      normalPaymentAmount = Math.max(0, Math.round((total_amount - walletAmount) * 100) / 100);
+
+      if (normalPaymentAmount === 0) {
+        finalPaymentMethod = 'wallet';
+        finalPaymentStatus = 'paid';
+      } else {
+        finalPaymentMethod = 'mixed';
+        finalPaymentStatus = req.body.payment_status || (payment_utr ? 'paid' : 'pending');
+      }
+    } else {
+      normalPaymentAmount = total_amount;
     }
 
     const deliveryOtp = order_channel === 'delivery' ? Math.floor(1000 + Math.random() * 9000).toString() : '';
 
     const newOrder = new Order({
+      restaurantId: activeRestaurantId,
       order_number,
       table_id: table_id || null,
       table_snapshot: table_snapshot || req.body.table_number_override || 'Takeaway',
@@ -660,10 +779,18 @@ router.post('/', async (req, res) => {
       order_channel: order_channel || 'dine_in',
       scheduled_time: scheduled_time ? new Date(scheduled_time) : null,
       status: req.body.status || 'received',
-      payment_status: 'pending',
-      payment_method: payment_method || 'upi',
+      payment_status: finalPaymentStatus,
+      payment_method: finalPaymentMethod,
       payment_utr: payment_utr || '',
+      subtotal: orderSubtotal,
+      discount: orderDiscount,
+      discount_amount: orderDiscount,
+      finalAmount,
       total_amount,
+      subscriptionId: subscriptionAmount > 0 ? activeSub._id : null,
+      subscriptionAmount,
+      normalPaymentAmount,
+      walletAmount,
       notes: notes || '',
       items: orderItems,
       delivery_address: delivery_address || '',
@@ -674,10 +801,67 @@ router.post('/', async (req, res) => {
 
     await newOrder.save();
 
-    // Broadcast socket event for real-time kitchen & admin screens
+    // 1. Deduct subscriptionAmount from CustomerSubscription & log SubscriptionUsage
+    if (subscriptionAmount > 0 && activeSub) {
+      const balanceBefore = activeSub.remainingBalance !== undefined ? activeSub.remainingBalance : activeSub.initialBalance;
+      const updatedSub = await CustomerSubscription.findOneAndUpdate(
+        {
+          _id: activeSub._id,
+          status: 'ACTIVE',
+          remainingBalance: { $gte: subscriptionAmount }
+        },
+        { $inc: { remainingBalance: -subscriptionAmount } },
+        { new: true }
+      );
+
+      if (updatedSub) {
+        // Prevent duplicate transaction log for same order
+        const existingSubUsage = await SubscriptionUsage.findOne({ orderId: newOrder._id });
+        if (!existingSubUsage) {
+          await SubscriptionUsage.create({
+            subscriptionId: updatedSub._id,
+            customerId: customer_id,
+            restaurantId: activeRestaurantId,
+            orderId: newOrder._id,
+            type: 'DEBIT',
+            amount: subscriptionAmount,
+            balanceBefore,
+            balanceAfter: updatedSub.remainingBalance,
+            description: `Food order #${newOrder.order_number}`
+          });
+        }
+      }
+    }
+
+    // 2. Deduct walletAmount from Global Wallet & log WalletTransaction if split used
+    if (walletAmount > 0 && customerWallet) {
+      const walletBefore = customerWallet.balance;
+      const updatedWallet = await Wallet.findOneAndUpdate(
+        { customerId: customer_id, balance: { $gte: walletAmount } },
+        { $inc: { balance: -walletAmount } },
+        { new: true }
+      );
+
+      if (updatedWallet) {
+        await WalletTransaction.create({
+          walletId: updatedWallet._id,
+          customerId: customer_id,
+          type: 'DEBIT',
+          amount: walletAmount,
+          balanceBefore: walletBefore,
+          balanceAfter: updatedWallet.balance,
+          referenceType: 'FOOD_ORDER',
+          referenceId: newOrder._id,
+          description: `Split payment for Food order #${newOrder.order_number}`,
+          status: 'SUCCESS'
+        });
+      }
+    }
+
+    // Broadcast socket event for real-time kitchen & admin screens (restaurant room specific)
     const io = req.app.get('socketio');
     if (io) {
-      io.emit('order_created', {
+      io.to(`restaurant_${req.restaurantId}`).emit('order_created', {
         id: newOrder.order_number || newOrder._id,
         _id: newOrder._id,
         order_number: newOrder.order_number,
@@ -702,6 +886,11 @@ router.post('/', async (req, res) => {
         })),
         created_at: newOrder.created_at
       });
+    }
+
+    // Trigger platform transaction if paid immediately
+    if (newOrder.payment_status === 'paid') {
+      await createPlatformTransaction(newOrder);
     }
 
     // Send Web Push notification to registered administrators
@@ -785,6 +974,7 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
                 await rawMat.save();
 
                 await InventoryLog.create({
+                  restaurantId: order.restaurantId || req.restaurantId || rawMat.restaurantId,
                   raw_material_id: rawMat._id,
                   change_type: 'STOCK_ADD',
                   quantity_change: oldRequiredQty,
@@ -828,6 +1018,7 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
                   await rawMat.save();
 
                   await InventoryLog.create({
+                    restaurantId: order.restaurantId || req.restaurantId || rawMat.restaurantId || menuItem.restaurantId,
                     raw_material_id: rawMat._id,
                     change_type: 'ORDER_DEDUCT',
                     quantity_change: -newRequiredQty,
@@ -865,6 +1056,11 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
     if (status !== undefined) order.status = status;
     if (delivery_address !== undefined) order.delivery_address = delivery_address;
     await order.save();
+    
+    // Trigger platform transaction if paid
+    if (order.payment_status === 'paid') {
+      await createPlatformTransaction(order);
+    }
 
     // Broadcast socket event for real-time kitchen & admin screens
     const io = req.app.get('socketio');
@@ -893,7 +1089,7 @@ router.put('/:id/items', auth, authorizeRoles('admin', 'staff'), async (req, res
         })),
         created_at: order.created_at
       };
-      io.emit('order_status_change', payload);
+      io.to(`restaurant_${order.restaurantId}`).emit('order_status_change', payload);
       if (order.order_number) {
         io.to(`order_${order.order_number}`).emit('order_status_change', payload);
       }
@@ -1062,7 +1258,7 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
         delivery_tracking_url: order.delivery_tracking_url,
         updated_at: order.updated_at
       };
-      io.emit('order_status_updated', payload);
+      io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
       io.to(`order_${order._id}`).emit('order_status_change', payload);
       if (order.order_number) {
         io.to(`order_${order.order_number}`).emit('order_status_change', payload);
@@ -1097,10 +1293,10 @@ router.put('/:id/payment', auth, authorizeRoles('admin', 'staff'), async (req, r
     let order = null;
     const mongoose = require('mongoose');
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-      order = await Order.findById(req.params.id);
+      order = await Order.findOne({ _id: req.params.id, restaurantId: req.restaurantId });
     }
     if (!order) {
-      order = await Order.findOne({ order_number: req.params.id });
+      order = await Order.findOne({ order_number: req.params.id, restaurantId: req.restaurantId });
     }
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
@@ -1108,6 +1304,11 @@ router.put('/:id/payment', auth, authorizeRoles('admin', 'staff'), async (req, r
     if (payment_utr !== undefined) order.payment_utr = payment_utr;
 
     await order.save();
+    
+    // Trigger platform transaction if paid
+    if (order.payment_status === 'paid') {
+      await createPlatformTransaction(order);
+    }
 
     // Broadcast socket update
     const io = req.app.get('socketio');
@@ -1120,7 +1321,7 @@ router.put('/:id/payment', auth, authorizeRoles('admin', 'staff'), async (req, r
         payment_status: order.payment_status,
         updated_at: order.updated_at
       };
-      io.emit('order_status_updated', payload);
+      io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
       io.to(`order_${order._id}`).emit('order_status_change', payload);
       if (order.order_number) {
         io.to(`order_${order.order_number}`).emit('order_status_change', payload);
@@ -1292,10 +1493,48 @@ function broadcastOrderStatus(order, io) {
     delivery_tracking_url: order.delivery_tracking_url,
     updated_at: order.updated_at
   };
-  io.emit('order_status_updated', payload);
+  io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
   io.to(`order_${order._id}`).emit('order_status_change', payload);
   if (order.order_number) {
     io.to(`order_${order.order_number}`).emit('order_status_change', payload);
+  }
+}
+
+/**
+ * Creates platform commission transactions safely in integers/rounding cents
+ */
+async function createPlatformTransaction(order) {
+  try {
+    const PlatformTransaction = require('../models/PlatformTransaction');
+    const Subscription = require('../models/Subscription');
+    const SubscriptionPlan = require('../models/SubscriptionPlan');
+
+    const existingTx = await PlatformTransaction.findOne({ orderId: order._id });
+    if (existingTx) return;
+
+    const sub = await Subscription.findOne({ restaurantId: order.restaurantId, status: 'active' });
+    if (!sub) return;
+
+    const plan = await SubscriptionPlan.findById(sub.planId);
+    const commissionPercentage = plan ? Number(plan.commissionPercentage || 0) : 0;
+
+    const orderAmount = Number(order.total_amount);
+    const commissionAmount = Math.round(orderAmount * commissionPercentage) / 100;
+    const restaurantAmount = Math.round((orderAmount - commissionAmount) * 100) / 100;
+
+    await PlatformTransaction.create({
+      restaurantId: order.restaurantId,
+      orderId: order._id,
+      subscriptionId: sub._id,
+      orderAmount,
+      commissionPercentage,
+      commissionAmount,
+      restaurantAmount,
+      settlementStatus: 'pending'
+    });
+    console.log(`[Commission] Created platform transaction for Order ${order.order_number}: Comm: ${commissionAmount}, Restaurant Share: ${restaurantAmount}`);
+  } catch (err) {
+    console.error('[Commission Error] Failed to create platform transaction:', err.message);
   }
 }
 

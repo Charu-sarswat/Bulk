@@ -36,8 +36,8 @@ async function getMenuItemOrderCounts() {
 // @desc    Get all categories with their menu items
 router.get('/categories', async (req, res) => {
   try {
-    const categories = await Category.find().sort({ sort_order: 1, created_at: 1 });
-    const menuItems = await MenuItem.find().sort({ created_at: -1 });
+    const categories = await Category.find({ restaurantId: req.restaurantId }).sort({ sort_order: 1, created_at: 1 });
+    const menuItems = await MenuItem.find({ restaurantId: req.restaurantId }).sort({ created_at: -1 });
     const countMap = await getMenuItemOrderCounts();
 
     const sortedMenuItems = [...menuItems].sort((a, b) => {
@@ -97,7 +97,7 @@ router.get('/categories', async (req, res) => {
 // @desc    Get all menu items
 router.get('/items', async (req, res) => {
   try {
-    const items = await MenuItem.find().populate('category_id', 'name');
+    const items = await MenuItem.find({ restaurantId: req.restaurantId }).populate('category_id', 'name');
     const countMap = await getMenuItemOrderCounts();
     
     const sortedItems = [...items].sort((a, b) => {
@@ -150,11 +150,24 @@ router.post('/items', auth, authorizeRoles('admin', 'staff'), async (req, res) =
       is_combo, combo_items, category_ids, recipe
     } = req.body;
 
+    // Limit check for menu items
+    const currentItemsCount = await MenuItem.countDocuments({ restaurantId: req.restaurantId });
+    const Subscription = require('../models/Subscription');
+    const SubscriptionPlan = require('../models/SubscriptionPlan');
+    const sub = await Subscription.findOne({ restaurantId: req.restaurantId, status: 'active' });
+    if (sub) {
+      const plan = await SubscriptionPlan.findById(sub.planId);
+      if (plan && plan.maxMenuItems !== -1 && currentItemsCount >= plan.maxMenuItems) {
+        return res.status(400).json({ message: `Your current subscription allows a maximum of ${plan.maxMenuItems} menu items. Upgrade your plan to add more.` });
+      }
+    }
+
     if (!name || price === undefined) {
       return res.status(400).json({ message: 'Name and price are required' });
     }
 
     const newItem = new MenuItem({
+      restaurantId: req.restaurantId,
       category_id: category_id || null,
       name: typeof name === 'string' ? name.toUpperCase() : name,
       description: description || '',
@@ -196,7 +209,7 @@ router.put('/items/:id', auth, authorizeRoles('admin', 'staff'), async (req, res
     if (updateData.delivery_price !== undefined) updateData.delivery_price = Number(updateData.delivery_price);
     if (updateData.is_featured !== undefined) updateData.is_featured = Boolean(updateData.is_featured);
 
-    const updated = await MenuItem.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    const updated = await MenuItem.findOneAndUpdate({ _id: req.params.id, restaurantId: req.restaurantId }, updateData, { new: true });
     if (!updated) return res.status(404).json({ message: 'Menu item not found' });
 
     res.json({
@@ -214,7 +227,7 @@ router.put('/items/:id', auth, authorizeRoles('admin', 'staff'), async (req, res
 router.put('/items/:id/availability', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
     const { is_available } = req.body;
-    const item = await MenuItem.findByIdAndUpdate(req.params.id, { is_available }, { new: true });
+    const item = await MenuItem.findOneAndUpdate({ _id: req.params.id, restaurantId: req.restaurantId }, { is_available }, { new: true });
     if (!item) return res.status(404).json({ message: 'Menu item not found' });
 
     res.json({ id: item._id, is_available: item.is_available });
@@ -234,6 +247,7 @@ router.post('/categories', auth, authorizeRoles('admin', 'staff'), async (req, r
     }
 
     const newCategory = new Category({
+      restaurantId: req.restaurantId,
       name: name.trim(),
       description: description || '',
       sort_order: sort_order !== undefined ? Number(sort_order) : 0,
@@ -259,7 +273,7 @@ router.post('/categories', auth, authorizeRoles('admin', 'staff'), async (req, r
 router.put('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
     const { name, description, sort_order, image_url } = req.body;
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findOne({ _id: req.params.id, restaurantId: req.restaurantId });
     if (!category) return res.status(404).json({ message: 'Category not found' });
 
     if (name !== undefined) category.name = name.trim();
@@ -285,14 +299,14 @@ router.put('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (req
 // @desc    Delete category and all its menu items (Admin/Staff)
 router.delete('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findOne({ _id: req.params.id, restaurantId: req.restaurantId });
     if (!category) return res.status(404).json({ message: 'Category not found' });
 
     // Delete associated menu items
-    await MenuItem.deleteMany({ category_id: req.params.id });
+    await MenuItem.deleteMany({ category_id: req.params.id, restaurantId: req.restaurantId });
     
     // Delete the category itself
-    await Category.findByIdAndDelete(req.params.id);
+    await Category.findOneAndDelete({ _id: req.params.id, restaurantId: req.restaurantId });
 
     res.json({ message: 'Category and all associated items deleted successfully' });
   } catch (err) {
@@ -305,7 +319,7 @@ router.delete('/categories/:id', auth, authorizeRoles('admin', 'staff'), async (
 // @desc    Delete menu item (Admin/Staff)
 router.delete('/items/:id', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
-    const deletedItem = await MenuItem.findByIdAndDelete(req.params.id);
+    const deletedItem = await MenuItem.findOneAndDelete({ _id: req.params.id, restaurantId: req.restaurantId });
     if (!deletedItem) {
       return res.status(404).json({ message: 'Menu item not found' });
     }

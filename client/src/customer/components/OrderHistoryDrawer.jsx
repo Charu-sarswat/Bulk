@@ -189,7 +189,14 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-serif font-black text-sm text-gray-900">Order #{order.order_number || order.id}</h4>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <h4 className="font-serif font-black text-sm text-gray-900">Order #{order.order_number || order.id}</h4>
+                            {order.restaurant && (
+                              <span className="text-[9px] font-serif font-black text-[#691F1A] bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                {order.restaurant.name}
+                              </span>
+                            )}
+                          </div>
                           <span className="text-[10px] text-gray-400 font-light">
                             {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} • {new Date(order.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                           </span>

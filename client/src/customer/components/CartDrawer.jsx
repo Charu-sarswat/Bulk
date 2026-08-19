@@ -3,6 +3,7 @@ import { X, Trash2, CreditCard, ShoppingBag, Banknote, Clipboard, Plus, RefreshC
 import confetti from 'canvas-confetti';
 import { useToast } from '../../context/ToastContext';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { useRestaurant } from '../../context/RestaurantContext';
 import { restaurantConfig } from '../../config/restaurant';
 import PaymentModal from './PaymentModal';
 
@@ -22,11 +23,15 @@ export default function CartDrawer({
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const { addToast } = useToast();
   const { customerUser, customerToken } = useCustomerAuth();
+  const { restaurant, table } = useRestaurant();
   
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [orderNotes, setOrderNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [hasActiveSub, setHasActiveSub] = useState(false);
+  const [activeSub, setActiveSub] = useState(null);
+  const [useSubscription, setUseSubscription] = useState(false);
   
   const [deliveryFee, setDeliveryFee] = useState(45);
   const [freeThreshold, setFreeThreshold] = useState(399);
@@ -42,6 +47,50 @@ export default function CartDrawer({
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [coordinates, setCoordinates] = useState(null);
+
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    if (isOpen && customerToken) {
+      const checkSubscriptionAndWallet = async () => {
+        try {
+          const [subRes, walletRes] = await Promise.all([
+            fetch(`${apiUrl}/api/student/subscriptions/active`, {
+              headers: { 'Authorization': `Bearer ${customerToken}` }
+            }),
+            fetch(`${apiUrl}/api/student/wallet`, {
+              headers: { 'Authorization': `Bearer ${customerToken}` }
+            })
+          ]);
+
+          if (subRes.ok) {
+            const data = await subRes.json();
+            const activePlan = Array.isArray(data) ? data[0] : data;
+            const bal = activePlan ? (activePlan.remainingBalance !== undefined ? activePlan.remainingBalance : (activePlan.initialBalance || 0)) : 0;
+            if (activePlan && bal > 0) {
+              setActiveSub(activePlan);
+              setHasActiveSub(true);
+            } else {
+              setActiveSub(null);
+              setHasActiveSub(false);
+            }
+          }
+
+          if (walletRes.ok) {
+            const walletData = await walletRes.json();
+            if (walletData && walletData.balance !== undefined) {
+              setWalletBalance(Number(walletData.balance) || 0);
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      checkSubscriptionAndWallet();
+    } else if (!isOpen) {
+      setUseSubscription(false);
+    }
+  }, [isOpen, customerToken, restaurant, apiUrl]);
 
   useEffect(() => {
     if (isOpen) {
@@ -135,12 +184,95 @@ export default function CartDrawer({
     }
   }, [orderChannel, paymentMethod]);
 
+  const [discountRules, setDiscountRules] = useState([]);
+
+  useEffect(() => {
+    const activeRestId = restaurant?._id || restaurant?.id || localStorage.getItem('restaurantId');
+    if (isOpen && activeRestId) {
+      fetch(`${apiUrl}/api/discounts/active?restaurantId=${activeRestId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) setDiscountRules(data);
+        })
+        .catch(err => console.error('Error fetching discount rules:', err));
+    }
+  }, [isOpen, restaurant, apiUrl]);
+
   if (!isOpen) return null;
 
-  // Totals Calculation based on item price
-  const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
-  const activeDeliveryFee = (orderChannel === 'delivery' && subtotal < freeThreshold) ? deliveryFee : 0;
-  const total = subtotal + activeDeliveryFee;
+  // ─── Real-Time Item-Level & Order Discount Engine (No Stacking) ─────────────
+  let rawSubtotal = 0;
+  let totalDiscount = 0;
+
+  const itemsWithDiscount = cart.map(item => {
+    const unitPrice = parseFloat(item.price) || 0;
+    const qty = parseInt(item.quantity, 10) || 1;
+    const lineSubtotal = Math.round((unitPrice * qty) * 100) / 100;
+    rawSubtotal += lineSubtotal;
+
+    const itemId = item.menu_item_id || item._id || item.id;
+    const rule = discountRules.find(r => {
+      const rItemId = r.menuItemId?._id || r.menuItemId;
+      return rItemId?.toString() === itemId?.toString();
+    });
+
+    let bulkPct = 0;
+    let subPct = 0;
+
+    if (rule && rule.isActive) {
+      // Bulk discount applies when quantity reaches bulkMinQuantity
+      if (rule.bulkMinQuantity > 0 && qty >= rule.bulkMinQuantity && rule.bulkDiscountPercentage > 0) {
+        bulkPct = rule.bulkDiscountPercentage;
+      }
+      // Subscription discount applies ONLY when customer has an active subscription AND selects "Use Platform Subscription Balance"
+      if (useSubscription && hasActiveSub && rule.subscriptionDiscountPercentage > 0) {
+        subPct = rule.subscriptionDiscountPercentage;
+      }
+    }
+
+    // Pick higher discount (NO STACKING)
+    let effectivePct = 0;
+    let discountType = 'NONE';
+    if (subPct > 0 && subPct >= bulkPct) {
+      effectivePct = subPct;
+      discountType = 'SUBSCRIPTION';
+    } else if (bulkPct > 0) {
+      effectivePct = bulkPct;
+      discountType = 'BULK';
+    }
+
+    const itemDisc = Math.round((lineSubtotal * (effectivePct / 100)) * 100) / 100;
+    const lineFinal = Math.round((lineSubtotal - itemDisc) * 100) / 100;
+    totalDiscount += itemDisc;
+
+    return {
+      ...item,
+      lineSubtotal,
+      effectivePct,
+      discountType,
+      itemDisc,
+      lineFinal
+    };
+  });
+
+  rawSubtotal = Math.round(rawSubtotal * 100) / 100;
+  totalDiscount = Math.round(totalDiscount * 100) / 100;
+  const discountedFoodTotal = Math.max(0, Math.round((rawSubtotal - totalDiscount) * 100) / 100);
+
+  const subtotal = rawSubtotal;
+  const activeDeliveryFee = (orderChannel === 'delivery' && discountedFoodTotal < freeThreshold) ? deliveryFee : 0;
+  const orderTotal = discountedFoodTotal + activeDeliveryFee;
+
+  // 3-Tier Split Waterfall: Subscription -> Wallet -> UPI (never negative)
+  const availableSubBal = (useSubscription && activeSub) ? Math.max(0, (activeSub.remainingBalance !== undefined ? activeSub.remainingBalance : (activeSub.initialBalance || 0))) : 0;
+  const coveredBySub = Math.min(orderTotal, availableSubBal);
+  const remainingAfterSub = Math.max(0, Math.round((orderTotal - coveredBySub) * 100) / 100);
+
+  const availableWalletBal = ((useSubscription || paymentMethod === 'wallet') && customerUser) ? Math.max(0, walletBalance) : 0;
+  const coveredByWallet = Math.min(remainingAfterSub, availableWalletBal);
+  const remainingToPay = Math.max(0, Math.round((remainingAfterSub - coveredByWallet) * 100) / 100);
+
+  const total = remainingToPay;
 
   const submitOrder = async (utrData = null) => {
     setSubmitting(true);
@@ -148,18 +280,22 @@ export default function CartDrawer({
     const activePhone = customerUser ? customerUser.phone : guestPhone.trim();
     const activeName = customerUser ? customerUser.name : guestName.trim();
 
+    const activeRestaurantId = restaurant?._id || restaurant?.id || localStorage.getItem('restaurantId');
+
     const orderPayload = {
-      table_id: null,
-      table_snapshot: orderChannel === 'dine_in' ? 'Dine-In' : orderChannel.toUpperCase(),
+      restaurantId: activeRestaurantId,
+      table_id: table?.id || null,
+      table_snapshot: orderChannel === 'dine_in' ? `Table ${table?.tableNumber || ''}` : orderChannel.toUpperCase(),
       customer_name: activeName || 'Guest Customer',
       customer_phone: activePhone,
       order_channel: orderChannel,
       delivery_address: orderChannel === 'delivery' ? deliveryAddress.trim() : '',
       latitude: orderChannel === 'delivery' && coordinates ? coordinates.latitude : null,
       longitude: orderChannel === 'delivery' && coordinates ? coordinates.longitude : null,
-      payment_method: paymentMethod,
+      payment_method: useSubscription ? 'online' : paymentMethod,
       payment_utr: utrData?.utr || '',
       notes: orderNotes,
+      useSubscription: useSubscription,
       scheduled_time: orderTimeType === 'scheduled' && scheduledDate && scheduledTime ? `${scheduledDate}T${scheduledTime}:00` : null,
       items: cart.map(item => ({
         menu_item_id: item.menu_item_id || item.id,
@@ -179,6 +315,7 @@ export default function CartDrawer({
 
     try {
       const headers = { 'Content-Type': 'application/json' };
+      if (activeRestaurantId) headers['X-Restaurant-ID'] = activeRestaurantId;
       if (customerToken) headers['Authorization'] = `Bearer ${customerToken}`;
 
       const response = await fetch(`${apiUrl}/api/orders`, {
@@ -206,6 +343,7 @@ export default function CartDrawer({
 
       addToast('Order submitted successfully to Bombay Chowpati Kitchen!', 'success');
       clearCart();
+      window.dispatchEvent(new Event('subscription_updated'));
       onOrderPlaced(data.id);
       onClose();
     } catch (err) {
@@ -218,7 +356,8 @@ export default function CartDrawer({
   };
 
   const handleCheckout = () => {
-    if (!isStoreOpen) {
+    const isAlwaysOpen = import.meta.env.VITE_RESTAURANT_ALWAYS_OPEN === 'true';
+    if (!isAlwaysOpen && !isStoreOpen) {
       addToast(storeClosedMessage || 'We are currently closed for orders. Please visit during regular hours!', 'error');
       return;
     }
@@ -241,7 +380,7 @@ export default function CartDrawer({
         ? (schedMinutes >= openMinutes && schedMinutes <= closeMinutes)
         : (schedMinutes >= openMinutes || schedMinutes <= closeMinutes);
 
-      if (!isWithinHours) {
+      if (!isAlwaysOpen && !isWithinHours) {
         addToast(`Scheduled time (${scheduledTime}) must be between operating hours (${openTimeStr} to ${closeTimeStr}).`, 'warning');
         return;
       }
@@ -255,7 +394,7 @@ export default function CartDrawer({
         ? (currentMinutes >= openMinutes && currentMinutes <= closeMinutes)
         : (currentMinutes >= openMinutes || currentMinutes <= closeMinutes);
 
-      if (!isWithinHours) {
+      if (!isAlwaysOpen && !isWithinHours) {
         addToast(`We are currently closed. Our ordering hours are ${openTimeStr} to ${closeTimeStr}. You can schedule an order for later!`, 'warning');
         return;
       }
@@ -285,7 +424,9 @@ export default function CartDrawer({
       return;
     }
 
-    if (paymentMethod === 'upi') {
+    if (useSubscription) {
+      submitOrder();
+    } else if (paymentMethod === 'upi') {
       setIsPaymentModalOpen(true);
     } else {
       submitOrder();
@@ -327,7 +468,7 @@ export default function CartDrawer({
           </div>
 
           {/* Store Closed Warning Banner */}
-          {!isStoreOpen && (
+          {!(import.meta.env.VITE_RESTAURANT_ALWAYS_OPEN === 'true') && !isStoreOpen && (
             <div className="bg-rose-50 border-b border-rose-200 p-3.5 flex items-start gap-2.5 text-rose-800 text-xs">
               <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <div>
@@ -361,7 +502,7 @@ export default function CartDrawer({
               <>
                 {/* Items loop */}
                 <div className="space-y-3">
-                  {cart.map((item, index) => (
+                  {itemsWithDiscount.map((item, index) => (
                     <div 
                       key={`${item.menu_item_id}-${index}`}
                       className="flex gap-3 p-3 border border-[#F8A324]/20 rounded-2xl bg-white hover:border-[#691F1A]/40 transition-colors shadow-sm"
@@ -376,10 +517,24 @@ export default function CartDrawer({
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div>
                           <div className="flex justify-between items-start gap-1">
-                            <h4 className="font-bold text-gray-800 text-xs sm:text-sm truncate">{item.name}</h4>
-                            <span className="font-black text-[#691F1A] text-xs sm:text-sm shrink-0">
-                              {restaurantConfig.currency}{(parseFloat(item.price) * item.quantity).toFixed(0)}
-                            </span>
+                            <div>
+                              <h4 className="font-bold text-gray-800 text-xs sm:text-sm truncate">{item.name}</h4>
+                              {item.itemDisc > 0 && (
+                                <span className="inline-block text-[8px] font-black uppercase px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 mt-0.5">
+                                  {item.discountType === 'SUBSCRIPTION' ? `👑 Pass ${item.effectivePct}% OFF` : `⚡ Bulk ${item.effectivePct}% OFF`}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-right shrink-0">
+                              {item.itemDisc > 0 && (
+                                <span className="line-through text-gray-400 text-[10px] block">
+                                  {restaurantConfig.currency}{item.lineSubtotal.toFixed(0)}
+                                </span>
+                              )}
+                              <span className="font-black text-[#691F1A] text-xs sm:text-sm">
+                                {restaurantConfig.currency}{item.lineFinal.toFixed(0)}
+                              </span>
+                            </div>
                           </div>
                           {item.notes && (
                             <p className="text-[10px] text-[#691F1A] font-semibold mt-0.5 italic truncate bg-[#FFF9EE] px-1.5 py-0.5 rounded border border-[#F8A324]/30 w-max max-w-full">
@@ -392,14 +547,14 @@ export default function CartDrawer({
                           <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 p-0.5">
                             <button
                               onClick={() => updateCartQuantity(item.menu_item_id, item.notes, item.quantity - 1)}
-                              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded transition-all font-bold text-xs"
+                              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded transition-all font-bold text-xs cursor-pointer"
                             >
                               -
                             </button>
                             <span className="w-6 text-center font-bold text-xs text-gray-700">{item.quantity}</span>
                             <button
                               onClick={() => updateCartQuantity(item.menu_item_id, item.notes, item.quantity + 1)}
-                              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded transition-all font-bold text-xs"
+                              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded transition-all font-bold text-xs cursor-pointer"
                             >
                               +
                             </button>
@@ -652,41 +807,110 @@ export default function CartDrawer({
                   />
                 </div>
 
-                <hr className="border-gray-200/60" />
+                {/* Platform Subscription Checkbox & Breakdown */}
+                {hasActiveSub && activeSub && (
+                  <>
+                    <div className="bg-amber-50 border border-amber-200/60 p-4 rounded-2xl space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5 max-w-[75%]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-gray-900 block">Use Platform Subscription Balance</span>
+                            <span className="text-[8px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded border border-emerald-300">
+                              ANY OUTLET
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-gray-500 font-medium block">
+                            Pass Balance: <strong className="text-emerald-700 font-black">₹{(activeSub.remainingBalance !== undefined ? activeSub.remainingBalance : (activeSub.initialBalance || 0)).toFixed(0)}</strong>
+                            {customerUser && walletBalance > 0 && (
+                              <span className="ml-1 text-gray-400">| Wallet: <strong className="text-[#83560E]">₹{walletBalance.toFixed(0)}</strong></span>
+                            )}
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={useSubscription}
+                          onChange={(e) => setUseSubscription(e.target.checked)}
+                          className="w-5 h-5 accent-[#83560E] rounded cursor-pointer shrink-0"
+                        />
+                      </div>
 
-                {/* Payment Method Selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5" />
-                    Payment Method *
-                  </label>
-                  <div className={orderChannel === 'delivery' ? "block" : "grid grid-cols-2 gap-2"}>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('upi')}
-                      className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
-                        paymentMethod === 'upi'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
-                          : 'border-gray-250 bg-white text-gray-400 hover:text-gray-600'
-                      }`}
-                    >
-                      Pay Online (UPI)
-                    </button>
-                    {orderChannel !== 'delivery' && (
+                      {useSubscription && (
+                        <div className="text-[10px] bg-white/90 p-2.5 rounded-xl border border-amber-200/50 space-y-1 font-semibold">
+                          <div className="flex justify-between text-gray-600">
+                            <span>1. Subscription Pass:</span>
+                            <span className="text-emerald-700 font-bold">
+                              - ₹{coveredBySub.toFixed(0)}
+                            </span>
+                          </div>
+                          {coveredByWallet > 0 && (
+                            <div className="flex justify-between text-gray-600">
+                              <span>2. Customer Wallet Balance:</span>
+                              <span className="text-[#83560E] font-bold">
+                                - ₹{coveredByWallet.toFixed(0)}
+                              </span>
+                            </div>
+                          )}
+                          {remainingToPay > 0 && (
+                            <div className="flex justify-between text-rose-600 font-bold pt-1 border-t border-gray-100">
+                              <span>3. Remaining via UPI / Online:</span>
+                              <span>₹{remainingToPay.toFixed(0)}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <hr className="border-gray-200/60" />
+                  </>
+                )}
+
+                {/* Payment Method Selector (Shown when remaining amount > 0 or not using subscription) */}
+                {(!useSubscription || total > 0) && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-extrabold text-gray-700 uppercase tracking-widest flex items-center gap-1.5">
+                      <CreditCard className="w-3.5 h-3.5 text-[#83560E]" />
+                      {useSubscription && total > 0 ? `Pay Remaining (₹${total.toFixed(0)}) via *` : 'Payment Method *'}
+                    </label>
+                    <div className={`grid ${customerUser && walletBalance > 0 && !useSubscription ? (orderChannel === 'delivery' ? 'grid-cols-2' : 'grid-cols-3') : (orderChannel === 'delivery' ? 'grid-cols-1' : 'grid-cols-2')} gap-2`}>
                       <button
                         type="button"
-                        onClick={() => setPaymentMethod('counter')}
+                        onClick={() => setPaymentMethod('upi')}
                         className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
-                          paymentMethod === 'counter'
-                            ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
-                            : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                          paymentMethod === 'upi'
+                            ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E]'
+                            : 'border-gray-250 bg-white text-gray-400 hover:text-gray-600'
                         }`}
                       >
-                        Pay at Counter
+                        Pay Online (UPI)
                       </button>
-                    )}
+                      {customerUser && walletBalance > 0 && !useSubscription && (
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('wallet')}
+                          className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                            paymentMethod === 'wallet'
+                              ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E]'
+                              : 'border-gray-250 bg-white text-gray-400 hover:text-gray-600'
+                          }`}
+                        >
+                          👛 Wallet (₹{walletBalance.toFixed(0)})
+                        </button>
+                      )}
+                      {orderChannel !== 'delivery' && (
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('counter')}
+                          className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                            paymentMethod === 'counter'
+                              ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E]'
+                              : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
+                          }`}
+                        >
+                          Pay at Counter
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <hr className="border-gray-200/60" />
 
@@ -696,6 +920,28 @@ export default function CartDrawer({
                     <span>Items Subtotal</span>
                     <span>{restaurantConfig.currency}{subtotal.toFixed(0)}</span>
                   </div>
+
+                  {totalDiscount > 0 && (
+                    <div className="flex justify-between items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200/60">
+                      <span>Item Discount (Best Offer Applied)</span>
+                      <span>- {restaurantConfig.currency}{totalDiscount.toFixed(0)}</span>
+                    </div>
+                  )}
+
+                  {useSubscription && coveredBySub > 0 && (
+                    <div className="flex justify-between items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200/60">
+                      <span>Platform Subscription Pass</span>
+                      <span>- {restaurantConfig.currency}{coveredBySub.toFixed(0)}</span>
+                    </div>
+                  )}
+
+                  {useSubscription && coveredByWallet > 0 && (
+                    <div className="flex justify-between items-center text-xs font-bold text-[#83560E] bg-amber-50 px-2.5 py-1.5 rounded-xl border border-amber-200/60">
+                      <span>Customer Wallet Balance</span>
+                      <span>- {restaurantConfig.currency}{coveredByWallet.toFixed(0)}</span>
+                    </div>
+                  )}
+
                   {orderChannel === 'delivery' && (
                     <>
                       <div className="flex justify-between items-center text-xs font-semibold text-gray-500">
@@ -714,15 +960,15 @@ export default function CartDrawer({
                         {activeDeliveryFee === 0 ? (
                           <span>🎉 Free delivery applied!</span>
                         ) : (
-                          <span>💡 Add <strong>{restaurantConfig.currency}{Math.ceil(freeThreshold - subtotal)}</strong> more for <strong>FREE Delivery</strong> (on orders above {restaurantConfig.currency}{freeThreshold})</span>
+                          <span>💡 Add <strong>{restaurantConfig.currency}{Math.ceil(freeThreshold - discountedFoodTotal)}</strong> more for <strong>FREE Delivery</strong></span>
                         )}
                       </div>
                     </>
                   )}
                   <hr className="border-gray-100" />
                   <div className="flex justify-between items-center text-sm font-bold text-gray-800">
-                    <span>Total Amount</span>
-                    <span className="text-[#691F1A] font-black text-base">{restaurantConfig.currency}{total.toFixed(0)}</span>
+                    <span>{useSubscription && total === 0 ? 'Fully Paid (Pass + Wallet)' : 'Final Payable Amount'}</span>
+                    <span className="text-[#83560E] font-black text-base">{restaurantConfig.currency}{total.toFixed(0)}</span>
                   </div>
                 </div>
               </>
@@ -735,7 +981,7 @@ export default function CartDrawer({
               <button
                 onClick={handleCheckout}
                 disabled={submitting}
-                className="w-full bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3.5 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 hover:brightness-110 uppercase tracking-wider text-xs"
+                className="w-full bg-[#83560E] hover:bg-[#68410d] text-white font-black py-3.5 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider text-xs"
               >
                 {submitting ? (
                   <>
@@ -744,7 +990,11 @@ export default function CartDrawer({
                   </>
                 ) : (
                   <>
-                    <span>Proceed to Payment — {restaurantConfig.currency}{total.toFixed(0)}</span>
+                    <span>
+                      {useSubscription && total === 0 
+                        ? 'Place Order (Fully Covered)' 
+                        : `Proceed to Pay — ${restaurantConfig.currency}${total.toFixed(0)}`}
+                    </span>
                   </>
                 )}
               </button>

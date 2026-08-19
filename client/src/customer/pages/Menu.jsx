@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSEO } from '../../hooks/useSEO';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useRestaurant } from '../../context/RestaurantContext';
 import { 
   ShoppingCart, 
   Search, 
@@ -38,9 +39,11 @@ export default function Menu() {
     isCartOpen, setIsCartOpen, isHistoryOpen, setIsHistoryOpen,
     tableInfo, setTableInfo, lastOrderId, setLastOrderId, apiUrl
   } = useCustomerUI();
+  const { restaurant, table } = useRestaurant();
 
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [discountRules, setDiscountRules] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Search & Filters
@@ -55,15 +58,12 @@ export default function Menu() {
   const searchInputRef = useRef(null);
 
 
-  // Fetch Table Data
+  // Bind Table info from context
   useEffect(() => {
-    if (tableId) {
-      fetch(`${apiUrl}/api/tables/${tableId}`)
-        .then(res => res.ok ? res.json() : null)
-        .then(data => data && setTableInfo(data))
-        .catch(console.error);
+    if (table) {
+      setTableInfo({ id: table.id, table_number: table.tableNumber });
     }
-  }, [tableId, apiUrl]);
+  }, [table, setTableInfo]);
 
   // Read search query parameter from URL
   useEffect(() => {
@@ -75,23 +75,30 @@ export default function Menu() {
     }
   }, []);
 
-  // Fetch Menu Categories and Items
+  // Fetch Menu Categories, Items, and Active Discounts
   const fetchMenuData = useCallback(async () => {
+    if (!restaurant) return;
     try {
-      const catRes = await fetch(`${apiUrl}/api/menu/categories`);
+      const catRes = await fetch(`${apiUrl}/api/menu/categories?restaurantId=${restaurant.id}`);
       const catData = await catRes.json();
       if (catRes.ok) setCategories(catData);
 
-      const itemsRes = await fetch(`${apiUrl}/api/menu/items`);
+      const itemsRes = await fetch(`${apiUrl}/api/menu/items?restaurantId=${restaurant.id}`);
       const itemsData = await itemsRes.json();
       if (itemsRes.ok) setMenuItems(itemsData);
+
+      const discRes = await fetch(`${apiUrl}/api/discounts/active?restaurantId=${restaurant.id}`);
+      if (discRes.ok) {
+        const discData = await discRes.json();
+        if (Array.isArray(discData)) setDiscountRules(discData);
+      }
     } catch (err) {
       console.error(err);
       addToast('Failed to load menu data', 'error');
     } finally {
       setLoading(false);
     }
-  }, [apiUrl, addToast]);
+  }, [apiUrl, addToast, restaurant]);
 
   useEffect(() => {
     fetchMenuData();
@@ -344,6 +351,31 @@ export default function Menu() {
                           {item.description}
                         </p>
                       )}
+
+                      {/* Discount Rule Badges */}
+                      {(() => {
+                        const itemRule = discountRules.find(r => {
+                          const rItemId = r.menuItemId?._id || r.menuItemId;
+                          return rItemId?.toString() === item._id?.toString() || rItemId?.toString() === item.id?.toString();
+                        });
+
+                        if (!itemRule || !itemRule.isActive) return null;
+
+                        return (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {itemRule.bulkDiscountPercentage > 0 && (
+                              <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300">
+                                ⚡ {itemRule.bulkDiscountPercentage}% OFF on {itemRule.bulkMinQuantity}+
+                              </span>
+                            )}
+                            {itemRule.subscriptionDiscountPercentage > 0 && (
+                              <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-50 text-[#83560E] border border-[#CCA96A]/40">
+                                👑 {itemRule.subscriptionDiscountPercentage}% With Pass
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>

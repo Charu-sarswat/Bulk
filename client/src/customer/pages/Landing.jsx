@@ -1,18 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSEO } from '../../hooks/useSEO';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useRestaurant } from '../../context/RestaurantContext';
 import { 
   MapPin, Phone, Clock, Instagram, ChevronRight, 
   Calendar, HeartHandshake, ShieldCheck, CheckCircle2,
   Utensils, Trophy, Award, Star, Heart, MessageCircle,
-  ExternalLink, Sparkles, Send, ChefHat
+  ExternalLink, Sparkles, Send, ChefHat, Wallet
 } from 'lucide-react';
 import { restaurantData } from '../../config/restaurantData';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { useToast } from '../../context/ToastContext';
 import CateringModal from '../components/CateringModal';
 import Footer from '../components/Footer';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 
 export default function Landing() {
+  const { restaurant, table } = useRestaurant();
+  const { customerToken } = useCustomerAuth();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+  const menuLink = restaurant ? `/restaurant/${restaurant.slug}/menu` : '/';
+  const displayName = restaurant?.name || restaurantData.name;
+
+  const [plans, setPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+  const [purchasingPlanId, setPurchasingPlanId] = useState(null);
+
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+  useEffect(() => {
+    if (!restaurant) return;
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/student/plans?restaurantId=${restaurant._id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setPlans(data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingPlans(false);
+      }
+    };
+    fetchPlans();
+  }, [restaurant, apiUrl]);
+
+  const handlePurchaseSubscription = async (planId, planPrice) => {
+    if (!customerToken) {
+      addToast('Please login to your student account to purchase a subscription.', 'warning');
+      navigate('/account');
+      return;
+    }
+
+    setPurchasingPlanId(planId);
+    try {
+      const res = await fetch(`${apiUrl}/api/student/subscriptions/purchase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${customerToken}`
+        },
+        body: JSON.stringify({ planId, autoRenew: false })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast('Subscription purchased successfully!', 'success');
+        navigate('/account');
+      } else {
+        addToast(data.message || 'Purchase failed.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('Connection error.', 'error');
+    } finally {
+      setPurchasingPlanId(null);
+    }
+  };
   useSEO({
     title: 'Bombay Chowpati - Chat Bhandar | 100% Pure Veg Mumbai Street Food',
     description: "Hyderabad's favourite authentic Mumbai chat — Crispy Pani Puri, Amul Butter Pav Bhaji, Royal Raj Kachori, Bhel Puri & more. Order online or book live catering at MPM Mall, Abids.",
@@ -71,20 +136,20 @@ export default function Landing() {
           {/* Main Headline */}
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-black tracking-tight leading-none text-amber-50 drop-shadow-2xl">
-              {restaurantData.hero.titleLine1} <br />
-              <span className="bg-gradient-to-r from-[#F59E0B] via-[#D97706] to-[#F59E0B] bg-clip-text text-transparent drop-shadow-lg">
-                {restaurantData.hero.titleLine2}
+              {displayName} <br />
+              <span className="bg-gradient-to-r from-[#F59E0B] via-[#D97706] to-[#F59E0B] bg-clip-text text-transparent drop-shadow-lg text-2xl sm:text-4xl block mt-2">
+                {restaurant?.city ? `${restaurant.city}, ${restaurant.state}` : restaurantData.hero.titleLine2}
               </span>
             </h1>
             <p className="text-amber-200/90 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto font-semibold pt-2">
-              {restaurantData.hero.subtitle}
+              {restaurant?.address ? `${restaurant.address}, ${restaurant.city}` : restaurantData.hero.subtitle}
             </p>
           </div>
 
           {/* Primary Action Buttons */}
           <div className="pt-4 flex justify-center">
             <Link
-              to="/menu"
+              to={menuLink}
               className="w-full sm:w-auto bg-gradient-to-r from-[#F8A324] via-[#FFB74D] to-[#F8A324] hover:brightness-110 text-[#3C110D] font-black py-4 px-9 rounded-2xl shadow-2xl shadow-[#F8A324]/30 hover:shadow-[#F8A324]/50 transition-all duration-300 flex items-center justify-center gap-2.5 text-sm uppercase tracking-wider cursor-pointer"
             >
               <ChefHat className="w-5 h-5" />
@@ -95,6 +160,77 @@ export default function Landing() {
 
         </div>
       </section>
+
+      {/* SECTION: MESS SUBSCRIPTION PLANS */}
+      {plans.length > 0 && (
+        <section id="subscriptions" className="py-16 px-4 sm:px-6 bg-[#FFF9EE] border-t border-b border-[#F8A324]/20">
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center gap-1.5 bg-[#691F1A]/10 border border-[#691F1A]/20 px-3.5 py-1 rounded-full text-xs font-extrabold text-[#691F1A] uppercase tracking-wider">
+                <Wallet className="w-3.5 h-3.5" />
+                Student Mess Plans
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-serif font-black text-gray-900 leading-none">
+                Subscribe & Save Big
+              </h2>
+              <p className="text-gray-600 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
+                Choose a monthly meal subscription specifically for {displayName} and enjoy healthy daily meals at discounted student prices!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {plans.map((plan) => (
+                <div 
+                  key={plan._id} 
+                  className="bg-white rounded-3xl p-6 sm:p-8 border border-[#F8A324]/20 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
+                >
+                  {plan.mealType === 'UNLIMITED' && (
+                    <div className="absolute top-0 right-0 bg-[#691F1A] text-white text-[9px] font-black uppercase px-4 py-1 rounded-bl-xl border-l border-b border-[#F8A324]/30">
+                      Popular
+                    </div>
+                  )}
+                  <div className="space-y-4">
+                    <h3 className="font-serif font-black text-lg text-gray-900 leading-tight">{plan.name}</h3>
+                    <p className="text-xs text-gray-500 font-light leading-relaxed min-h-[40px]">{plan.description}</p>
+                    
+                    <div className="flex items-baseline gap-1.5 pt-2">
+                      <span className="text-3xl font-black text-[#691F1A]">₹{plan.price}</span>
+                      <span className="text-xs text-gray-400 font-bold">/ {plan.durationDays} days</span>
+                    </div>
+
+                    <div className="space-y-2 border-t border-gray-100 pt-4 text-xs font-semibold text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span>Meal type: <strong className="text-gray-800 uppercase">{plan.mealType}</strong></span>
+                      </div>
+                      {plan.mealLimit && (
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                          <span>Includes <strong>{plan.mealLimit} Meals</strong></span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span>Covers: <span className="text-gray-800 capitalize font-bold">{plan.mealsAllowed ? plan.mealsAllowed.join(', ').toLowerCase().replace('all_meals', 'all breakfast/lunch/dinner') : 'All meals'}</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6">
+                    <button
+                      onClick={() => handlePurchaseSubscription(plan._id, plan.price)}
+                      disabled={purchasingPlanId !== null}
+                      className="w-full py-3.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#F8A324]/20"
+                    >
+                      {purchasingPlanId === plan._id ? 'Processing...' : 'Subscribe Now'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SECTION 2: AWARDS & RECOGNITIONS */}
       <section id="awards" className="py-20 px-4 sm:px-6 bg-[#FFFDF9] border-t border-gray-100">

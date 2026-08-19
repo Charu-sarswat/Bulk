@@ -30,7 +30,9 @@ export default function Login() {
 
     if (loggedInUser) {
       addToast('Welcome to Bombay Chowpati Control Panel!', 'success');
-      if (loggedInUser.role === 'staff' || loggedInUser.role === 'kitchen') {
+      if (loggedInUser.role === 'super_admin') {
+        navigate('/superadmin/dashboard');
+      } else if (loggedInUser.role === 'staff' || loggedInUser.role === 'kitchen') {
         navigate('/admin/live-orders');
       } else {
         navigate('/admin');

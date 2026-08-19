@@ -23,6 +23,10 @@ export const SocketProvider = ({ children }) => {
     socketInstance.on('connect', () => {
       console.log('WebSocket connected successfully');
       setConnected(true);
+      const restaurantId = localStorage.getItem('restaurantId');
+      if (restaurantId) {
+        socketInstance.emit('join_restaurant_room', restaurantId);
+      }
     });
 
     socketInstance.on('disconnect', () => {
@@ -36,6 +40,12 @@ export const SocketProvider = ({ children }) => {
       socketInstance.disconnect();
     };
   }, []);
+
+  const joinRestaurantRoom = (restaurantId) => {
+    if (socket && connected) {
+      socket.emit('join_restaurant_room', restaurantId);
+    }
+  };
 
   const joinOrderRoom = (orderId) => {
     if (socket && connected) {
@@ -52,6 +62,7 @@ export const SocketProvider = ({ children }) => {
   const value = {
     socket,
     connected,
+    joinRestaurantRoom,
     joinOrderRoom,
     leaveOrderRoom
   };
