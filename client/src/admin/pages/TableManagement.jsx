@@ -212,7 +212,7 @@ export default function TableManagement() {
       >
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Table</span>
@@ -338,7 +338,7 @@ export default function TableManagement() {
                 onClick={() => { setViewMode('table'); setCurrentPage(1); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer flex-1 sm:flex-initial justify-center ${
                   viewMode === 'table'
-                    ? 'bg-white text-[#691F1A] shadow-xs'
+                    ? 'bg-white text-[#83560E] shadow-xs'
                     : 'text-gray-500 hover:text-gray-900'
                 }`}
               >
@@ -387,7 +387,7 @@ export default function TableManagement() {
                 <div className="w-full flex gap-2 pt-2 border-t border-gray-50">
                   <button
                     onClick={() => handlePrintQR(table)}
-                    className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-sm"
+                    className="flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-sm"
                   >
                     <Printer className="w-3.5 h-3.5" />
                     <span>Print Card</span>
@@ -440,7 +440,7 @@ export default function TableManagement() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handlePrintQR(table)}
-                          className="px-3 py-1.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm transition-colors"
+                          className="px-3 py-1.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm transition-colors"
                           title="Print QR Seating Card"
                         >
                           <Printer className="w-3.5 h-3.5" />

@@ -20,7 +20,7 @@ export async function exportToCSV(filename, headers, rows) {
   const worksheet = workbook.addWorksheet('Report Log');
 
   // Add brand headers
-  worksheet.addRow(['BOMBAY CHOWPATI']).font = { name: 'Segoe UI', size: 16, bold: true, color: { argb: 'FF691F1A' } };
+  worksheet.addRow(['BOMBAY CHOWPATI']).font = { name: 'Segoe UI', size: 16, bold: true, color: { argb: 'FF83560E' } };
   worksheet.addRow([cleanTitle]).font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FF4B5563' } };
   worksheet.addRow([`Exported On: ${dateStr}`]).font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FF4B5563' } };
   worksheet.addRow([]); // empty row
@@ -31,7 +31,7 @@ export async function exportToCSV(filename, headers, rows) {
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF691F1A' }
+      fgColor: { argb: 'FF83560E' }
     };
     cell.font = {
       name: 'Segoe UI',

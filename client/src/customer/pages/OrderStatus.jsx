@@ -388,7 +388,7 @@ export default function OrderStatus() {
                 {order.delivery_rider_phone ? (
                   <a
                     href={`tel:${order.delivery_rider_phone}`}
-                    className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-2 px-3.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer text-xs shadow-xs"
+                    className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-2 px-3.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer text-xs shadow-xs"
                   >
                     <PhoneCall className="w-3.5 h-3.5" />
                     <span>Call Rider</span>
@@ -465,7 +465,7 @@ export default function OrderStatus() {
               href="https://g.page/r/CYziHBfS7U_wEAE/review"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg w-full active:scale-[0.99]"
+              className="inline-flex items-center justify-center gap-2 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg w-full active:scale-[0.99]"
             >
               <span>Rate 5 Stars on Google ↗</span>
               <ExternalLink className="w-4 h-4 text-[#F8A324]" />
@@ -557,7 +557,7 @@ export default function OrderStatus() {
                     <span className="font-medium text-gray-800 truncate">{item.name}</span>
                   </div>
                   {item.notes && (
-                    <span className="text-xs text-[#691F1A] font-semibold italic block ml-9 mt-0.5">
+                    <span className="text-xs text-[#83560E] font-semibold italic block ml-9 mt-0.5">
                       Note: {item.notes}
                     </span>
                   )}
@@ -572,15 +572,15 @@ export default function OrderStatus() {
           <div className="text-xs text-neutral-500 pt-4 border-t border-gray-100">
             <div className="flex justify-between text-sm font-bold text-neutral-900">
               <span>Total Amount</span>
-              <span className="text-[#691F1A] font-black text-base">{restaurantConfig.currency}{finalTotal.toFixed(0)}</span>
+              <span className="text-[#83560E] font-black text-base">{restaurantConfig.currency}{finalTotal.toFixed(0)}</span>
             </div>
           </div>
 
           <button
             onClick={handlePrintInvoice}
-            className="w-full flex items-center justify-center gap-2 mt-4 py-2.5 bg-[#FFF9EE] border border-[#F8A324]/30 text-[#691F1A] hover:bg-[#FFF3D6] rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
+            className="w-full flex items-center justify-center gap-2 mt-4 py-2.5 bg-[#FFF9EE] border border-[#F8A324]/30 text-[#83560E] hover:bg-[#FFF3D6] rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
           >
-            <Receipt className="w-4 h-4 text-[#691F1A]" />
+            <Receipt className="w-4 h-4 text-[#83560E]" />
             Download / Print Bill
           </button>
         </div>
@@ -601,7 +601,7 @@ export default function OrderStatus() {
 
           <a
             href={`tel:${restaurantConfig.supportPhone}`}
-            className="flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-4 rounded-xl text-xs transition-colors text-center cursor-pointer shadow-sm"
+            className="flex items-center justify-center gap-2 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-3 px-4 rounded-xl text-xs transition-colors text-center cursor-pointer shadow-sm"
           >
             <PhoneCall className="w-4 h-4 text-[#F8A324]" />
             <span>Call Support</span>

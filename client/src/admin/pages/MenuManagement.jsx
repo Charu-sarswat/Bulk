@@ -476,7 +476,7 @@ export default function MenuManagement() {
         </button>
         <button
           onClick={() => { resetItemForm(); setShowItemForm(true); }}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Add Menu Item</span>
@@ -590,7 +590,7 @@ export default function MenuManagement() {
                     placeholder="Paste URL or upload image file..."
                     className="flex-1 text-xs p-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gold-500"
                   />
-                  <label className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-[#F8A324]/30">
+                  <label className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-[#F8A324]/30">
                     {uploadingImage ? (
                       <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F8A324]" />
                     ) : (
@@ -692,7 +692,7 @@ export default function MenuManagement() {
               <h3 className="font-bold text-gray-800 text-sm">Dishes Registry</h3>
               <button
                 onClick={() => { resetItemForm(); setShowItemForm(true); }}
-                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0 w-fit"
+                className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0 w-fit"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Menu Item</span>
@@ -818,13 +818,13 @@ export default function MenuManagement() {
                               setNewImgUrl('');
                             }
                           }}
-                          className="bg-[#3C110D] text-[#F8A324] font-bold px-4 rounded-xl text-xs transition-colors cursor-pointer shrink-0 border border-[#F8A324]/30"
+                          className="bg-[#83560E] text-[#F8A324] font-bold px-4 rounded-xl text-xs transition-colors cursor-pointer shrink-0 border border-[#F8A324]/30"
                         >
                           Add URL
                         </button>
                       </div>
 
-                      <label className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 border border-[#F8A324]/30">
+                      <label className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 border border-[#F8A324]/30">
                         {uploadingImage ? (
                           <>
                             <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F8A324]" />
@@ -1225,7 +1225,7 @@ export default function MenuManagement() {
                             {item.category_name}
                           </span>
                         </td>
-                        <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#691F1A] text-sm">
+                        <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#83560E] text-sm">
                           {restaurantConfig.currency}{parseFloat(item.price).toFixed(2)}
                         </td>
                         <td className="py-4 px-4 sm:px-6 text-center">

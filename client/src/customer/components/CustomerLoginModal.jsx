@@ -95,7 +95,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter name"
-                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/30"
+                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/30"
                   />
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter phone number"
-                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/30"
+                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/30"
                   />
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/30"
+                    className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/30"
                   />
                 </div>
               </div>
@@ -142,7 +142,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
                   value={loginId}
                   onChange={(e) => setLoginId(e.target.value)}
                   placeholder="Enter phone or email"
-                  className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/30"
+                  className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/30"
                 />
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/30"
+                className="w-full text-xs pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/30"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 rounded-xl text-xs transition-colors cursor-pointer disabled:bg-gray-200 mt-2 shadow-sm uppercase tracking-wider"
+            className="w-full bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-3 rounded-xl text-xs transition-colors cursor-pointer disabled:bg-gray-200 mt-2 shadow-sm uppercase tracking-wider"
           >
             {loading ? 'Processing...' : isSignUp ? 'Create Account' : 'Log In'}
           </button>
@@ -178,7 +178,7 @@ export default function CustomerLoginModal({ isOpen, onClose }) {
         <div className="text-center pt-2">
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-xs font-semibold text-gray-400 hover:text-[#691F1A] transition-colors cursor-pointer"
+            className="text-xs font-semibold text-gray-400 hover:text-[#83560E] transition-colors cursor-pointer"
           >
             {isSignUp ? 'Already registered? Log In' : "Don't have an account? Sign Up"}
           </button>

@@ -9,7 +9,7 @@ import { useCustomerUI } from '../../context/CustomerUIContext';
 import { useRestaurant } from '../../context/RestaurantContext';
 import { restaurantData } from '../../config/restaurantData';
 import WhatsAppIcon from './WhatsAppIcon';
-import logoBanner from '../../assets/bombay-logo-3.png';
+const logoBanner = '/log.png';
 
 export default function Header() {
   const { pathname } = useLocation();

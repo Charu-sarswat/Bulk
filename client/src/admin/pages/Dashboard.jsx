@@ -171,7 +171,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         {/* KPI 1: Gross Sales */}
         <div className="bg-white p-2.5 sm:p-4 rounded-xl border border-gray-150 shadow-xs flex items-center gap-2 sm:gap-3 hover:shadow-sm transition-all">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 border border-amber-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 border border-amber-100 text-[#83560E] flex items-center justify-center font-bold shrink-0">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -462,7 +462,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-black text-[#691F1A]">
+                      <td className="py-3.5 px-4 text-right font-black text-[#83560E]">
                         {restaurantConfig.currency}{parseFloat(dish.revenue).toFixed(2)}
                       </td>
                     </tr>

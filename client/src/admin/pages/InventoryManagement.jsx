@@ -339,7 +339,7 @@ export default function InventoryManagement() {
       >
         <button
           onClick={handleExportSheet}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30"
         >
           <Download className="w-4 h-4" />
           <span>Export Stock Sheet (Excel)</span>
@@ -396,7 +396,7 @@ export default function InventoryManagement() {
               onClick={() => setActiveTab('items')}
               className={`pb-3 font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === 'items'
-                  ? 'border-[#691F1A] text-[#691F1A]'
+                  ? 'border-[#83560E] text-[#83560E]'
                   : 'border-transparent text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -407,7 +407,7 @@ export default function InventoryManagement() {
               onClick={() => setActiveTab('raw')}
               className={`pb-3 font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === 'raw'
-                  ? 'border-[#691F1A] text-[#691F1A]'
+                  ? 'border-[#83560E] text-[#83560E]'
                   : 'border-transparent text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -418,7 +418,7 @@ export default function InventoryManagement() {
               onClick={() => setActiveTab('logs')}
               className={`pb-3 font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition-all cursor-pointer ${
                 activeTab === 'logs'
-                  ? 'border-[#691F1A] text-[#691F1A]'
+                  ? 'border-[#83560E] text-[#83560E]'
                   : 'border-transparent text-gray-400 hover:text-gray-700'
               }`}
             >
@@ -533,14 +533,14 @@ export default function InventoryManagement() {
                             <div className="flex items-center justify-center gap-2">
                               <button
                                 onClick={() => handleOpenItemAdjustModal(item)}
-                                className="px-3 py-1.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                                className="px-3 py-1.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
                               >
                                 <SlidersHorizontal className="w-3.5 h-3.5" />
                                 Restock / Adjust
                               </button>
                               <button
                                 onClick={() => handleOpenItemHistory(item)}
-                                className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 hover:text-[#691F1A] text-gray-600 rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 bg-gray-100 hover:bg-[#83560E]/10 hover:text-[#83560E] text-gray-600 rounded-lg transition-colors cursor-pointer"
                                 title="View history"
                               >
                                 <History className="w-4 h-4" />
@@ -577,7 +577,7 @@ export default function InventoryManagement() {
             
             <button
               onClick={() => setShowAddRawModal(true)}
-              className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 transition-all cursor-pointer border border-[#F8A324]/30"
+              className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 transition-all cursor-pointer border border-[#F8A324]/30"
             >
               + Add Raw Material
             </button>
@@ -640,7 +640,7 @@ export default function InventoryManagement() {
                               </button>
                               <button
                                 onClick={() => handleOpenRawHistory(item)}
-                                className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 hover:text-[#691F1A] text-gray-600 rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 bg-gray-100 hover:bg-[#83560E]/10 hover:text-[#83560E] text-gray-600 rounded-lg transition-colors cursor-pointer"
                                 title="View history"
                               >
                                 <History className="w-4 h-4" />
@@ -1131,7 +1131,7 @@ export default function InventoryManagement() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Save className="w-4 h-4" />
                   Save Dish Stock

@@ -113,7 +113,7 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
           {/* Header */}
           <div className="p-5 border-b border-[#F8A324]/20 flex items-center justify-between bg-white shrink-0">
             <div className="flex items-center gap-2">
-              <Clock className="w-4.5 h-4.5 text-[#691F1A]" />
+              <Clock className="w-4.5 h-4.5 text-[#83560E]" />
               <h3 className="font-serif font-black text-base text-gray-900 tracking-wide">Diner Dashboard</h3>
             </div>
             <button 
@@ -139,12 +139,12 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
                     value={searchId}
                     onChange={(e) => setSearchId(e.target.value)}
                     placeholder="Enter Order ID (e.g. 12)"
-                    className="w-full text-xs p-3 border border-[#F8A324]/30 rounded-xl focus:outline-none focus:border-[#691F1A] bg-white text-gray-800"
+                    className="w-full text-xs p-3 border border-[#F8A324]/30 rounded-xl focus:outline-none focus:border-[#83560E] bg-white text-gray-800"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black px-4 rounded-xl text-xs transition-colors cursor-pointer"
+                  className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black px-4 rounded-xl text-xs transition-colors cursor-pointer"
                 >
                   Track
                 </button>
@@ -164,7 +164,7 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
 
               {loading ? (
                 <div className="py-12 text-center">
-                  <div className="w-8 h-8 border-2 border-[#691F1A] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                  <div className="w-8 h-8 border-2 border-[#83560E] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                   <p className="text-xs text-gray-400">Loading order history...</p>
                 </div>
               ) : orders.length === 0 ? (
@@ -185,14 +185,14 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
                         }
                         onClose();
                       }}
-                      className="border border-[#F8A324]/20 rounded-2xl p-4 hover:border-[#691F1A]/40 transition-all cursor-pointer bg-white"
+                      className="border border-[#F8A324]/20 rounded-2xl p-4 hover:border-[#83560E]/40 transition-all cursor-pointer bg-white"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <h4 className="font-serif font-black text-sm text-gray-900">Order #{order.order_number || order.id}</h4>
                             {order.restaurant && (
-                              <span className="text-[9px] font-serif font-black text-[#691F1A] bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                              <span className="text-[9px] font-serif font-black text-[#83560E] bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider">
                                 {order.restaurant.name}
                               </span>
                             )}
@@ -220,7 +220,7 @@ export default function OrderHistoryDrawer({ isOpen, onClose, onTrackOrder }) {
                         <span className="text-[10px] uppercase font-bold text-gray-400">
                           {order.order_channel === 'dine_in' ? 'Dine-In' : order.order_channel === 'delivery' ? 'Delivery' : 'Takeaway'}
                         </span>
-                        <div className="flex items-center gap-1 font-black text-xs text-[#691F1A]">
+                        <div className="flex items-center gap-1 font-black text-xs text-[#83560E]">
                           <span>{restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(0)}</span>
                           <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
                         </div>

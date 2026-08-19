@@ -854,7 +854,7 @@ export default function OrderHistory() {
 
         <button
           onClick={handleOpenCreateModal}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30"
         >
           <Plus className="w-4 h-4" />
           <span>Create New Order</span>
@@ -864,7 +864,7 @@ export default function OrderHistory() {
       {/* Date Range Filter Bar */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-150 shadow-xs">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#691F1A]" />
+          <Calendar className="w-4 h-4 text-[#83560E]" />
           <span className="text-xs font-bold text-gray-800">Date Range Filter:</span>
         </div>
         
@@ -875,7 +875,7 @@ export default function OrderHistory() {
               onClick={() => setKpiPeriod(period)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 kpiPeriod === period
-                  ? 'bg-[#691F1A] text-[#F8A324] shadow-xs'
+                  ? 'bg-[#83560E] text-[#F8A324] shadow-xs'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -932,7 +932,7 @@ export default function OrderHistory() {
         </div>
 
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-150 shadow-xs flex items-center gap-3 sm:gap-4 hover:shadow-sm transition-all">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-100 text-[#83560E] flex items-center justify-center font-bold shrink-0">
             <IndianRupee className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -1033,7 +1033,7 @@ export default function OrderHistory() {
                             setSelectedOrder(order);
                           }
                         }}
-                        className="font-bold text-[#691F1A] hover:text-[#d97a10] hover:underline cursor-pointer transition-colors inline-block"
+                        className="font-bold text-[#83560E] hover:text-[#d97a10] hover:underline cursor-pointer transition-colors inline-block"
                         title={!['served', 'delivered', 'cancelled'].includes(order.status) ? "Click to Edit / Complete Order" : "Click to View Details"}
                       >
                         #{order.order_number || order.id}
@@ -1044,7 +1044,7 @@ export default function OrderHistory() {
                          {order.order_channel === 'dine_in' ? '🍽️ Dine-In' : order.order_channel === 'delivery' ? '🚗 Delivery' : '🛍️ Takeaway'}
                        </div>
                       {order.delivery_address && (
-                        <div className="text-[9px] text-[#691F1A] bg-rose-50 border border-red-200/30 rounded px-1.5 py-0.5 mt-0.5 max-w-[150px] truncate block w-max" title={order.delivery_address}>
+                        <div className="text-[9px] text-[#83560E] bg-rose-50 border border-red-200/30 rounded px-1.5 py-0.5 mt-0.5 max-w-[150px] truncate block w-max" title={order.delivery_address}>
                           📍 {order.delivery_address}
                         </div>
                       )}
@@ -1075,7 +1075,7 @@ export default function OrderHistory() {
                         {order.payment_status} ({order.payment_method})
                       </span>
                     </td>
-                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#691F1A]">
+                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#83560E]">
                       {restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(2)}
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-center">
@@ -1084,7 +1084,7 @@ export default function OrderHistory() {
                         {!['served', 'delivered', 'cancelled'].includes(order.status) ? (
                           <button
                             onClick={() => handleOpenEditModal(order)}
-                            className="p-1.5 bg-gray-100 text-[#691F1A] hover:bg-orange-500/20 hover:text-orange-600 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 bg-gray-100 text-[#83560E] hover:bg-orange-500/20 hover:text-orange-600 rounded-lg transition-colors cursor-pointer"
                             title="Edit / Complete Order"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -1092,7 +1092,7 @@ export default function OrderHistory() {
                         ) : (
                           <button
                             onClick={() => setSelectedOrder(order)}
-                            className="p-1.5 bg-gray-100 text-gray-600 hover:bg-[#691F1A]/10 hover:text-[#691F1A] rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 bg-gray-100 text-gray-600 hover:bg-[#83560E]/10 hover:text-[#83560E] rounded-lg transition-colors cursor-pointer"
                             title="View Details"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -1201,7 +1201,7 @@ export default function OrderHistory() {
                                 <span className="truncate">{item.name}</span>
                               </div>
                               <div className="text-xs text-gray-500 font-semibold mt-1 flex items-center gap-2">
-                                <span className="text-[#691F1A] font-black text-sm">{restaurantConfig.currency}{parseFloat(item.price).toFixed(2)}</span>
+                                <span className="text-[#83560E] font-black text-sm">{restaurantConfig.currency}{parseFloat(item.price).toFixed(2)}</span>
                                 {isOutOfStock && (
                                   <>
                                     <span className="text-gray-300">•</span>
@@ -1218,7 +1218,7 @@ export default function OrderHistory() {
                             onClick={() => handleAddToCart(item)}
                             className={`px-4 py-2.5 rounded-xl text-xs font-black cursor-pointer transition-all shrink-0 shadow-xs active:scale-95 ${
                               isOutOfStock ? 'bg-gray-150 text-gray-400 cursor-not-allowed' :
-                              inCart ? 'bg-[#691F1A] text-[#F8A324] border border-[#F8A324]/40 font-black' : 'bg-gray-900 hover:bg-black text-white'
+                              inCart ? 'bg-[#83560E] text-[#F8A324] border border-[#F8A324]/40 font-black' : 'bg-gray-900 hover:bg-black text-white'
                             }`}
                           >
                             {inCart ? `Added (${inCart.quantity})` : 'Add +'}
@@ -1303,7 +1303,7 @@ export default function OrderHistory() {
                             ? 'border-gray-300 bg-gray-200 text-gray-700 cursor-not-allowed font-black'
                             : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
                           : orderTimeType === 'now'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] cursor-pointer'
+                          ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] cursor-pointer'
                           : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600 cursor-pointer'
                       }`}
                     >
@@ -1319,7 +1319,7 @@ export default function OrderHistory() {
                             ? 'border-gray-300 bg-gray-200 text-gray-700 cursor-not-allowed font-black'
                             : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
                           : orderTimeType === 'scheduled'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] cursor-pointer'
+                          ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] cursor-pointer'
                           : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600 cursor-pointer'
                       }`}
                     >
@@ -1798,7 +1798,7 @@ export default function OrderHistory() {
                         <button
                           type="button"
                           onClick={handleStartEditItems}
-                          className="text-[10px] font-black text-[#691F1A] hover:underline cursor-pointer flex items-center gap-1 font-sans"
+                          className="text-[10px] font-black text-[#83560E] hover:underline cursor-pointer flex items-center gap-1 font-sans"
                         >
                           ✏️ Edit Items
                         </button>
@@ -1823,6 +1823,35 @@ export default function OrderHistory() {
                       {restaurantConfig.currency}{parseFloat(selectedOrder.total_amount).toFixed(2)}
                     </span>
                   </div>
+
+                  {(selectedOrder.is_refunded || selectedOrder.payment_status === 'refunded' || selectedOrder.status === 'cancelled') && (
+                    <div className="mt-4 p-3.5 bg-rose-50 border border-rose-200/80 rounded-xl space-y-1.5 text-xs">
+                      <div className="flex justify-between items-center font-bold text-rose-800">
+                        <span>Order Cancellation Refund</span>
+                        <span className="bg-rose-100 text-rose-700 text-[10px] px-2 py-0.5 rounded font-black">
+                          {selectedOrder.refund_status || 'FULL'} REFUND
+                        </span>
+                      </div>
+                      {selectedOrder.refund_details?.subscriptionRefunded > 0 && (
+                        <div className="flex justify-between text-emerald-700 font-semibold text-[11px]">
+                          <span>✓ Returned to Subscription Pass:</span>
+                          <span>+ {restaurantConfig.currency}{selectedOrder.refund_details.subscriptionRefunded.toFixed(0)}</span>
+                        </div>
+                      )}
+                      {selectedOrder.refund_details?.walletRefunded > 0 && (
+                        <div className="flex justify-between text-[#83560E] font-semibold text-[11px]">
+                          <span>✓ Returned to Customer Wallet:</span>
+                          <span>+ {restaurantConfig.currency}{selectedOrder.refund_details.walletRefunded.toFixed(0)}</span>
+                        </div>
+                      )}
+                      {selectedOrder.refund_details?.upiRefunded > 0 && (
+                        <div className="flex justify-between text-blue-700 font-semibold text-[11px]">
+                          <span>✓ UPI / Online Refund:</span>
+                          <span>{restaurantConfig.currency}{selectedOrder.refund_details.upiRefunded.toFixed(0)} ({selectedOrder.refund_details.upiStatus || 'RECORDED'})</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </>
               )}
             </div>

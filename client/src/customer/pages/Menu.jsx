@@ -129,7 +129,7 @@ export default function Menu() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#3C110D]">
+      <div className="min-h-screen flex items-center justify-center bg-[#83560E]">
         <div className="text-center space-y-3">
           <div className="w-12 h-12 border-4 border-[#F8A324] border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-amber-100 font-bold font-serif text-sm">Loading Bombay Chowpati Catalog...</p>
@@ -150,7 +150,7 @@ export default function Menu() {
               {isSearchOpen ? (
                 <div className="flex items-center gap-2 animate-fade-in">
                   <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-[#691F1A] absolute left-3 top-2.5" />
+                    <Search className="w-3.5 h-3.5 text-[#83560E] absolute left-3 top-2.5" />
                     <input
                       ref={searchInputRef}
                       type="text"
@@ -158,7 +158,7 @@ export default function Menu() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       autoFocus
-                      className="w-48 sm:w-64 bg-[#FFF9EE] border border-[#F8A324]/50 rounded-xl pl-8 pr-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#691F1A] focus:ring-1 focus:ring-[#691F1A]/20 transition-all"
+                      className="w-48 sm:w-64 bg-[#FFF9EE] border border-[#F8A324]/50 rounded-xl pl-8 pr-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#83560E] focus:ring-1 focus:ring-[#83560E]/20 transition-all"
                     />
                   </div>
                   <button
@@ -171,7 +171,7 @@ export default function Menu() {
               ) : (
                 <button
                   onClick={() => { setIsSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }}
-                  className="flex items-center gap-1.5 bg-[#691F1A] hover:bg-[#551915] text-white px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm flex-shrink-0"
+                  className="flex items-center gap-1.5 bg-[#83560E] hover:bg-[#68410d] text-white px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm flex-shrink-0"
                 >
                   <Search className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Search</span>
@@ -188,8 +188,8 @@ export default function Menu() {
                 onClick={() => setSelectedCategory('all')}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
                   selectedCategory === 'all'
-                    ? 'bg-[#691F1A] text-white shadow-md'
-                    : 'bg-[#F8A324]/10 text-[#691F1A] border border-[#F8A324]/30 hover:bg-[#F8A324]/20'
+                    ? 'bg-[#83560E] text-white shadow-md'
+                    : 'bg-[#F8A324]/10 text-[#83560E] border border-[#F8A324]/30 hover:bg-[#F8A324]/20'
                 }`}
               >
                 All
@@ -200,8 +200,8 @@ export default function Menu() {
                   onClick={() => setSelectedCategory(cat.id || cat._id)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
                     selectedCategory === (cat.id || cat._id)
-                      ? 'bg-[#691F1A] text-white shadow-md'
-                      : 'bg-[#F8A324]/10 text-[#691F1A] border border-[#F8A324]/30 hover:bg-[#F8A324]/20'
+                      ? 'bg-[#83560E] text-white shadow-md'
+                      : 'bg-[#F8A324]/10 text-[#83560E] border border-[#F8A324]/30 hover:bg-[#F8A324]/20'
                   }`}
                 >
                   {cat.name}
@@ -245,7 +245,7 @@ export default function Menu() {
                           </div>
                           <p className="text-[10px] text-gray-400 truncate">{item.description}</p>
                         </div>
-                        <span className="text-xs font-black text-[#691F1A] flex-shrink-0">₹{parseFloat(item.price).toFixed(0)}</span>
+                        <span className="text-xs font-black text-[#83560E] flex-shrink-0">₹{parseFloat(item.price).toFixed(0)}</span>
                       </button>
                     );
                   })}
@@ -332,7 +332,7 @@ export default function Menu() {
                     </div>
                     {/* Cart qty badge */}
                     {cartQty > 0 && (
-                      <div className="absolute top-2 right-2 bg-[#691F1A] text-[#F8A324] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                      <div className="absolute top-2 right-2 bg-[#83560E] text-[#F8A324] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">
                         {cartQty}
                       </div>
                     )}
@@ -342,7 +342,7 @@ export default function Menu() {
                   <div className="p-3 flex-1 flex flex-col justify-between gap-1">
                     <div>
                       <h3 className={`font-serif font-black text-sm leading-tight transition-colors line-clamp-2 ${
-                        isOutOfStock ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#691F1A]'
+                        isOutOfStock ? 'text-gray-500' : 'text-gray-900 group-hover:text-[#83560E]'
                       }`}>
                         {item.name}
                       </h3>
@@ -382,7 +382,7 @@ export default function Menu() {
 
                 {/* Price + Action Row (Kept outside click wrapper) */}
                 <div className="p-3 pt-0 flex items-center justify-between gap-2 border-t border-gray-50">
-                  <span className={`font-black text-sm ${isOutOfStock ? 'text-gray-400 line-through' : 'text-[#691F1A]'}`}>
+                  <span className={`font-black text-sm ${isOutOfStock ? 'text-gray-400 line-through' : 'text-[#83560E]'}`}>
                     {restaurantConfig.currency}{parseFloat(item.price).toFixed(0)}
                   </span>
 
@@ -391,7 +391,7 @@ export default function Menu() {
                       Unavailable
                     </span>
                   ) : cartQty > 0 ? (
-                    <div className="flex items-center gap-1 bg-[#691F1A] text-white rounded-xl px-1.5 py-1 shadow-sm">
+                    <div className="flex items-center gap-1 bg-[#83560E] text-white rounded-xl px-1.5 py-1 shadow-sm">
                       <button
                         onClick={() => updateCartQuantity(item.id, inCart.notes, cartQty - 1)}
                         className="w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
@@ -415,7 +415,7 @@ export default function Menu() {
                           addToCart(item, 1);
                         }
                       }}
-                      className="flex items-center gap-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-1.5 px-3 rounded-xl transition-all text-[11px] uppercase tracking-wide cursor-pointer shadow-sm"
+                      className="flex items-center gap-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-1.5 px-3 rounded-xl transition-all text-[11px] uppercase tracking-wide cursor-pointer shadow-sm"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add</span>
@@ -434,10 +434,10 @@ export default function Menu() {
         <div className="fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto animate-fade-in">
           <div 
             onClick={() => setIsCartOpen(true)}
-            className="bg-[#691F1A] text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between cursor-pointer hover:brightness-110 transition-all"
+            className="bg-[#83560E] text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between cursor-pointer hover:brightness-110 transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F8A324] text-[#3C110D] font-black flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 rounded-xl bg-[#F8A324] text-[#83560E] font-black flex items-center justify-center shadow-md">
                 <ShoppingCart className="w-5 h-5" />
               </div>
               <div>
@@ -450,7 +450,7 @@ export default function Menu() {
               </div>
             </div>
 
-            <button className="bg-[#F8A324] text-[#3C110D] font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-md cursor-pointer">
+            <button className="bg-[#F8A324] text-[#83560E] font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-md cursor-pointer">
               View Cart & Pay
             </button>
           </div>

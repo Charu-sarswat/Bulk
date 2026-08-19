@@ -160,7 +160,7 @@ export default function Settings() {
                     rows="2"
                     value={deliveryDisabledNotice}
                     onChange={(e) => setDeliveryDisabledNotice(e.target.value)}
-                    className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-semibold"
+                    className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#83560E] font-semibold"
                     placeholder="Notice shown to customers when Home Delivery is paused..."
                   />
                   <span className="text-[10px] text-gray-400 block font-medium">Customers selecting delivery will see this explanation banner.</span>
@@ -175,7 +175,7 @@ export default function Settings() {
                   required
                   value={deliveryFee}
                   onChange={(e) => setDeliveryFee(e.target.value)}
-                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2.5 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-bold"
+                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2.5 text-xs text-gray-850 focus:outline-none focus:border-[#83560E] font-bold"
                   placeholder="e.g. 45"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">This amount will be added to the customer's cart for Home Delivery.</span>
@@ -190,7 +190,7 @@ export default function Settings() {
                   required
                   value={freeThreshold}
                   onChange={(e) => setFreeThreshold(e.target.value)}
-                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2.5 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-bold"
+                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2.5 text-xs text-gray-850 focus:outline-none focus:border-[#83560E] font-bold"
                   placeholder="e.g. 399"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">Orders with a subtotal greater than or equal to this amount qualify for free delivery.</span>
@@ -202,7 +202,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
+                className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
               >
                 {saving ? (
                   <div className="w-4 h-4 border-2 border-[#F8A324] border-t-transparent rounded-full animate-spin"></div>
@@ -218,7 +218,7 @@ export default function Settings() {
           <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-[#83560E] flex items-center justify-center font-bold shrink-0">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
@@ -262,7 +262,7 @@ export default function Settings() {
                     required
                     value={storeOpeningTime}
                     onChange={(e) => setStoreOpeningTime(e.target.value)}
-                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#691F1A] font-bold"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#83560E] font-bold"
                   />
                   <span className="text-[10px] text-gray-500 mt-1 block">Default: 11:30 (11:30 AM)</span>
                 </div>
@@ -273,7 +273,7 @@ export default function Settings() {
                     required
                     value={storeClosingTime}
                     onChange={(e) => setStoreClosingTime(e.target.value)}
-                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#691F1A] font-bold"
+                    className="w-full bg-white border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#83560E] font-bold"
                   />
                   <span className="text-[10px] text-gray-500 mt-1 block">Default: 23:30 (11:30 PM)</span>
                 </div>
@@ -286,7 +286,7 @@ export default function Settings() {
                   rows="2"
                   value={storeClosedMessage}
                   onChange={(e) => setStoreClosedMessage(e.target.value)}
-                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#691F1A] font-semibold"
+                  className="w-full bg-[#FFF9EE] border border-gray-250 rounded-xl px-4 py-2 text-xs text-gray-850 focus:outline-none focus:border-[#83560E] font-semibold"
                   placeholder="Message shown to customers when ordering is disabled..."
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">This banner will appear in the customer cart when the store is closed or outside operating hours.</span>
@@ -297,7 +297,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
+                className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 <span>Save All Settings</span>
@@ -336,7 +336,7 @@ export default function Settings() {
                   value={upiId}
                   onChange={(e) => setUpiId(e.target.value)}
                   placeholder="e.g. bombaychowpati@upi or 9876543210@paytm"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white transition-all font-mono"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">Customers will be asked to pay to this UPI ID.</span>
               </div>
@@ -350,7 +350,7 @@ export default function Settings() {
                   value={upiName}
                   onChange={(e) => setUpiName(e.target.value)}
                   placeholder="e.g. Bombay Chowpati Food Mess"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white transition-all"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">Business / Account Name shown on UPI payment apps.</span>
               </div>
@@ -364,7 +364,7 @@ export default function Settings() {
                   value={upiQrUrl}
                   onChange={(e) => setUpiQrUrl(e.target.value)}
                   placeholder="https://res.cloudinary.com/... or uploaded QR link"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white transition-all font-mono"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">If provided, this QR image will be displayed for customers to scan. If left empty, a dynamic UPI QR will be auto-rendered.</span>
               </div>
@@ -374,7 +374,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
+                className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-5 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 <span>Save Payment Settings</span>

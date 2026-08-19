@@ -465,7 +465,7 @@ export default function CartDrawer({
           {/* Header */}
           <div className="p-4 sm:p-5 border-b border-[#F8A324]/20 flex items-center justify-between bg-white shrink-0">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#691F1A]" />
+              <ShoppingBag className="w-5 h-5 text-[#83560E]" />
               <h3 className="font-serif font-black text-base text-gray-900">Your Cart</h3>
             </div>
             <div className="flex items-center gap-2">
@@ -498,7 +498,7 @@ export default function CartDrawer({
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                <div className="w-16 h-16 rounded-2xl bg-white border border-[#F8A324]/30 text-[#691F1A] flex items-center justify-center mb-4 shadow-md">
+                <div className="w-16 h-16 rounded-2xl bg-white border border-[#F8A324]/30 text-[#83560E] flex items-center justify-center mb-4 shadow-md">
                   <ShoppingBag className="w-8 h-8" />
                 </div>
                 <h4 className="font-serif font-black text-base text-gray-850 mb-1">Your cart is empty</h4>
@@ -507,7 +507,7 @@ export default function CartDrawer({
                 </p>
                 <button
                   onClick={onClose}
-                  className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-xs font-black px-6 py-3 rounded-xl shadow-md transition-all cursor-pointer uppercase tracking-wider"
+                  className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-xs font-black px-6 py-3 rounded-xl shadow-md transition-all cursor-pointer uppercase tracking-wider"
                 >
                   Browse Menu
                 </button>
@@ -519,7 +519,7 @@ export default function CartDrawer({
                   {itemsWithDiscount.map((item, index) => (
                     <div 
                       key={`${item.menu_item_id}-${index}`}
-                      className="flex gap-3 p-3 border border-[#F8A324]/20 rounded-2xl bg-white hover:border-[#691F1A]/40 transition-colors shadow-sm"
+                      className="flex gap-3 p-3 border border-[#F8A324]/20 rounded-2xl bg-white hover:border-[#83560E]/40 transition-colors shadow-sm"
                     >
                       {item.image_url && (
                         <img 
@@ -545,13 +545,13 @@ export default function CartDrawer({
                                   {restaurantConfig.currency}{item.lineSubtotal.toFixed(0)}
                                 </span>
                               )}
-                              <span className="font-black text-[#691F1A] text-xs sm:text-sm">
+                              <span className="font-black text-[#83560E] text-xs sm:text-sm">
                                 {restaurantConfig.currency}{item.lineFinal.toFixed(0)}
                               </span>
                             </div>
                           </div>
                           {item.notes && (
-                            <p className="text-[10px] text-[#691F1A] font-semibold mt-0.5 italic truncate bg-[#FFF9EE] px-1.5 py-0.5 rounded border border-[#F8A324]/30 w-max max-w-full">
+                            <p className="text-[10px] text-[#83560E] font-semibold mt-0.5 italic truncate bg-[#FFF9EE] px-1.5 py-0.5 rounded border border-[#F8A324]/30 w-max max-w-full">
                               Note: {item.notes}
                             </p>
                           )}
@@ -590,14 +590,14 @@ export default function CartDrawer({
                 {/* Suggestions */}
                 {suggestedItems.length > 0 && (
                   <div className="space-y-2 pt-1">
-                    <h5 className="text-[10px] font-black text-[#691F1A] uppercase tracking-widest block">
+                    <h5 className="text-[10px] font-black text-[#83560E] uppercase tracking-widest block">
                       Recommended Street Snacks
                     </h5>
                     <div className="grid grid-cols-1 gap-2">
                       {suggestedItems.map(item => (
                         <div 
                           key={item.id} 
-                          className="flex items-center justify-between p-2.5 border border-[#F8A324]/20 rounded-xl bg-white hover:border-[#691F1A]/30 transition-colors"
+                          className="flex items-center justify-between p-2.5 border border-[#F8A324]/20 rounded-xl bg-white hover:border-[#83560E]/30 transition-colors"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
                             {item.image_url && (
@@ -609,12 +609,12 @@ export default function CartDrawer({
                             )}
                             <div className="min-w-0">
                               <p className="text-xs font-bold text-gray-800 truncate">{item.name}</p>
-                              <p className="text-[10px] text-[#691F1A] font-black">{restaurantConfig.currency}{parseFloat(item.price).toFixed(0)}</p>
+                              <p className="text-[10px] text-[#83560E] font-black">{restaurantConfig.currency}{parseFloat(item.price).toFixed(0)}</p>
                             </div>
                           </div>
                           <button
                             onClick={() => addToCart(item, 1)}
-                            className="bg-[#FFF9EE] hover:bg-[#FFF3D6] text-[#691F1A] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#F8A324]/30 transition-all cursor-pointer"
+                            className="bg-[#FFF9EE] hover:bg-[#FFF3D6] text-[#83560E] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#F8A324]/30 transition-all cursor-pointer"
                           >
                             + Add
                           </button>
@@ -630,7 +630,7 @@ export default function CartDrawer({
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <label className="text-[10px] font-extrabold text-gray-550 uppercase tracking-widest flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-[#691F1A]" />
+                      <Phone className="w-3.5 h-3.5 text-[#83560E]" />
                       Customer Details (Phone Compulsory) *
                     </label>
                   </div>
@@ -649,7 +649,7 @@ export default function CartDrawer({
                           value={guestName}
                           onChange={(e) => setGuestName(e.target.value)}
                           placeholder="Enter your name"
-                          className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                          className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E]"
                         />
                       </div>
                       <div>
@@ -662,7 +662,7 @@ export default function CartDrawer({
                           value={guestPhone}
                           onChange={(e) => setGuestPhone(e.target.value)}
                           placeholder="10-digit Mobile Number"
-                          className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                          className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E]"
                         />
                       </div>
                     </div>
@@ -673,8 +673,8 @@ export default function CartDrawer({
 
                 {/* Schedule Orders Option */}
                 <div className="space-y-2.5">
-                  <label className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-[#691F1A]" />
+                  <label className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-[#83560E]" />
                     Order Timing (Immediate vs Scheduled)
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -683,7 +683,7 @@ export default function CartDrawer({
                       onClick={() => setOrderTimeType('now')}
                       className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
                         orderTimeType === 'now'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                          ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E]'
                           : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
                       }`}
                     >
@@ -694,7 +694,7 @@ export default function CartDrawer({
                       onClick={() => setOrderTimeType('scheduled')}
                       className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
                         orderTimeType === 'scheduled'
-                          ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A]'
+                          ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E]'
                           : 'border-gray-200 bg-white text-gray-400 hover:text-gray-600'
                       }`}
                     >
@@ -712,7 +712,7 @@ export default function CartDrawer({
                             required
                             value={scheduledDate}
                             onChange={(e) => setScheduledDate(e.target.value)}
-                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E]"
                           />
                         </div>
                         <div>
@@ -722,7 +722,7 @@ export default function CartDrawer({
                             required
                             value={scheduledTime}
                             onChange={(e) => setScheduledTime(e.target.value)}
-                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                            className="w-full text-xs p-2 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E]"
                           />
                         </div>
                       </div>
@@ -738,7 +738,7 @@ export default function CartDrawer({
                 {/* Order Channel Selector */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">
+                    <label className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block">
                       Order Channel & Dining Type
                     </label>
                     {!isDeliveryEnabled && (
@@ -750,7 +750,7 @@ export default function CartDrawer({
                   <select
                     value={orderChannel}
                     onChange={(e) => setOrderChannel(e.target.value)}
-                    className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#691F1A]"
+                    className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-white text-gray-800 focus:outline-none focus:border-[#83560E]"
                   >
                     <option value="dine_in">🍽️ Dine-In</option>
                     <option value="takeaway">🛍️ Takeaway (Self Pickup)</option>
@@ -775,7 +775,7 @@ export default function CartDrawer({
                           type="button"
                           onClick={handleDetectLocation}
                           disabled={detectingLocation}
-                          className="text-[9px] font-black text-[#691F1A] hover:underline flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                          className="text-[9px] font-black text-[#83560E] hover:underline flex items-center gap-1 cursor-pointer disabled:opacity-50"
                         >
                           {detectingLocation ? (
                             <>
@@ -798,7 +798,7 @@ export default function CartDrawer({
                         }}
                         placeholder="Enter complete address for delivery..."
                         rows="2"
-                        className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A] resize-none font-semibold placeholder:font-normal"
+                        className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E] resize-none font-semibold placeholder:font-normal"
                       />
                     </div>
                   )}
@@ -817,7 +817,7 @@ export default function CartDrawer({
                     onChange={(e) => setOrderNotes(e.target.value)}
                     placeholder="Instructions for chef (e.g. extra spicy, less chutney)..."
                     rows="2"
-                    className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#691F1A] resize-none"
+                    className="w-full text-xs p-2.5 border border-gray-250 rounded-xl bg-[#FFF9EE] text-gray-800 focus:outline-none focus:border-[#83560E] resize-none"
                   />
                 </div>
 

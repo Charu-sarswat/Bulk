@@ -128,7 +128,7 @@ export default function Landing() {
 
         {/* Video Gradient Dark Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-black/35 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#691F1A]/12 via-transparent to-[#691F1A]/12 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#83560E]/12 via-transparent to-[#83560E]/12 pointer-events-none" />
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto space-y-8 animate-fade-in text-white">
@@ -150,7 +150,7 @@ export default function Landing() {
           <div className="pt-4 flex justify-center">
             <Link
               to={menuLink}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#F8A324] via-[#FFB74D] to-[#F8A324] hover:brightness-110 text-[#3C110D] font-black py-4 px-9 rounded-2xl shadow-2xl shadow-[#F8A324]/30 hover:shadow-[#F8A324]/50 transition-all duration-300 flex items-center justify-center gap-2.5 text-sm uppercase tracking-wider cursor-pointer"
+              className="w-full sm:w-auto bg-gradient-to-r from-[#F8A324] via-[#FFB74D] to-[#F8A324] hover:brightness-110 text-[#83560E] font-black py-4 px-9 rounded-2xl shadow-2xl shadow-[#F8A324]/30 hover:shadow-[#F8A324]/50 transition-all duration-300 flex items-center justify-center gap-2.5 text-sm uppercase tracking-wider cursor-pointer"
             >
               <ChefHat className="w-5 h-5" />
               <span>Explore Digital Menu</span>
@@ -166,7 +166,7 @@ export default function Landing() {
         <section id="subscriptions" className="py-16 px-4 sm:px-6 bg-[#FFF9EE] border-t border-b border-[#F8A324]/20">
           <div className="max-w-7xl mx-auto space-y-12">
             <div className="text-center space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-[#691F1A]/10 border border-[#691F1A]/20 px-3.5 py-1 rounded-full text-xs font-extrabold text-[#691F1A] uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 bg-[#83560E]/10 border border-[#83560E]/20 px-3.5 py-1 rounded-full text-xs font-extrabold text-[#83560E] uppercase tracking-wider">
                 <Wallet className="w-3.5 h-3.5" />
                 Student Mess Plans
               </div>
@@ -185,7 +185,7 @@ export default function Landing() {
                   className="bg-white rounded-3xl p-6 sm:p-8 border border-[#F8A324]/20 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
                 >
                   {plan.mealType === 'UNLIMITED' && (
-                    <div className="absolute top-0 right-0 bg-[#691F1A] text-white text-[9px] font-black uppercase px-4 py-1 rounded-bl-xl border-l border-b border-[#F8A324]/30">
+                    <div className="absolute top-0 right-0 bg-[#83560E] text-white text-[9px] font-black uppercase px-4 py-1 rounded-bl-xl border-l border-b border-[#F8A324]/30">
                       Popular
                     </div>
                   )}
@@ -194,7 +194,7 @@ export default function Landing() {
                     <p className="text-xs text-gray-500 font-light leading-relaxed min-h-[40px]">{plan.description}</p>
                     
                     <div className="flex items-baseline gap-1.5 pt-2">
-                      <span className="text-3xl font-black text-[#691F1A]">₹{plan.price}</span>
+                      <span className="text-3xl font-black text-[#83560E]">₹{plan.price}</span>
                       <span className="text-xs text-gray-400 font-bold">/ {plan.durationDays} days</span>
                     </div>
 
@@ -220,7 +220,7 @@ export default function Landing() {
                     <button
                       onClick={() => handlePurchaseSubscription(plan._id, plan.price)}
                       disabled={purchasingPlanId !== null}
-                      className="w-full py-3.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#F8A324]/20"
+                      className="w-full py-3.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#F8A324]/20"
                     >
                       {purchasingPlanId === plan._id ? 'Processing...' : 'Subscribe Now'}
                     </button>
@@ -277,7 +277,7 @@ export default function Landing() {
               href={restaurantData.instagramUrl}
               target="_blank"
               rel="noreferrer"
-              className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] border border-[#F8A324]/30 font-black py-3.5 px-6 rounded-2xl text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+              className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] border border-[#F8A324]/30 font-black py-3.5 px-6 rounded-2xl text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <span>Follow {restaurantData.instagramHandle}</span>
               <ExternalLink className="w-4 h-4 text-white" />
@@ -355,14 +355,14 @@ export default function Landing() {
               >
                 <div className="space-y-4">
                   <div className="flex justify-between items-start">
-                    <span className="bg-[#691F1A] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span className="bg-[#83560E] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
                       {pkg.badge}
                     </span>
-                    <Utensils className="w-6 h-6 text-[#691F1A]" />
+                    <Utensils className="w-6 h-6 text-[#83560E]" />
                   </div>
 
                   <div>
-                    <h3 className="font-serif font-black text-xl text-gray-900 group-hover:text-[#691F1A] transition-colors">
+                    <h3 className="font-serif font-black text-xl text-gray-900 group-hover:text-[#83560E] transition-colors">
                       {pkg.title}
                     </h3>
                     <p className="text-xs text-[#F8A324] font-semibold">{pkg.subtitle}</p>
@@ -389,7 +389,7 @@ export default function Landing() {
                 <div className="pt-6 space-y-2">
                   <button
                     onClick={() => setIsCateringOpen(true)}
-                    className="w-full bg-[#691F1A] hover:bg-[#551915] text-white font-black py-3.5 px-4 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-[#83560E] hover:bg-[#68410d] text-white font-black py-3.5 px-4 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4 text-[#F8A324]" />
                     <span>Inquire Package</span>
@@ -453,7 +453,7 @@ export default function Landing() {
                   <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
                     <div>
                       <h4 className="font-serif font-bold text-xs text-gray-900">{review.name}</h4>
-                      <span className="text-[10px] text-[#691F1A] font-semibold block">{review.role}</span>
+                      <span className="text-[10px] text-[#83560E] font-semibold block">{review.role}</span>
                     </div>
                   </div>
                 </div>
@@ -489,23 +489,23 @@ export default function Landing() {
             <div className="lg:col-span-5 bg-white border border-[#F8A324]/30 rounded-3xl p-6 sm:p-8 space-y-6 flex flex-col justify-between">
               
               <div className="space-y-6">
-                <h3 className="font-serif font-black text-xl text-[#691F1A] border-b border-gray-100 pb-3">
+                <h3 className="font-serif font-black text-xl text-[#83560E] border-b border-gray-100 pb-3">
                   Store Contact Details
                 </h3>
 
                 <div className="space-y-5 text-xs text-gray-600">
                   {/* Address */}
                   <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] shrink-0 mt-0.5 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-[#83560E]/10 border border-[#83560E]/20 flex items-center justify-center text-[#83560E] shrink-0 mt-0.5 shadow-sm">
                       <MapPin className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">Address</span>
+                      <span className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block">Address</span>
                       <a 
                         href={restaurantData.gmbLink} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="text-gray-900 hover:text-[#691F1A] hover:underline font-semibold text-xs leading-relaxed mt-0.5 block"
+                        className="text-gray-900 hover:text-[#83560E] hover:underline font-semibold text-xs leading-relaxed mt-0.5 block"
                       >
                         {restaurantData.gmbAddress}
                       </a>
@@ -515,23 +515,23 @@ export default function Landing() {
 
                   {/* Operating Hours */}
                   <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] shrink-0 mt-0.5 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-[#83560E]/10 border border-[#83560E]/20 flex items-center justify-center text-[#83560E] shrink-0 mt-0.5 shadow-sm">
                       <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">Operating Timings</span>
+                      <span className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block">Operating Timings</span>
                       <p className="text-gray-900 font-bold text-xs mt-0.5">{restaurantData.operatingHours}</p>
                     </div>
                   </div>
 
                   {/* Phone Call */}
                   <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] shrink-0 mt-0.5 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-[#83560E]/10 border border-[#83560E]/20 flex items-center justify-center text-[#83560E] shrink-0 mt-0.5 shadow-sm">
                       <Phone className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">Phone Number</span>
-                      <a href={`tel:${restaurantData.supportPhone}`} className="text-gray-900 hover:text-[#691F1A] font-bold text-sm mt-0.5 block transition-colors">
+                      <span className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block">Phone Number</span>
+                      <a href={`tel:${restaurantData.supportPhone}`} className="text-gray-900 hover:text-[#83560E] font-bold text-sm mt-0.5 block transition-colors">
                         {restaurantData.formattedPhone}
                       </a>
                     </div>
@@ -545,7 +545,7 @@ export default function Landing() {
                   href={restaurantData.gmbLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full bg-[#F8A324] hover:bg-[#e08a0a] text-[#3C110D] font-black py-3.5 px-6 rounded-2xl transition-all text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  className="w-full bg-[#F8A324] hover:bg-[#e08a0a] text-[#83560E] font-black py-3.5 px-6 rounded-2xl transition-all text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
                 >
                   <MapPin className="w-4 h-4" />
                   <span>Google Maps Profile</span>
@@ -644,7 +644,7 @@ function AwardsShowcase() {
         <div className="space-y-4">
           <div 
             onClick={() => setLightboxImage(activeSrc)}
-            className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#691F1A]/5 border border-[#F8A324]/10 shadow-inner group cursor-zoom-in"
+            className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#83560E]/5 border border-[#F8A324]/10 shadow-inner group cursor-zoom-in"
             title="Click to view full image"
           >
             <img 
@@ -652,7 +652,7 @@ function AwardsShowcase() {
               alt={activeAward.title} 
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
             />
-            <div className="absolute top-4 left-4 bg-[#691F1A] text-white text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-[#F8A324]/30 z-10">
+            <div className="absolute top-4 left-4 bg-[#83560E] text-white text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-[#F8A324]/30 z-10">
               🏆 Award Year {activeAward.year}
             </div>
 
@@ -682,7 +682,7 @@ function AwardsShowcase() {
 
           <div className="space-y-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-[#83560E]/10 border border-[#83560E]/20 flex items-center justify-center text-[#83560E] shrink-0">
                 {activeAward.icon === 'Trophy' && <Trophy className="w-6 h-6" />}
                 {activeAward.icon === 'Award' && <Award className="w-6 h-6" />}
                 {activeAward.icon === 'Star' && <Star className="w-6 h-6" />}
@@ -704,7 +704,7 @@ function AwardsShowcase() {
 
       {/* Right Column: Interactive List Selector (5 Cols) */}
       <div className="lg:col-span-5 flex flex-col justify-start space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
-        <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block pb-1 border-b border-gray-100">
+        <span className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block pb-1 border-b border-gray-100">
           Select Award ({restaurantData.awards.length} Recognitions)
         </span>
         
@@ -717,7 +717,7 @@ function AwardsShowcase() {
               onClick={() => setActiveIdx(index)}
               className={`w-full text-left flex items-center gap-4 p-3 rounded-2xl border transition-all duration-200 cursor-pointer ${
                 isActive 
-                  ? 'bg-[#691F1A]/5 border-[#691F1A] shadow-sm' 
+                  ? 'bg-[#83560E]/5 border-[#83560E] shadow-sm' 
                   : 'bg-white border-[#F8A324]/20 hover:border-[#F8A324]/50'
               }`}
             >
@@ -729,7 +729,7 @@ function AwardsShowcase() {
                   className="w-full h-full object-cover"
                 />
                 {award.images && award.images.length > 1 && (
-                  <div className="absolute bottom-0.5 right-0.5 bg-[#691F1A] text-white text-[8px] font-bold px-1 rounded">
+                  <div className="absolute bottom-0.5 right-0.5 bg-[#83560E] text-white text-[8px] font-bold px-1 rounded">
                     +{award.images.length - 1}
                   </div>
                 )}
@@ -740,7 +740,7 @@ function AwardsShowcase() {
                 <div className="flex justify-between items-center gap-2">
                   <span className="text-[11px] font-bold text-gray-900 truncate">{award.title}</span>
                   <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 ${
-                    isActive ? 'bg-[#691F1A] text-white' : 'bg-gray-100 text-gray-500'
+                    isActive ? 'bg-[#83560E] text-white' : 'bg-gray-100 text-gray-500'
                   }`}>{award.year}</span>
                 </div>
                 <p className="text-[10px] text-gray-500 truncate font-light leading-tight">

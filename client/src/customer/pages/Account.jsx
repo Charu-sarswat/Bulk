@@ -501,7 +501,7 @@ export default function Account() {
     return (
       <div className="min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-76px)] bg-[#FFF9EE] py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto bg-white rounded-3xl shadow-xl border border-[#F8A324]/20 overflow-hidden">
-          <div className="p-6 bg-[#691F1A] text-white relative">
+          <div className="p-6 bg-[#83560E] text-white relative">
             <button 
               onClick={() => navigate(-1)} 
               className="absolute left-6 top-6 text-gray-300 hover:text-white transition-colors cursor-pointer"
@@ -530,7 +530,7 @@ export default function Account() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="John Doe"
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#691F1A] focus:bg-white font-medium"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#83560E] focus:bg-white font-medium"
                   />
                 </div>
               </div>
@@ -546,7 +546,7 @@ export default function Account() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="10-digit mobile number"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#691F1A] focus:bg-white font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#83560E] focus:bg-white font-medium"
                 />
               </div>
             </div>
@@ -561,7 +561,7 @@ export default function Account() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="john@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#691F1A] focus:bg-white font-medium"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#83560E] focus:bg-white font-medium"
                   />
                 </div>
               </div>
@@ -577,7 +577,7 @@ export default function Account() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#691F1A] focus:bg-white font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#83560E] focus:bg-white font-medium"
                 />
               </div>
             </div>
@@ -585,7 +585,7 @@ export default function Account() {
             <button
               type="submit"
               disabled={authSubmitting}
-              className="w-full py-3 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-md mt-2 disabled:opacity-50"
+              className="w-full py-3 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-md mt-2 disabled:opacity-50"
             >
               {authSubmitting ? 'Please wait...' : isRegister ? 'Register Account' : 'Sign In'}
             </button>
@@ -594,7 +594,7 @@ export default function Account() {
               <button
                 type="button"
                 onClick={() => setIsRegister(!isRegister)}
-                className="text-xs text-gray-500 hover:text-[#691F1A] font-semibold cursor-pointer"
+                className="text-xs text-gray-500 hover:text-[#83560E] font-semibold cursor-pointer"
               >
                 {isRegister ? 'Already have an account? Sign In' : "Don't have an account? Create one"}
               </button>
@@ -608,7 +608,7 @@ export default function Account() {
   return (
     <div className="min-h-screen bg-[#FFF9EE] flex flex-col justify-between">
       {/* Top Banner Header */}
-      <header className="bg-[#691F1A] text-white py-8 px-4 sm:px-6 border-b border-[#F8A324]/20 shadow-md">
+      <header className="bg-[#83560E] text-white py-8 px-4 sm:px-6 border-b border-[#F8A324]/20 shadow-md">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#F8A324] font-serif font-black text-2xl shadow-inner">
@@ -652,7 +652,7 @@ export default function Account() {
             onClick={() => setActiveTab('wallet_subs')}
             className={`flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
               activeTab === 'wallet_subs'
-                ? 'border-[#691F1A] text-[#691F1A]'
+                ? 'border-[#83560E] text-[#83560E]'
                 : 'border-transparent text-gray-400 hover:text-gray-600'
             }`}
           >
@@ -662,7 +662,7 @@ export default function Account() {
             onClick={() => setActiveTab('orders')}
             className={`flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
               activeTab === 'orders'
-                ? 'border-[#691F1A] text-[#691F1A]'
+                ? 'border-[#83560E] text-[#83560E]'
                 : 'border-transparent text-gray-400 hover:text-gray-600'
             }`}
           >
@@ -680,9 +680,9 @@ export default function Account() {
                   <div className="flex justify-between items-start">
                     <div>
                       <span className="text-[10px] text-gray-400 uppercase tracking-widest block font-bold">Global Wallet Balance</span>
-                      <span className="text-3xl font-black text-[#691F1A] block mt-1">₹{(wallet.balance || 0).toFixed(2)}</span>
+                      <span className="text-3xl font-black text-[#83560E] block mt-1">₹{(wallet.balance || 0).toFixed(2)}</span>
                     </div>
-                    <span className="text-[9px] bg-amber-50 text-[#691F1A] border border-amber-200/60 px-2 py-0.5 rounded-lg font-bold">
+                    <span className="text-[9px] bg-amber-50 text-[#83560E] border border-amber-200/60 px-2 py-0.5 rounded-lg font-bold">
                       Platform Wallet
                     </span>
                   </div>
@@ -698,12 +698,12 @@ export default function Account() {
                     placeholder="Topup amount (₹)"
                     value={topupAmount}
                     onChange={(e) => setTopupAmount(e.target.value)}
-                    className="flex-1 px-3 py-2 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-[#691F1A] bg-[#FFF9EE]/20 font-semibold"
+                    className="flex-1 px-3 py-2 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-[#83560E] bg-[#FFF9EE]/20 font-semibold"
                   />
                   <button
                     type="submit"
                     disabled={loadingPaymentSettings}
-                    className="px-4 py-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-xs font-black rounded-xl uppercase tracking-wider transition-colors cursor-pointer border border-[#F8A324]/20 flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                    className="px-4 py-2 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-xs font-black rounded-xl uppercase tracking-wider transition-colors cursor-pointer border border-[#F8A324]/20 flex items-center gap-1.5 shadow-sm disabled:opacity-50"
                   >
                     <QrCode className="w-3.5 h-3.5" />
                     <span>{loadingPaymentSettings ? 'Loading...' : 'Top Up'}</span>
@@ -727,7 +727,7 @@ export default function Account() {
 
                 {loadingSubs ? (
                   <div className="text-center py-4">
-                    <div className="w-5 h-5 border-2 border-[#691F1A] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="w-5 h-5 border-2 border-[#83560E] border-t-transparent rounded-full animate-spin mx-auto"></div>
                   </div>
                 ) : activeSubscriptions.length === 0 ? (
                   <div className="space-y-2">
@@ -737,14 +737,14 @@ export default function Account() {
                   </div>
                 ) : (
                   <div className="space-y-3.5">
-                    {activeSubscriptions.map((sub) => {
+                    {activeSubscriptions.map((sub, sIdx) => {
                       const initBal = sub.initialBalance !== undefined ? sub.initialBalance : (sub.amountPaid || 0);
                       const remBal = sub.remainingBalance !== undefined ? sub.remainingBalance : initBal;
                       const used = sub.usedAmount !== undefined ? sub.usedAmount : Math.max(0, initBal - remBal);
                       const progressPercent = initBal > 0 ? Math.min(100, Math.round((remBal / initBal) * 100)) : 0;
 
                       return (
-                        <div key={sub._id} className="p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl space-y-3 shadow-2xs">
+                        <div key={sub._id || sub.id || `active-sub-${sIdx}`} className="p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl space-y-3 shadow-2xs">
                           <div className="flex justify-between items-start">
                             <div>
                               <span className="font-serif font-black text-sm text-gray-900 block">
@@ -805,9 +805,9 @@ export default function Account() {
                 </div>
 
                 <div className="space-y-3">
-                  {subscriptionRequests.map((req) => (
+                  {subscriptionRequests.map((req, rIdx) => (
                     <div
-                      key={req.id}
+                      key={req._id || req.id || `sub-req-${rIdx}`}
                       className={`p-4 rounded-2xl border transition-all space-y-2 ${
                         req.status === 'PENDING'
                           ? 'border-amber-200 bg-amber-50/30'
@@ -818,7 +818,7 @@ export default function Account() {
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <span className="font-black text-sm text-[#691F1A]">{req.planName}</span>
+                          <span className="font-black text-sm text-[#83560E]">{req.planName}</span>
                           <div className="text-[11px] text-gray-600 font-bold mt-0.5">₹{req.price} • {req.durationDays} Days</div>
                           <p className="text-[10px] text-gray-500 font-mono mt-1 font-semibold">
                             UTR / Ref: <span className="font-bold text-gray-800">{req.paymentReference || 'N/A'}</span>
@@ -863,9 +863,9 @@ export default function Account() {
                 </div>
 
                 <div className="space-y-3">
-                  {topupRequests.map((req) => (
+                  {topupRequests.map((req, tIdx) => (
                     <div
-                      key={req.id}
+                      key={req._id || req.id || `topup-req-${tIdx}`}
                       className={`p-4 rounded-2xl border transition-all space-y-2 ${
                         req.status === 'PENDING'
                           ? 'border-amber-200 bg-amber-50/30'
@@ -877,7 +877,7 @@ export default function Account() {
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-black text-sm text-[#691F1A]">₹{req.amount}</span>
+                            <span className="font-black text-sm text-[#83560E]">₹{req.amount}</span>
                             <span className="text-[10px] text-gray-500 font-bold bg-white px-2 py-0.5 rounded border border-gray-150">
                               Central Wallet Top-Up
                             </span>
@@ -935,7 +935,7 @@ export default function Account() {
                   </h4>
                   <p className="text-[10px] text-gray-500">Buy once, spend at ANY restaurant on the Bombay Chowpati platform!</p>
                 </div>
-                <span className="text-[9px] text-[#691F1A] font-black uppercase bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+                <span className="text-[9px] text-[#83560E] font-black uppercase bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
                   Wallet: ₹{(wallet.balance || 0).toFixed(0)}
                 </span>
               </div>
@@ -971,7 +971,7 @@ export default function Account() {
                 <p className="text-xs text-gray-400">No active platform subscription plans available currently.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {availablePlans.map((plan) => {
+                  {availablePlans.map((plan, pIdx) => {
                     const activeSubObj = activeSubscriptions.find(s => {
                       const rem = s.remainingBalance !== undefined ? s.remainingBalance : (s.initialBalance || 0);
                       const isNotExpired = new Date(s.endDate) >= new Date();
@@ -987,7 +987,7 @@ export default function Account() {
 
                     return (
                       <div
-                        key={plan._id}
+                        key={plan._id || plan.id || `plan-${pIdx}`}
                         className={`relative rounded-2xl border p-5 space-y-3 transition-all ${
                           isSubscribedToThisPlan
                             ? 'border-emerald-500/40 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-500/20'
@@ -1096,8 +1096,8 @@ export default function Account() {
                       </tr>
                     </thead>
                     <tbody>
-                      {subTransactions.map((tx) => (
-                        <tr key={tx._id || tx.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                      {subTransactions.map((tx, txIdx) => (
+                        <tr key={tx._id || tx.id || `tx-${txIdx}`} className="border-b border-gray-100 hover:bg-gray-50/50">
                           <td className="py-2.5">{new Date(tx.usedAt || tx.createdAt).toLocaleDateString()}</td>
                           <td className="py-2.5 font-bold text-gray-900">{tx.restaurantName || 'Bombay Chowpati Outlet'}</td>
                           <td className="py-2.5 font-mono text-slate-500">#{tx.orderNumber || 'N/A'}</td>
@@ -1116,7 +1116,7 @@ export default function Account() {
           <section className="space-y-4">
             <div className="flex items-center justify-between border-b border-gray-150 pb-2">
               <h3 className="text-base font-serif font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-[#691F1A]" />
+                <ShoppingBag className="w-5 h-5 text-[#83560E]" />
                 <span>Order History</span>
               </h3>
               <span className="text-xs font-bold text-gray-500 bg-[#FFF9EE] border border-[#F8A324]/30 px-2.5 py-0.5 rounded-full">
@@ -1126,7 +1126,7 @@ export default function Account() {
 
             {loadingOrders ? (
               <div className="text-center py-12">
-                <div className="w-8 h-8 border-3 border-[#691F1A] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <div className="w-8 h-8 border-3 border-[#83560E] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                 <p className="text-xs text-gray-400 font-semibold">Loading orders...</p>
               </div>
             ) : orders.length === 0 ? (
@@ -1136,18 +1136,18 @@ export default function Account() {
                 <p className="text-xs text-gray-400 mb-4 max-w-xs mx-auto">Once you place order at any table or for takeaway, they will appear here.</p>
                 <button 
                   onClick={() => navigate('/')}
-                  className="px-5 py-2.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-xs font-black rounded-xl uppercase tracking-wider transition-colors cursor-pointer"
+                  className="px-5 py-2.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-xs font-black rounded-xl uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   Explore Messes
                 </button>
               </div>
             ) : (
               <div className="space-y-4">
-                {orders.map((order) => (
+                {orders.map((order, oIdx) => (
                   <div 
-                    key={order.id} 
+                    key={order._id || order.id || order.order_number || `order-${oIdx}`} 
                     className="bg-white rounded-2xl border border-gray-100 p-5 shadow-xs hover:shadow-sm transition-all flex flex-col md:flex-row justify-between gap-4 cursor-pointer"
-                    onClick={() => navigate(`/order/${order.id}`)}
+                    onClick={() => navigate(`/order/${order._id || order.id || order.order_number}`)}
                   >
                     <div className="space-y-3 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -1155,7 +1155,7 @@ export default function Account() {
                           #{order.order_number || order.id}
                         </span>
                         {order.restaurant && (
-                          <span className="text-[10px] font-serif font-black text-[#691F1A] bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded uppercase tracking-wider">
+                          <span className="text-[10px] font-serif font-black text-[#83560E] bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded uppercase tracking-wider">
                             {order.restaurant.name}
                           </span>
                         )}
@@ -1172,7 +1172,7 @@ export default function Account() {
                       {/* Order Items Summary */}
                       <div className="text-xs text-gray-600 font-semibold space-y-1 bg-[#FFF9EE]/20 p-3 rounded-xl border border-gray-100">
                         {order.items && order.items.map((item, idx) => (
-                          <div key={idx} className="flex justify-between">
+                          <div key={item._id || item.menu_item_id || `item-${idx}`} className="flex justify-between">
                             <span>{item.name} <span className="text-gray-400 text-[10px]">x{item.quantity}</span></span>
                             <span>{restaurantConfig.currency}{parseFloat(item.price * item.quantity).toFixed(0)}</span>
                           </div>
@@ -1183,7 +1183,7 @@ export default function Account() {
                     <div className="flex md:flex-col justify-between items-end gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100 shrink-0">
                       <div className="text-right">
                         <span className="text-[10px] text-gray-400 uppercase tracking-widest block">Total Amount</span>
-                        <span className="text-base font-extrabold text-[#691F1A]">
+                        <span className="text-base font-extrabold text-[#83560E]">
                           {restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(0)}
                         </span>
                       </div>
@@ -1213,7 +1213,7 @@ export default function Account() {
             {/* Modal Header */}
             <div className="flex justify-between items-start pb-3 border-b border-gray-100">
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#691F1A]">Platform Wallet Top-Up</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#83560E]">Platform Wallet Top-Up</span>
                 <h3 className="font-serif font-black text-lg text-gray-900 leading-tight">
                   Add ₹{topupAmount} to Wallet
                 </h3>
@@ -1239,7 +1239,7 @@ export default function Account() {
                 <button
                   type="button"
                   onClick={() => handleCopyUpi(paymentSettings?.upi_id || 'superadmin@upi')}
-                  className="px-3 py-1.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-[10px] font-black rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1 shrink-0"
+                  className="px-3 py-1.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-[10px] font-black rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1 shrink-0"
                 >
                   {copiedUpi ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedUpi ? 'Copied!' : 'Copy'}</span>
@@ -1280,7 +1280,7 @@ export default function Account() {
                   placeholder="e.g. 324156789012 or UPI Ref No."
                   value={utrInput}
                   onChange={(e) => setUtrInput(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white transition-all font-mono"
                 />
                 <span className="text-[10px] text-gray-400 block font-medium">
                   Found on your payment success screen as "UPI Ref No." or "UTR".
@@ -1297,7 +1297,7 @@ export default function Account() {
                     required
                     value={paymentDateInput}
                     onChange={(e) => setPaymentDateInput(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white"
                   />
                 </div>
 
@@ -1310,7 +1310,7 @@ export default function Account() {
                     placeholder="e.g. Paid via PhonePe"
                     value={customerNoteInput}
                     onChange={(e) => setCustomerNoteInput(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white"
                   />
                 </div>
               </div>
@@ -1326,7 +1326,7 @@ export default function Account() {
                 <button
                   type="submit"
                   disabled={submittingProof}
-                  className="flex-2 py-3 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
+                  className="flex-2 py-3 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
                 >
                   {submittingProof ? 'Submitting...' : 'I Have Paid — Submit'}
                 </button>
@@ -1343,7 +1343,7 @@ export default function Account() {
             {/* Modal Header */}
             <div className="flex justify-between items-start pb-3 border-b border-gray-100">
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#691F1A]">Platform Food Subscription</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#83560E]">Platform Food Subscription</span>
                 <h3 className="font-serif font-black text-lg text-gray-900 leading-tight">
                   {selectedSubPlan.name}
                 </h3>
@@ -1366,7 +1366,7 @@ export default function Account() {
                 onClick={() => setSubPurchaseMethod('UPI')}
                 className={`p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer text-center ${
                   subPurchaseMethod === 'UPI'
-                    ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-black shadow-xs'
+                    ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-black shadow-xs'
                     : 'border-gray-200 bg-white text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -1378,7 +1378,7 @@ export default function Account() {
                 disabled={wallet.balance < selectedSubPlan.price}
                 className={`p-3 rounded-2xl border text-xs font-bold transition-all text-center ${
                   subPurchaseMethod === 'WALLET'
-                    ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-black shadow-xs'
+                    ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-black shadow-xs'
                     : wallet.balance < selectedSubPlan.price
                     ? 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed'
                     : 'border-gray-200 bg-white text-gray-500 hover:text-gray-700 cursor-pointer'
@@ -1400,7 +1400,7 @@ export default function Account() {
                     <button
                       type="button"
                       onClick={() => handleCopyUpi(platformUpi?.upiId || 'superadmin@upi')}
-                      className="px-3 py-1.5 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] text-[10px] font-black rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1 shrink-0"
+                      className="px-3 py-1.5 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] text-[10px] font-black rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1 shrink-0"
                     >
                       {copiedUpi ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedUpi ? 'Copied!' : 'Copy'}</span>
@@ -1440,7 +1440,7 @@ export default function Account() {
                     placeholder="e.g. 324156789012 or UPI Ref No."
                     value={subUtrInput}
                     onChange={(e) => setSubUtrInput(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white transition-all font-mono"
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white transition-all font-mono"
                   />
                   <span className="text-[10px] text-gray-400 block font-medium">
                     Found on payment success screen as "UPI Ref No." or "UTR".
@@ -1456,7 +1456,7 @@ export default function Account() {
                     required
                     value={subDateInput}
                     onChange={(e) => setSubDateInput(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white"
                   />
                 </div>
 
@@ -1471,7 +1471,7 @@ export default function Account() {
                   <button
                     type="submit"
                     disabled={submittingSubPurchase}
-                    className="flex-2 py-3 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
+                    className="flex-2 py-3 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
                   >
                     {submittingSubPurchase ? 'Submitting...' : 'Submit Payment Proof'}
                   </button>
@@ -1505,7 +1505,7 @@ export default function Account() {
                   <button
                     type="submit"
                     disabled={submittingSubPurchase}
-                    className="flex-2 py-3 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
+                    className="flex-2 py-3 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-colors cursor-pointer border border-[#F8A324]/20 disabled:opacity-50"
                   >
                     {submittingSubPurchase ? 'Activating...' : `Pay ₹${selectedSubPlan.price} & Activate`}
                   </button>

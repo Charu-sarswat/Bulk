@@ -120,7 +120,7 @@ export default function PaymentReports() {
       >
         <button
           onClick={handleExportSheet}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Download className="w-4 h-4" />
           <span>Export Sheet (Excel)</span>
@@ -232,7 +232,7 @@ export default function PaymentReports() {
                     <td className="py-4 px-4 sm:px-6 text-xs text-gray-400 font-light">
                       {new Date(order.created_at).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
                     </td>
-                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#691F1A]">{restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(2)}</td>
+                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#83560E]">{restaurantConfig.currency}{parseFloat(order.total_amount).toFixed(2)}</td>
                     <td className="py-4 px-4 sm:px-6 text-center">
                       <span className="text-[10px] uppercase font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
                         {order.payment_method}
@@ -253,7 +253,7 @@ export default function PaymentReports() {
                       {order.payment_status === 'pending' && order.status !== 'cancelled' && (
                         <button
                           onClick={() => settlePayment(order.id)}
-                          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+                          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
                         >
                           Settle
                         </button>

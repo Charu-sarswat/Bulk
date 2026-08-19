@@ -109,7 +109,7 @@ export default function Billing() {
       
       {/* Title */}
       <div>
-        <h2 className="text-xl sm:text-2xl font-serif font-black text-[#3C110D]">Billing & Subscription</h2>
+        <h2 className="text-xl sm:text-2xl font-serif font-black text-[#83560E]">Billing & Subscription</h2>
         <p className="text-gray-500 text-xs mt-1">Review active plan restrictions, metrics, and manage plan cycles.</p>
       </div>
 
@@ -160,7 +160,7 @@ export default function Billing() {
           <div className="flex gap-3 pt-6 border-t border-white/5 mt-6">
             <button
               onClick={handleRenew}
-              className="bg-gradient-to-r from-[#F8A324] to-[#FFB74D] hover:brightness-110 text-[#3C110D] font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#F8A324]/20"
+              className="bg-gradient-to-r from-[#F8A324] to-[#FFB74D] hover:brightness-110 text-[#83560E] font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#F8A324]/20"
             >
               Renew Subscription
             </button>
@@ -175,7 +175,7 @@ export default function Billing() {
 
         {/* Right Side: Limits and Resource Counts */}
         <div className="bg-white border border-gray-150 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-          <h3 className="text-xs font-black text-[#3C110D] uppercase tracking-widest border-b border-gray-100 pb-2">Active Limit Utilization</h3>
+          <h3 className="text-xs font-black text-[#83560E] uppercase tracking-widest border-b border-gray-100 pb-2">Active Limit Utilization</h3>
           
           {/* Tables Limit */}
           <div className="space-y-2">
@@ -227,7 +227,7 @@ export default function Billing() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
           <div className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl animate-scale-up max-h-[90vh] flex flex-col">
             <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h3 className="font-serif font-black text-[#3C110D] text-base uppercase tracking-wider">Select Subscription Plan Upgrade</h3>
+              <h3 className="font-serif font-black text-[#83560E] text-base uppercase tracking-wider">Select Subscription Plan Upgrade</h3>
               <button onClick={() => setShowUpgradeModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-6 h-6" />
               </button>
@@ -292,13 +292,13 @@ export default function Billing() {
                         <>
                           <button
                             onClick={() => handleUpgrade(p._id, 'monthly')}
-                            className="w-full bg-[#3C110D] hover:bg-[#5C1F1A] text-white py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                            className="w-full bg-[#83560E] hover:bg-[#68410d] text-white py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
                           >
                             Upgrade Monthly
                           </button>
                           <button
                             onClick={() => handleUpgrade(p._id, 'yearly')}
-                            className="w-full bg-gradient-to-r from-[#F8A324] to-[#FFB74D] text-[#3C110D] hover:brightness-105 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                            className="w-full bg-gradient-to-r from-[#F8A324] to-[#FFB74D] text-[#83560E] hover:brightness-105 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
                           >
                             Upgrade Yearly
                           </button>

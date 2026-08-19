@@ -4,7 +4,7 @@ import { useToast } from '../../context/ToastContext';
 import { QrCode, Download, Printer, Settings, RefreshCw, CheckCircle } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import logoIcon from '../../assets/logo2.png';
-import logoFull from '../../assets/bombay-logo-2.png';
+const logoFull = '/log.png';
 
 export default function QrGenerator() {
   const { token } = useAuth();
@@ -12,7 +12,7 @@ export default function QrGenerator() {
 
   const [qrTarget, setQrTarget] = useState('menu'); // 'home' or 'menu'
   const [headerType, setHeaderType] = useState('logo'); // 'logo' or 'text'
-  const [accentColor, setAccentColor] = useState('#691F1A'); // Bombay Chowpati Maroon
+  const [accentColor, setAccentColor] = useState('#83560E'); // Bombay Chowpati Maroon
   const [logoOption, setLogoOption] = useState(true);
   const [customText, setCustomText] = useState('Scan to Order Fresh Chat');
   const [posterSize, setPosterSize] = useState('A6'); // 'A6', 'sticker'
@@ -411,7 +411,7 @@ export default function QrGenerator() {
                   onClick={() => setPosterSize('A6')}
                   className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
                     posterSize === 'A6' 
-                      ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-bold' 
+                      ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-bold' 
                       : 'border-gray-250 bg-white hover:bg-gray-50'
                   }`}
                 >
@@ -421,7 +421,7 @@ export default function QrGenerator() {
                   onClick={() => setPosterSize('sticker')}
                   className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
                     posterSize === 'sticker' 
-                      ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-bold' 
+                      ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-bold' 
                       : 'border-gray-250 bg-white hover:bg-gray-50'
                   }`}
                 >
@@ -456,7 +456,7 @@ export default function QrGenerator() {
                   onClick={() => setHeaderType('logo')}
                   className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
                     headerType === 'logo' 
-                      ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-bold' 
+                      ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-bold' 
                       : 'border-gray-250 bg-white hover:bg-gray-50'
                   }`}
                 >
@@ -466,7 +466,7 @@ export default function QrGenerator() {
                   onClick={() => setHeaderType('text')}
                   className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
                     headerType === 'text' 
-                      ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-bold' 
+                      ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-bold' 
                       : 'border-gray-250 bg-white hover:bg-gray-50'
                   }`}
                 >
@@ -495,7 +495,7 @@ export default function QrGenerator() {
             <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
               <button
                 onClick={handlePrint}
-                className="flex items-center justify-center gap-2 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-3 px-4 rounded-xl transition-all cursor-pointer shadow-md text-xs uppercase"
+                className="flex items-center justify-center gap-2 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-3 px-4 rounded-xl transition-all cursor-pointer shadow-md text-xs uppercase"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print Poster</span>
@@ -522,7 +522,7 @@ export default function QrGenerator() {
 
         {/* Right Column: Preview Area (7 Cols) */}
         <div className="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
-          <span className="text-[10px] font-extrabold text-[#691F1A] uppercase tracking-widest block">Live Print Preview</span>
+          <span className="text-[10px] font-extrabold text-[#83560E] uppercase tracking-widest block">Live Print Preview</span>
           
           {/* Branded Poster Preview Card */}
           <div className="bg-white border border-gray-150 rounded-3xl p-8 shadow-xs flex items-center justify-center">
@@ -547,7 +547,7 @@ export default function QrGenerator() {
                       src={logoFull} 
                       alt="Bombay Chowpati Logo" 
                       style={{ 
-                        height: posterSize === 'A6' ? '48px' : '32px',
+                        height: posterSize === 'A6' ? '72px' : '48px',
                         width: 'auto',
                         objectFit: 'contain',
                         margin: posterSize === 'A6' ? '5px 0 10px 0' : '2px 0 4px 0'

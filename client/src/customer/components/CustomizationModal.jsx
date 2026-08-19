@@ -160,7 +160,7 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                   </span>
                   <h3 className="font-serif font-black text-xl text-gray-900 leading-tight">{item.name}</h3>
                 </div>
-                <span className="text-lg font-black text-[#691F1A] shrink-0">{restaurantConfig.currency}{unitPrice.toFixed(0)}</span>
+                <span className="text-lg font-black text-[#83560E] shrink-0">{restaurantConfig.currency}{unitPrice.toFixed(0)}</span>
               </div>
               
               <p className="text-xs text-gray-500 leading-relaxed font-light">
@@ -170,7 +170,7 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
               {/* Combo Package Components List */}
               {item.is_combo && resolvedComboItems.length > 0 && (
                 <div className="bg-[#FFF9EE] border border-dashed border-[#F8A324]/50 p-4 rounded-xl space-y-2 mt-3.5">
-                  <span className="text-[10px] uppercase font-black text-[#691F1A] tracking-wider block">Combo Package Includes:</span>
+                  <span className="text-[10px] uppercase font-black text-[#83560E] tracking-wider block">Combo Package Includes:</span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {resolvedComboItems.map(comboItem => (
                       <div key={comboItem.id} className="flex items-center gap-2 font-semibold text-gray-700">
@@ -194,13 +194,13 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                         onClick={() => setSelectedVariant(v)}
                         className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                           selectedVariant?.name === v.name
-                            ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-black'
+                            ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-black'
                             : 'border-gray-200 text-gray-500 hover:border-gray-300'
                         }`}
                       >
                         <div className="text-xs font-bold">{v.name}</div>
                         {v.price > 0 && (
-                          <div className="text-[9px] text-[#691F1A]/80 font-black mt-0.5">
+                          <div className="text-[9px] text-[#83560E]/80 font-black mt-0.5">
                             +{restaurantConfig.currency}{parseFloat(v.price).toFixed(0)}
                           </div>
                         )}
@@ -222,7 +222,7 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                           key={idx}
                           className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer select-none transition-all ${
                             isChecked
-                              ? 'border-[#691F1A] bg-[#691F1A]/5 text-[#691F1A] font-black'
+                              ? 'border-[#83560E] bg-[#83560E]/5 text-[#83560E] font-black'
                               : 'border-gray-200 text-gray-500 hover:border-gray-300'
                           }`}
                         >
@@ -237,12 +237,12 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                                   setSelectedAddons(prev => [...prev, a]);
                                 }
                               }}
-                              className="w-4 h-4 text-[#691F1A] focus:ring-[#691F1A] border-gray-300 rounded"
+                              className="w-4 h-4 text-[#83560E] focus:ring-[#83560E] border-gray-300 rounded"
                             />
                             <span>{a.name}</span>
                           </div>
                           {a.price > 0 && (
-                            <span className="text-[10px] text-[#691F1A] font-black">
+                            <span className="text-[10px] text-[#83560E] font-black">
                               +{restaurantConfig.currency}{parseFloat(a.price).toFixed(0)}
                             </span>
                           )}
@@ -265,7 +265,7 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="E.g., No sauce, extra spicy, allergies, dressings on the side..."
                 rows="2"
-                className="w-full text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#691F1A]/10 focus:border-[#691F1A] transition-colors resize-none placeholder:text-gray-400 bg-gray-50/50"
+                className="w-full text-xs p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#83560E]/10 focus:border-[#83560E] transition-colors resize-none placeholder:text-gray-400 bg-gray-50/50"
               />
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function CustomizationModal({ isOpen = true, item, menuItems = []
                   className={`flex-1 font-black h-12 px-5 rounded-xl transition-all duration-200 flex justify-between items-center shadow-lg shadow-black/10 text-xs sm:text-sm whitespace-nowrap min-w-0 ${
                     isOutOfStock 
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none' 
-                      : 'bg-[#691F1A] hover:bg-[#551915] active:scale-[0.99] text-[#F8A324] cursor-pointer'
+                      : 'bg-[#83560E] hover:bg-[#68410d] active:scale-[0.99] text-[#F8A324] cursor-pointer'
                   }`}
                 >
                   <span className="truncate mr-2 uppercase tracking-wider">

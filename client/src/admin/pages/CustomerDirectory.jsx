@@ -117,7 +117,7 @@ export default function CustomerDirectory() {
       >
         <button
           onClick={handleExportSheet}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <Download className="w-4 h-4" />
           <span>Export Sheet (Excel)</span>
@@ -264,7 +264,7 @@ export default function CustomerDirectory() {
                     </td>
 
                     {/* Total spent */}
-                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#691F1A] text-sm">
+                    <td className="py-4 px-4 sm:px-6 text-right font-bold text-[#83560E] text-sm">
                       {restaurantConfig.currency}{parseFloat(c.total_spent).toFixed(2)}
                     </td>
 
@@ -273,7 +273,7 @@ export default function CustomerDirectory() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleOpenDetail(c)}
-                          className="p-1.5 bg-gray-100 hover:bg-[#691F1A]/10 text-gray-500 hover:text-[#691F1A] rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 bg-gray-100 hover:bg-[#83560E]/10 text-gray-500 hover:text-[#83560E] rounded-lg transition-colors cursor-pointer"
                           title="View Complete Profile & History"
                         >
                           <Eye className="w-3.5 h-3.5" />

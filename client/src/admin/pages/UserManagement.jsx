@@ -216,7 +216,7 @@ export default function UserManagement() {
       >
         <button
           onClick={() => setShowAddForm(true)}
-          className="bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
+          className="bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold text-xs rounded-xl px-4 py-2.5 shadow-sm transition-all flex items-center gap-2 cursor-pointer border border-[#F8A324]/30 shrink-0"
         >
           <UserPlus className="w-4 h-4" />
           <span>Add New User</span>
@@ -313,7 +313,7 @@ export default function UserManagement() {
                   <tr key={u.id} className="hover:bg-[#FFF9EE]/20 transition-colors">
                     <td className="py-4 px-4 sm:px-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-[#691F1A]/10 border border-[#691F1A]/20 flex items-center justify-center text-[#691F1A] font-black uppercase text-xs">
+                        <div className="w-8 h-8 rounded-xl bg-[#83560E]/10 border border-[#83560E]/20 flex items-center justify-center text-[#83560E] font-black uppercase text-xs">
                           {u.username[0]}
                         </div>
                         <div>
@@ -389,12 +389,12 @@ export default function UserManagement() {
           <div className="bg-[#FFF9EE] text-gray-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-[#F8A324]/20 flex flex-col">
             <div className="p-5 border-b border-[#F8A324]/20 flex justify-between items-center bg-white shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#691F1A]">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#83560E]">
                   <UserPlus className="w-4.5 h-4.5" />
                 </div>
                 <div>
                   <h3 className="font-serif font-black text-base text-gray-900">Add System User</h3>
-                  <span className="text-[10px] text-[#691F1A] uppercase tracking-wider font-extrabold block">Provision new login</span>
+                  <span className="text-[10px] text-[#83560E] uppercase tracking-wider font-extrabold block">Provision new login</span>
                 </div>
               </div>
               <button 
@@ -460,7 +460,7 @@ export default function UserManagement() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                  className="flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   {submitting ? 'Creating...' : 'Create User'}
@@ -477,12 +477,12 @@ export default function UserManagement() {
           <div className="bg-[#FFF9EE] text-gray-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-[#F8A324]/20 flex flex-col">
             <div className="p-5 border-b border-[#F8A324]/20 flex justify-between items-center bg-white shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#691F1A]">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#83560E]">
                   <Key className="w-4.5 h-4.5" />
                 </div>
                 <div>
                   <h3 className="font-serif font-black text-base text-gray-900">Change Password</h3>
-                  <span className="text-[10px] text-[#691F1A] uppercase tracking-wider font-extrabold block">User: {selectedUserForPassword.username}</span>
+                  <span className="text-[10px] text-[#83560E] uppercase tracking-wider font-extrabold block">User: {selectedUserForPassword.username}</span>
                 </div>
               </div>
               <button 
@@ -525,7 +525,7 @@ export default function UserManagement() {
                 <button
                   type="submit"
                   disabled={passwordChanging}
-                  className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                  className="flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   {passwordChanging ? 'Updating...' : 'Update Password'}
@@ -541,12 +541,12 @@ export default function UserManagement() {
           <div className="bg-[#FFF9EE] text-gray-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-[#F8A324]/20 flex flex-col">
             <div className="p-5 border-b border-[#F8A324]/20 flex justify-between items-center bg-white shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#691F1A]">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF9EE] border border-[#F8A324]/30 flex items-center justify-center text-[#83560E]">
                   <Edit className="w-4.5 h-4.5" />
                 </div>
                 <div>
                   <h3 className="font-serif font-black text-base text-gray-900">Edit User Details</h3>
-                  <span className="text-[10px] text-[#691F1A] uppercase tracking-wider font-extrabold block">User ID: {selectedUserForEdit.id}</span>
+                  <span className="text-[10px] text-[#83560E] uppercase tracking-wider font-extrabold block">User ID: {selectedUserForEdit.id}</span>
                 </div>
               </div>
               <button 
@@ -610,7 +610,7 @@ export default function UserManagement() {
                 <button
                   type="submit"
                   disabled={userUpdating}
-                  className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                  className="flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-black text-xs uppercase tracking-wider disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   {userUpdating ? 'Saving...' : 'Save Changes'}

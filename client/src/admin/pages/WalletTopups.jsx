@@ -140,7 +140,7 @@ export default function WalletTopups() {
             onClick={() => setActiveTab('pending')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'pending'
-                ? 'bg-[#691F1A] text-[#F8A324] shadow-sm'
+                ? 'bg-[#83560E] text-[#F8A324] shadow-sm'
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -156,7 +156,7 @@ export default function WalletTopups() {
             onClick={() => setActiveTab('all')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'all'
-                ? 'bg-[#691F1A] text-[#F8A324] shadow-sm'
+                ? 'bg-[#83560E] text-[#F8A324] shadow-sm'
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -170,7 +170,7 @@ export default function WalletTopups() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none focus:border-[#691F1A]"
+              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none focus:border-[#83560E]"
             >
               <option value="ALL">All Statuses</option>
               <option value="PENDING">Pending Only</option>
@@ -186,7 +186,7 @@ export default function WalletTopups() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search student, phone, UTR..."
-              className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#691F1A] focus:bg-white"
+              className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#83560E] focus:bg-white"
             />
           </div>
 
@@ -295,7 +295,7 @@ export default function WalletTopups() {
               <div className="flex md:flex-col items-end justify-between w-full md:w-auto gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100 shrink-0">
                 <div className="text-right">
                   <span className="text-[10px] text-gray-400 uppercase tracking-widest block font-bold">Top-Up Amount</span>
-                  <span className="text-2xl font-black text-[#691F1A] block">₹{req.amount}</span>
+                  <span className="text-2xl font-black text-[#83560E] block">₹{req.amount}</span>
                 </div>
 
                 {req.status === 'PENDING' && (

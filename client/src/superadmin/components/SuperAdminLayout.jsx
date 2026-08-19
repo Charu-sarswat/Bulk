@@ -7,7 +7,7 @@ import {
   LogOut, Menu, User, Shield, Layers, FileText, Settings, X, Wallet, Percent 
 } from 'lucide-react';
 import logoIcon from '../../assets/logo2.png';
-import logoBanner from '../../assets/bombay-logo-3.png';
+const logoBanner = '/log.png';
 
 export default function SuperAdminLayout() {
   const { user, token, loading, logout } = useAuth();

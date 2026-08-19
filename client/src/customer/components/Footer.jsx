@@ -5,7 +5,7 @@ import {
   ShieldCheck, Utensils, Award, Heart, CheckCircle2 
 } from 'lucide-react';
 import { restaurantData } from '../../config/restaurantData';
-import logoBanner from '../../assets/bombay-logo-3.png';
+const logoBanner = '/log.png';
 import WhatsAppIcon from './WhatsAppIcon';
 
 export default function Footer({ onOpenCatering }) {
@@ -38,7 +38,7 @@ export default function Footer({ onOpenCatering }) {
             </p>
 
             {/* 100% Pure Veg Badge */}
-            <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300">
+            <div className="inline-flex items-center gap-2 bg-emerald-900/40 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>100% Pure Vegetarian Guarantee</span>
             </div>
@@ -151,7 +151,7 @@ export default function Footer({ onOpenCatering }) {
                   href={restaurantData.gmbLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 bg-[#691F1A] hover:bg-[#F8A324] hover:text-[#3C110D] border border-[#F8A324]/40 px-3 py-2 rounded-xl text-[11px] font-bold text-white transition-all shadow-md"
+                  className="inline-flex items-center gap-1.5 bg-[#83560E] hover:bg-[#F8A324] hover:text-[#83560E] border border-[#F8A324]/40 px-3 py-2 rounded-xl text-[11px] font-bold text-white transition-all shadow-md"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Google Maps Location</span>

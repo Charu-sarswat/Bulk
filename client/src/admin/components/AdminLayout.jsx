@@ -12,7 +12,7 @@ import {
 
 // Brand Logos
 import logoIcon from '../../assets/logo2.png';
-import logoBanner from '../../assets/bombay-logo-3.png';
+const logoBanner = '/log.png';
 
 /** Shared sidebar nav content — renders inside both desktop aside & mobile drawer */
 function SidebarContent({ user, navLinks, location, isCollapsed, handleLogout, onLinkClick }) {
@@ -331,7 +331,7 @@ export default function AdminLayout() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#3C110D]">
+      <div className="min-h-screen flex items-center justify-center bg-[#83560E]">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#F8A324] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-amber-100 text-xs font-bold uppercase tracking-wider">Verifying Credentials...</p>

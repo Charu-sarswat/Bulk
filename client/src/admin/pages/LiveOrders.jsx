@@ -494,7 +494,7 @@ export default function LiveOrders() {
                         {order.delivery_address && (
                           <div className="mt-1.5">
                             {expandedAddresses[order.id] ? (
-                              <div className="text-[10px] text-[#691F1A] bg-rose-50 border border-red-200/50 rounded p-1.5 font-semibold max-w-[200px] break-words relative">
+                              <div className="text-[10px] text-[#83560E] bg-rose-50 border border-red-200/50 rounded p-1.5 font-semibold max-w-[200px] break-words relative">
                                 <span>📍 {order.delivery_address}</span>
                                 <button
                                   onClick={() => setExpandedAddresses(prev => ({ ...prev, [order.id]: false }))}
@@ -506,7 +506,7 @@ export default function LiveOrders() {
                             ) : (
                               <button
                                 onClick={() => setExpandedAddresses(prev => ({ ...prev, [order.id]: true }))}
-                                className="text-[9px] text-[#691F1A] bg-rose-50 border border-red-200/40 hover:bg-rose-100/40 rounded px-1.5 py-0.5 font-semibold cursor-pointer flex items-center gap-1 transition-all"
+                                className="text-[9px] text-[#83560E] bg-rose-50 border border-red-200/40 hover:bg-rose-100/40 rounded px-1.5 py-0.5 font-semibold cursor-pointer flex items-center gap-1 transition-all"
                                 title="Click to show address"
                               >
                                 <span>📍 Show Address</span>
@@ -523,7 +523,7 @@ export default function LiveOrders() {
                         {order.order_channel === 'delivery' && (
                           <div className="border text-[9px] font-black rounded-xl p-2.5 mt-2 max-w-[240px] bg-gradient-to-br from-amber-50/70 to-orange-50/40 border-amber-200/80 text-amber-900 shadow-2xs">
                             <div className="flex items-center justify-between gap-1">
-                              <span className="font-black text-[#691F1A] flex items-center gap-1">
+                              <span className="font-black text-[#83560E] flex items-center gap-1">
                                 <Bike className="w-3.5 h-3.5 text-[#F8A324]" />
                                 <span>{order.delivery_rider_name || 'Delivery Partner'}</span>
                               </span>
@@ -537,7 +537,7 @@ export default function LiveOrders() {
                             </div>
 
                             {order.delivery_rider_phone ? (
-                              <a href={`tel:${order.delivery_rider_phone}`} className="text-[#691F1A] font-bold block mt-1 hover:underline flex items-center gap-1">
+                              <a href={`tel:${order.delivery_rider_phone}`} className="text-[#83560E] font-bold block mt-1 hover:underline flex items-center gap-1">
                                 📞 {order.delivery_rider_phone}
                               </a>
                             ) : (
@@ -557,7 +557,7 @@ export default function LiveOrders() {
                             <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-amber-200/60">
                               <button
                                 onClick={() => openPorterBooking(order)}
-                                className="flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-1 px-2 rounded-lg text-[8px] uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                                className="flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-1 px-2 rounded-lg text-[8px] uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-2xs"
                                 title="Open Porter with pre-filled address & phone"
                               >
                                 <span>🏍️ Porter 1-Click</span>
@@ -648,7 +648,7 @@ export default function LiveOrders() {
                           {order.status === 'received' && (
                             <button
                               onClick={() => updateOrderStatus(order.id, 'preparing')}
-                              className="w-max bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm shrink-0"
+                              className="w-max bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm shrink-0"
                             >
                               Start Preparing
                             </button>
@@ -665,7 +665,7 @@ export default function LiveOrders() {
                             order.order_channel === 'delivery' ? (
                               <button
                                 onClick={() => handleOpenDispatchModal(order)}
-                                className="w-max bg-[#F8A324] hover:bg-[#d97a10] text-[#3C110D] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0 flex items-center gap-1"
+                                className="w-max bg-[#F8A324] hover:bg-[#d97a10] text-[#83560E] font-bold py-1.5 px-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm uppercase tracking-wider shrink-0 flex items-center gap-1"
                               >
                                 <Bike className="w-3.5 h-3.5" />
                                 <span>Dispatch Rider</span>
@@ -722,7 +722,7 @@ export default function LiveOrders() {
 
             {/* Modal Header */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-[#691F1A] flex items-center justify-center font-bold shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-[#83560E] flex items-center justify-center font-bold shrink-0">
                 <Bike className="w-6 h-6 text-[#F8A324]" />
               </div>
               <div>
@@ -738,7 +738,7 @@ export default function LiveOrders() {
             {/* Quick 1-Click Porter Box */}
             <div className="bg-gradient-to-br from-[#FFF9EE] to-amber-50/50 border border-amber-200/80 rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-[#691F1A] flex items-center gap-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-[#83560E] flex items-center gap-1.5">
                   <span>🏍️ Porter 1-Click Launcher</span>
                 </span>
                 <span className="text-[10px] bg-amber-200/80 text-amber-900 font-black px-2 py-0.5 rounded-md uppercase">
@@ -753,7 +753,7 @@ export default function LiveOrders() {
                 </div>
                 <div>
                   <span className="font-bold text-gray-500">Drop Address: </span>
-                  <span className="font-semibold text-[#691F1A]">{dispatchModalOrder.delivery_address || 'Abids, Hyderabad'}</span>
+                  <span className="font-semibold text-[#83560E]">{dispatchModalOrder.delivery_address || 'Abids, Hyderabad'}</span>
                 </div>
                 <div>
                   <span className="font-bold text-gray-500">Customer: </span>
@@ -765,7 +765,7 @@ export default function LiveOrders() {
                 <button
                   type="button"
                   onClick={() => openPorterBooking(dispatchModalOrder)}
-                  className="w-full sm:flex-1 bg-[#691F1A] hover:bg-[#551915] text-[#F8A324] font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
+                  className="w-full sm:flex-1 bg-[#83560E] hover:bg-[#68410d] text-[#F8A324] font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
                 >
                   <span>Open Porter (Bike Booking)</span>
                   <ExternalLink className="w-3.5 h-3.5" />

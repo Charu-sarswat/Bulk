@@ -68,7 +68,7 @@ export default function QRRedirectLoader() {
         </p>
         <button
           onClick={() => navigate('/')}
-          className="bg-[#3C110D] hover:bg-[#5C1F1A] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer"
+          className="bg-[#83560E] hover:bg-[#68410d] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer"
         >
           Select Another Restaurant
         </button>
