@@ -95,7 +95,13 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToast } = useToast();
-  const { socket } = useSocket();
+  const { socket, joinRestaurantRoom } = useSocket();
+
+  useEffect(() => {
+    if (user && user.restaurantId) {
+      joinRestaurantRoom(user.restaurantId);
+    }
+  }, [user, socket]);
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const [isCollapsed, setIsCollapsed] = React.useState(false);

@@ -19,6 +19,18 @@ module.exports = function(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_for_development');
     req.user = decoded.user;
+
+    if (req.user) {
+      if (req.user.role === 'super_admin') {
+        const requestedId = req.header('X-Restaurant-ID') || req.query.restaurantId || (req.body && req.body.restaurantId);
+        if (requestedId) {
+          req.restaurantId = requestedId.toString();
+        }
+      } else if (req.user.restaurantId) {
+        // Enforce the restaurant admin/staff/kitchen's restaurantId strictly from their verified JWT token
+        req.restaurantId = req.user.restaurantId.toString();
+      }
+    }
     next();
   } catch (err) {
     res.status(401).json({ message: 'Token is not valid or has expired' });

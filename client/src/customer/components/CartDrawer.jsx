@@ -92,9 +92,15 @@ export default function CartDrawer({
     }
   }, [isOpen, customerToken, restaurant, apiUrl]);
 
+  const [restaurantUpi, setRestaurantUpi] = useState({ upiId: '', upiName: '', upiQrUrl: '' });
+
   useEffect(() => {
+    const activeRestId = restaurant?._id || restaurant?.id || localStorage.getItem('restaurantId');
     if (isOpen) {
-      fetch(`${apiUrl}/api/settings`)
+      const headers = {};
+      if (activeRestId) headers['X-Restaurant-ID'] = activeRestId;
+
+      fetch(`${apiUrl}/api/settings`, { headers })
         .then(res => res.json())
         .then(data => {
           if (data.delivery_fee !== undefined) setDeliveryFee(data.delivery_fee);
@@ -111,10 +117,15 @@ export default function CartDrawer({
           if (data.store_opening_time !== undefined) setStoreOpeningTime(data.store_opening_time);
           if (data.store_closing_time !== undefined) setStoreClosingTime(data.store_closing_time);
           if (data.store_closed_message !== undefined) setStoreClosedMessage(data.store_closed_message);
+          setRestaurantUpi({
+            upiId: data.upi_id || '',
+            upiName: data.upi_name || '',
+            upiQrUrl: data.upi_qr_url || ''
+          });
         })
         .catch(err => console.error('Failed to load settings:', err));
     }
-  }, [isOpen, apiUrl]);
+  }, [isOpen, apiUrl, restaurant]);
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
@@ -424,11 +435,14 @@ export default function CartDrawer({
       return;
     }
 
-    if (useSubscription) {
+    // If remaining total is 0 (order is fully covered by Subscription and/or Wallet)
+    if (total === 0) {
       submitOrder();
-    } else if (paymentMethod === 'upi') {
+    } else if (paymentMethod === 'upi' || paymentMethod === 'wallet' || useSubscription) {
+      // There is an uncovered remaining amount (e.g. ₹56) that must be paid via UPI
       setIsPaymentModalOpen(true);
     } else {
+      // e.g. Pay at Counter (dine-in / takeaway)
       submitOrder();
     }
   };
@@ -1009,6 +1023,13 @@ export default function CartDrawer({
         onClose={() => setIsPaymentModalOpen(false)}
         onSuccess={(utrData) => submitOrder(utrData)}
         totalAmount={total}
+        orderSummary={{
+          orderTotal,
+          subUsed: coveredBySub,
+          walletUsed: coveredByWallet,
+          upiAmount: total
+        }}
+        restaurantUpi={restaurantUpi}
       />
     </div>
   );

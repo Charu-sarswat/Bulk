@@ -239,12 +239,14 @@ router.get('/reports/dashboard', auth, authorizeRoles('admin', 'staff', 'kitchen
 router.get('/reports/customers', auth, authorizeRoles('admin', 'staff'), async (req, res) => {
   try {
     const Customer = require('../models/Customer');
+    const custFilter = req.restaurantId ? { restaurantId: req.restaurantId } : {};
+    const orderFilter = req.restaurantId ? { restaurantId: req.restaurantId } : {};
     
-    // Fetch registered customer base
-    const registeredUsers = await Customer.find().sort({ created_at: -1 });
+    // Fetch registered customer base for this restaurant
+    const registeredUsers = await Customer.find(custFilter).sort({ created_at: -1 });
 
-    // Fetch guest checkouts list from orders
-    const orders = await Order.find().sort({ created_at: -1 });
+    // Fetch guest checkouts list from orders for this restaurant
+    const orders = await Order.find(orderFilter).sort({ created_at: -1 });
 
     const registeredList = await Promise.all(registeredUsers.map(async (u) => {
       const userOrders = orders.filter(o => o.customer_phone === u.phone);
@@ -308,6 +310,13 @@ router.get('/', auth, authorizeRoles('admin', 'staff', 'kitchen'), async (req, r
   try {
     const { status, date } = req.query;
     const filter = {};
+
+    // Multi-tenant isolation: enforce restaurantId filter for non-superadmin users
+    if (req.restaurantId) {
+      filter.restaurantId = req.restaurantId;
+    } else if (req.user.role !== 'super_admin') {
+      return res.status(400).json({ message: 'Restaurant ID is required to fetch orders' });
+    }
 
     if (status) {
       filter.status = status;
@@ -860,8 +869,8 @@ router.post('/', async (req, res) => {
 
     // Broadcast socket event for real-time kitchen & admin screens (restaurant room specific)
     const io = req.app.get('socketio');
-    if (io) {
-      io.to(`restaurant_${req.restaurantId}`).emit('order_created', {
+    if (io && newOrder.restaurantId) {
+      io.to(`restaurant_${newOrder.restaurantId}`).emit('order_created', {
         id: newOrder.order_number || newOrder._id,
         _id: newOrder._id,
         order_number: newOrder.order_number,
@@ -1390,7 +1399,9 @@ router.post('/delivery/webhook', async (req, res) => {
         delivery_rider_phone: order.delivery_rider_phone,
         updated_at: order.updated_at
       };
-      io.emit('order_status_updated', payload);
+      if (order.restaurantId) {
+        io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
+      }
       io.to(`order_${order._id}`).emit('order_status_change', payload);
       if (order.order_number) {
         io.to(`order_${order.order_number}`).emit('order_status_change', payload);
