@@ -799,7 +799,9 @@ router.post('/', async (req, res) => {
       subscriptionId: subscriptionAmount > 0 ? activeSub._id : null,
       subscriptionAmount,
       normalPaymentAmount,
+      upiAmount: normalPaymentAmount,
       walletAmount,
+      refundStatus: 'NONE',
       notes: notes || '',
       items: orderItems,
       delivery_address: delivery_address || '',
@@ -1229,23 +1231,27 @@ router.put('/:id/status', auth, authorizeRoles('admin', 'staff', 'kitchen'), asy
         }
       }
 
-      // 3. Cancelled State: Automatically cancel delivery
-      if (status === 'cancelled' && order.order_channel === 'delivery' && order.delivery_job_id) {
-        try {
-          if (order.delivery_job_id.startsWith('BRZ-')) {
-            const { cancelBorzoDeliveryJob } = require('../config/borzo');
-            await cancelBorzoDeliveryJob(order.delivery_job_id);
-          } else {
-            const { cancelShadowfaxDeliveryOrder } = require('../config/shadowfax');
-            await cancelShadowfaxDeliveryOrder(order.delivery_job_id, 'Order cancelled by restaurant/customer');
+      // 3. Cancelled State: Automatically process refunds to original payment sources & cancel delivery
+      if (status === 'cancelled') {
+        await processOrderCancellationRefund(order, req.body.reason || 'Order cancelled by restaurant/staff');
+
+        if (order.order_channel === 'delivery' && order.delivery_job_id) {
+          try {
+            if (order.delivery_job_id.startsWith('BRZ-')) {
+              const { cancelBorzoDeliveryJob } = require('../config/borzo');
+              await cancelBorzoDeliveryJob(order.delivery_job_id);
+            } else {
+              const { cancelShadowfaxDeliveryOrder } = require('../config/shadowfax');
+              await cancelShadowfaxDeliveryOrder(order.delivery_job_id, 'Order cancelled by restaurant/customer');
+            }
+            order.delivery_status = 'cancelled';
+          } catch (cancelErr) {
+            console.error('[Hyperlocal Delivery] Cancellation hook error:', cancelErr.message);
           }
-          order.delivery_status = 'cancelled';
-        } catch (cancelErr) {
-          console.error('[Hyperlocal Delivery] Cancellation hook error:', cancelErr.message);
         }
       }
     }
-    if (payment_status) order.payment_status = payment_status;
+    if (payment_status && !order.is_refunded) order.payment_status = payment_status;
     if (payment_utr !== undefined) order.payment_utr = payment_utr;
 
     await order.save();
@@ -1460,6 +1466,7 @@ router.post(['/delivery/partner-updates', '/webhooks/shiprocket'], async (req, r
         order.payment_status = 'paid';
       } else if (statusLower.includes('cancelled')) {
         order.status = 'cancelled';
+        await processOrderCancellationRefund(order, 'Cancelled via Shiprocket webhook');
       }
     }
 
@@ -1486,6 +1493,202 @@ router.post(['/delivery/partner-updates', '/webhooks/shiprocket'], async (req, r
 });
 
 /**
+ * Processes refund on order cancellation back to original payment sources:
+ * - Subscription amount -> returned to CustomerSubscription (remainingBalance)
+ * - Wallet amount -> returned to Wallet (balance)
+ * - UPI / Online amount -> processed and tracked in refund_details
+ * Prevents duplicate refunds using order.is_refunded.
+ */
+async function processOrderCancellationRefund(order, reason = 'Order Cancelled') {
+  if (!order) return { error: 'No order provided' };
+
+  if (order.is_refunded || order.refundStatus === 'REFUNDED' || order.refund_status === 'FULL') {
+    console.log(`[Refund] Order ${order.order_number} already refunded. Skipping duplicate execution.`);
+    return { alreadyRefunded: true };
+  }
+
+  const Customer = require('../models/Customer');
+  const CustomerSubscription = require('../models/CustomerSubscription');
+  const SubscriptionUsage = require('../models/SubscriptionUsage');
+  const Wallet = require('../models/Wallet');
+  const WalletTransaction = require('../models/WalletTransaction');
+  const RawMaterial = require('../models/RawMaterial');
+  const MenuItem = require('../models/MenuItem');
+  const InventoryLog = require('../models/InventoryLog');
+  const mongoose = require('mongoose');
+
+  // 1. Resolve Customer ID reliably (from order.customer_id OR customer_phone)
+  let validCustomerId = null;
+  if (order.customer_id) {
+    if (mongoose.Types.ObjectId.isValid(order.customer_id)) {
+      validCustomerId = order.customer_id;
+    } else {
+      const custById = await Customer.findById(order.customer_id);
+      if (custById) validCustomerId = custById._id;
+    }
+  }
+  if (!validCustomerId && order.customer_phone) {
+    const custByPhone = await Customer.findOne({ phone: order.customer_phone.trim() });
+    if (custByPhone) validCustomerId = custByPhone._id;
+  }
+
+  // 2. Extract payment amounts accurately
+  const orderTotal = Number(order.total_amount || order.finalAmount || 0);
+  let subAmount = Number(order.subscriptionAmount || 0);
+  let walAmount = Number(order.walletAmount || 0);
+  let upiAmount = Number(order.normalPaymentAmount || order.upiAmount || 0);
+
+  // Fallback for orders where payment_method was set without breakdown fields
+  if (subAmount === 0 && walAmount === 0 && upiAmount === 0) {
+    if (order.payment_method === 'subscription') {
+      subAmount = orderTotal;
+    } else if (order.payment_method === 'wallet') {
+      walAmount = orderTotal;
+    } else if (order.payment_method === 'upi' || order.payment_method === 'online') {
+      upiAmount = orderTotal;
+    }
+  }
+
+  console.log(`[Refund Execution] Cancelling Order ${order.order_number}: Total ₹${orderTotal}, Sub: ₹${subAmount}, Wallet: ₹${walAmount}, UPI: ₹${upiAmount}, Customer: ${validCustomerId}`);
+
+  const refundSummary = {
+    subscriptionRefunded: 0,
+    walletRefunded: 0,
+    upiRefunded: 0,
+    refundedAt: new Date(),
+    reason
+  };
+
+  // 3. Refund Subscription Pass Balance
+  if (subAmount > 0) {
+    let subToRefund = null;
+    if (order.subscriptionId) {
+      subToRefund = await CustomerSubscription.findById(order.subscriptionId);
+    }
+    if (!subToRefund && validCustomerId) {
+      subToRefund = await CustomerSubscription.findOne({
+        customerId: validCustomerId,
+        status: 'ACTIVE'
+      });
+      if (!subToRefund) {
+        subToRefund = await CustomerSubscription.findOne({
+          customerId: validCustomerId
+        }).sort({ createdAt: -1 });
+      }
+    }
+
+    if (subToRefund) {
+      const balanceBefore = Number(subToRefund.remainingBalance !== undefined ? subToRefund.remainingBalance : subToRefund.initialBalance || 0);
+      const updatedSub = await CustomerSubscription.findByIdAndUpdate(
+        subToRefund._id,
+        { $inc: { remainingBalance: subAmount } },
+        { new: true }
+      );
+
+      if (updatedSub) {
+        refundSummary.subscriptionRefunded = subAmount;
+        await SubscriptionUsage.create({
+          subscriptionId: updatedSub._id,
+          customerId: validCustomerId || updatedSub.customerId,
+          restaurantId: order.restaurantId,
+          orderId: order._id,
+          type: 'CREDIT',
+          amount: subAmount,
+          balanceBefore,
+          balanceAfter: updatedSub.remainingBalance,
+          description: `Refund: Cancelled Order #${order.order_number}`
+        });
+        console.log(`[Refund] Subscription refunded: +₹${subAmount} for subscription ${updatedSub._id}. New balance: ₹${updatedSub.remainingBalance}`);
+      }
+    } else {
+      console.warn(`[Refund] Subscription not found for customer ${validCustomerId}`);
+    }
+  }
+
+  // 4. Refund Global Wallet Balance
+  if (walAmount > 0 && validCustomerId) {
+    let customerWallet = await Wallet.findOne({ customerId: validCustomerId });
+    if (!customerWallet) {
+      customerWallet = await Wallet.create({ customerId: validCustomerId, balance: 0 });
+    }
+
+    const walletBefore = Number(customerWallet.balance || 0);
+    const updatedWallet = await Wallet.findByIdAndUpdate(
+      customerWallet._id,
+      { $inc: { balance: walAmount } },
+      { new: true }
+    );
+
+    if (updatedWallet) {
+      refundSummary.walletRefunded = walAmount;
+      await WalletTransaction.create({
+        walletId: updatedWallet._id,
+        customerId: validCustomerId,
+        type: 'CREDIT',
+        amount: walAmount,
+        balanceBefore: walletBefore,
+        balanceAfter: updatedWallet.balance,
+        referenceType: 'FOOD_ORDER',
+        referenceId: order._id,
+        description: `Refund: Cancelled Order #${order.order_number}`,
+        status: 'SUCCESS'
+      });
+      console.log(`[Refund] Wallet refunded: +₹${walAmount} for customer ${validCustomerId}. New balance: ₹${updatedWallet.balance}`);
+    }
+  }
+
+  // 5. Process / Track UPI / Online Refund
+  if (upiAmount > 0 && (order.payment_status === 'paid' || order.payment_utr || order.payment_method === 'upi' || order.payment_method === 'online' || order.payment_method === 'mixed')) {
+    refundSummary.upiRefunded = upiAmount;
+    refundSummary.upiUtr = order.payment_utr || 'ONLINE_UPI';
+    refundSummary.upiStatus = 'REFUND_PROCESSED';
+  }
+
+  // 6. Restore Recipe Raw Materials Stock
+  if (order.items && order.items.length > 0) {
+    for (const item of order.items) {
+      if (item.menu_item_id) {
+        const menuItem = await MenuItem.findById(item.menu_item_id);
+        if (menuItem && menuItem.recipe && menuItem.recipe.length > 0) {
+          for (const ing of menuItem.recipe) {
+            if (ing.raw_material_id) {
+              const rawMat = await RawMaterial.findById(ing.raw_material_id);
+              if (rawMat) {
+                const qtyToRestore = Number(ing.quantity_required || ing.quantity || 1) * Number(item.quantity);
+                const prevStock = rawMat.stock_quantity || rawMat.current_stock || 0;
+                const newStock = prevStock + qtyToRestore;
+                rawMat.stock_quantity = newStock;
+                if (rawMat.current_stock !== undefined) rawMat.current_stock = newStock;
+                await rawMat.save();
+
+                await InventoryLog.create({
+                  restaurantId: order.restaurantId,
+                  raw_material_id: rawMat._id,
+                  change_type: 'STOCK_ADD',
+                  quantity_change: qtyToRestore,
+                  previous_stock: prevStock,
+                  new_stock: newStock,
+                  reason: `Restored from cancelled Order #${order.order_number}`,
+                  recorded_by: 'System (Order Cancellation)'
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  order.is_refunded = true;
+  order.refundStatus = 'REFUNDED';
+  order.refund_status = 'FULL';
+  order.payment_status = 'refunded';
+  order.refund_details = refundSummary;
+
+  return refundSummary;
+}
+
+/**
  * Broadcasts order status changes to connected Socket.IO clients
  */
 function broadcastOrderStatus(order, io) {
@@ -1502,9 +1705,14 @@ function broadcastOrderStatus(order, io) {
     delivery_rider_phone: order.delivery_rider_phone,
     delivery_otp: order.delivery_otp,
     delivery_tracking_url: order.delivery_tracking_url,
+    is_refunded: order.is_refunded,
+    refund_status: order.refund_status,
+    refund_details: order.refund_details,
     updated_at: order.updated_at
   };
-  io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
+  if (order.restaurantId) {
+    io.to(`restaurant_${order.restaurantId}`).emit('order_status_updated', payload);
+  }
   io.to(`order_${order._id}`).emit('order_status_change', payload);
   if (order.order_number) {
     io.to(`order_${order.order_number}`).emit('order_status_change', payload);
@@ -1730,6 +1938,8 @@ router.post('/webhook/shadowfax', async (req, res) => {
         order.payment_status = 'paid';
       } else if (['cancelled', 'cancelled_by_customer'].includes(currentStatus)) {
         order.delivery_status = 'cancelled';
+        order.status = 'cancelled';
+        await processOrderCancellationRefund(order, 'Cancelled via Shadowfax webhook');
       }
     }
 

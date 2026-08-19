@@ -5352,3 +5352,1119 @@
 [ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
 [TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
 [ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/tables | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/reports/customers | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/reports/customers | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/settings | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/inventory | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[ROLECHECK] URL: /api/inventory | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/inventory | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-007/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-007/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/wallet-topups/payment-settings?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: POST | URL: /api/wallet-topups/request | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/superadmin/analytics | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/analytics | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/analytics | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/analytics | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: POST | URL: /api/wallet-topups/superadmin/6a857eb5d9079d2b288190a7/confirm | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/6a857eb5d9079d2b288190a7/confirm | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/settings | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: POST | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/ORD-20260819-011 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/ORD-20260819-011 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-011/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-011/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-010/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-010/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-010/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-010/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/6a857eead9079d2b28819173 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/6a857eead9079d2b28819173 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-005/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-005/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/plans?restaurantId=undefined | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans?restaurantId=undefined | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-011/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-011/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-011/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-011/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/settings | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: POST | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/ORD-20260819-012 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/ORD-20260819-012 | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/tables | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders/reports/customers | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/reports/customers | Allowed: [admin, staff] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/settings | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: PUT | URL: /api/orders/ORD-20260819-012/status | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders/ORD-20260819-012/status | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b7817e5101582fd266ed","username":"charu","role":"admin","restaurantId":"6a84b7807e5101582fd266eb"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/wallet-topups/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/wallet | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/active | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/usages | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/subscriptions/my-requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/student/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/wallet-topups/superadmin/requests | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/wallet-topups/superadmin/requests | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/superadmin/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/plans | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/plans | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/restaurants | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/restaurants | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/restaurants | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/restaurants | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/superadmin/plans | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/plans | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/plans | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/customer-subscriptions | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/customer-subscriptions | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/customer-subscriptions | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/customer-subscriptions | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/discounts/superadmin/discounts | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/discounts/superadmin/discounts | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/discounts/superadmin/discounts | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/restaurants | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/discounts/superadmin/discounts | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/superadmin/restaurants | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/restaurants | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/superadmin/menu-items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/restaurants | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/discounts/superadmin/menu-items | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/discounts/superadmin/menu-items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/discounts/superadmin/menu-items | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/superadmin/platform-upi | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/platform-upi | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/superadmin/subscription-reports | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/superadmin/subscription-reports | Allowed: [super_admin] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/inventory/raw | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/inventory/raw | Allowed: [admin, staff] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/menu/categories?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/menu/items?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/discounts/active?restaurantId=6a84b7807e5101582fd266eb | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders/reports/dashboard?period=7days | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders/reports/dashboard?period=7days | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders | User: undefined | Header X-Restaurant-ID: 6a84b3577e36e8d579137308
+[ROLECHECK] URL: /api/orders | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84af9004cc84b08b07195c","username":"admin","role":"admin","restaurantId":"6a84b3577e36e8d579137308"} -> Role approved
+[TENANT] Method: GET | URL: /api/orders?status=received | User: undefined | Header X-Restaurant-ID: 6a84b7807e5101582fd266eb
+[ROLECHECK] URL: /api/orders?status=received | Allowed: [admin, staff, kitchen] | req.user: {"id":"6a84b3587e36e8d57913730e","username":"superadmin","role":"super_admin","restaurantId":null} -> Super Admin bypass approved

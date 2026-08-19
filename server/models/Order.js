@@ -50,7 +50,7 @@ const orderSchema = new mongoose.Schema({
   },
   payment_status: { 
     type: String, 
-    enum: ['pending', 'paid', 'failed'], 
+    enum: ['pending', 'paid', 'failed', 'refunded'], 
     default: 'pending' 
   },
   payment_method: { 
@@ -59,6 +59,9 @@ const orderSchema = new mongoose.Schema({
     default: 'upi' 
   },
   payment_utr: { type: String, default: '' },
+  is_refunded: { type: Boolean, default: false },
+  refund_status: { type: String, enum: ['NONE', 'PARTIAL', 'FULL'], default: 'NONE' },
+  refund_details: { type: Object, default: {} },
   subtotal: { type: Number, default: 0 },
   discount: { type: Number, default: 0 },
   discount_amount: { type: Number, default: 0 },
